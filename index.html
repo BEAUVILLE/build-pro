@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>DIGIY PRO — Entrée</title>
+</head>
+<body>
+<script>
+  // ✅ Si slug présent → porte PIN
+  const url = new URL(location.href);
+  const slug = url.searchParams.get("slug");
+
+  if(slug){
+    location.href = "./pin.html?slug=" + encodeURIComponent(slug);
+  } else {
+    location.href = "./pin.html";
+  }
+</script>
+</body>
+</html>
