@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#061b14"/>
+  <title>DIGIY BUILD PRO — Ma fiche (Créer / Modifier)</title>
+
+  <link rel="stylesheet" href="./profile.css?v=build-pro-profile-v3"/>
+
+  <!-- Supabase + Guard -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../guard.js?v=build-pro-profile-v3"></script>
+
+  <script defer src="./profile.js?v=build-pro-profile-v3"></script>
+</head>
+
+<body>
+  <div id="guard_status">🔐 Vérification…</div>
+
+  <div class="app">
+    <div class="wrap">
+      <div class="card">
+        <div class="head">
+          <h1>🏗️ Ma fiche BUILD</h1>
+          <div class="head-actions">
+            <button class="btn ghost" id="btnCopyLink" type="button">📋 Copier le lien</button>
+            <button class="btn ghost" id="btnOpenLink" type="button">👁️ Ouvrir</button>
+          </div>
+        </div>
+
+        <p class="sub">
+          Ici tu crées / modifies ta fiche publique.  
+          <span class="ok">Si tu publies</span> → tu apparais dans la vitrine automatiquement.
+        </p>
+
+        <div class="hr"></div>
+
+        <div class="row">
+          <div>
+            <label>Nom affiché (display_name)</label>
+            <input id="display_name" placeholder="Ex: Helage" />
+          </div>
+          <div>
+            <label>Ville / Zone</label>
+            <input id="city" placeholder="Ex: Saly – Petite Côte" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Métier (trade)</label>
+            <input id="trade" placeholder="Ex: Plombier multi-services" />
+          </div>
+          <div>
+            <label>Région (region)</label>
+            <select id="region">
+              <option value="petite-cote">petite-cote</option>
+              <option value="dakar">dakar</option>
+              <option value="thies">thies</option>
+              <option value="national">national</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Secteur (sector)</label>
+            <select id="sector">
+              <option value="multi">multi</option>
+              <option value="construction">construction</option>
+              <option value="plomberie">plomberie</option>
+              <option value="electricite">electricite</option>
+            </select>
+          </div>
+          <div>
+            <label>Priorité (0–100)</label>
+            <input id="priority" type="number" min="0" max="100" value="1" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>WhatsApp (sans espaces)</label>
+            <input id="whatsapp" placeholder="Ex: 221774513523" />
+          </div>
+          <div>
+            <label>Téléphone (optionnel)</label>
+            <input id="phone" placeholder="Ex: +221..." />
+          </div>
+        </div>
+
+        <label>Bio (courte, claire)</label>
+        <textarea id="bio" placeholder="Ex: Dépannage, installation, chauffe-eau, fuite, WC, douche…"></textarea>
+
+        <div class="row">
+          <div>
+            <label>Photo vitrine (photo_url)</label>
+            <input id="photo_url" placeholder="URL image (https://...png/jpg)" />
+          </div>
+          <div>
+            <label>URL fiche (profile_url)</label>
+            <input id="profile_url" placeholder="https://digiylyfe.com/..." />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Badge (ex: ⚡ Intervention rapide)</label>
+            <input id="badge" placeholder="Ex: 🛠️ Intervention rapide" />
+          </div>
+          <div>
+            <label>Hub badge</label>
+            <input id="hub_badge" placeholder="Ex: ✅ PARTENAIRE BUILD" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Price label</label>
+            <input id="price_label" placeholder="Ex: 0% commission" />
+          </div>
+          <div>
+            <label>Tags (JSON ou liste simple)</label>
+            <input id="tags" placeholder='Ex: btp,carrelage,piscine ou ["btp","piscine"]' />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Slug (url interne)</label>
+            <input id="slug" placeholder="auto" />
+            <div class="hint">Par défaut on garde le slug existant (stable). Tu peux le régénérer si tu veux.</div>
+          </div>
+          <div>
+            <label>Publier maintenant ?</label>
+            <select id="is_published">
+              <option value="true">Oui (visible)</option>
+              <option value="false">Non (brouillon)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="actions">
+          <button class="btn primary" id="btnSave" type="button">💾 Enregistrer</button>
+          <button class="btn secondary" id="btnReSlug" type="button">🧾 Régénérer le slug</button>
+          <a class="btn ghost" id="btnOpenListing" href="../index.html#partenaires">👷 Ouvrir la vitrine</a>
+          <button class="btn ghost" id="btnBack" type="button">↩️ Retour cockpit</button>
+        </div>
+
+        <div class="note" id="msg">Statut : —</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
