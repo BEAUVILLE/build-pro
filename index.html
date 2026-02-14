@@ -2,20 +2,34 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>DIGIY PRO — Entrée</title>
+  <meta name="theme-color" content="#061b14"/>
 </head>
 <body>
 <script>
-  // ✅ Si slug présent → porte PIN
-  const url = new URL(location.href);
-  const slug = url.searchParams.get("slug");
+  // ✅ Entrée PRO — conserve slug + phone (HUB ROYAL) + autres params
+  // Objectif : si slug présent -> pin.html?slug=... (+phone si présent)
+  // Sinon -> pin.html (+phone si présent)
 
-  if(slug){
-    location.href = "./pin.html?slug=" + encodeURIComponent(slug);
-  } else {
-    location.href = "./pin.html";
-  }
+  (function(){
+    const u = new URL(location.href);
+    const slug  = (u.searchParams.get("slug")  || "").trim();
+    const phone = (u.searchParams.get("phone") || "").trim();
+
+    const dest = new URL("./pin.html", location.href);
+
+    if (slug)  dest.searchParams.set("slug", slug);
+    if (phone) dest.searchParams.set("phone", phone);
+
+    // BONUS: si d'autres params existent (ex: from=hub), on les garde
+    for (const [k,v] of u.searchParams.entries()){
+      if (k === "slug" || k === "phone") continue;
+      if (!dest.searchParams.has(k)) dest.searchParams.set(k, v);
+    }
+
+    location.replace(dest.toString());
+  })();
 </script>
 </body>
 </html>
