@@ -92,6 +92,38 @@
       white-space:nowrap;
     }
 
+    .previewbar{
+      margin-top:12px;
+      display:none;
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid rgba(250,204,21,.28);
+      background:rgba(250,204,21,.08);
+      box-shadow:var(--shadow);
+    }
+
+    .previewbar.show{display:block}
+
+    .previewbar .t{
+      font-weight:1000;
+      color:#fff1a8;
+      font-size:15px;
+      margin-bottom:6px;
+    }
+
+    .previewbar .s{
+      color:#fde68a;
+      line-height:1.5;
+      font-size:13px;
+    }
+
+    .preview-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
     .grid{
       display:grid;
       gap:12px;
@@ -213,6 +245,7 @@
       padding:10px 12px;
       outline:none;
       width:100%;
+      font:inherit;
     }
 
     select, input{font-weight:900}
@@ -378,167 +411,128 @@
       font-size:11px;
       color:rgba(234,255,241,.66);
     }
-
-    .guardbox{
-      display:none;
-      margin-top:12px;
-      padding:18px;
-      border-radius:22px;
-      border:1px solid rgba(251,113,133,.25);
-      background:rgba(251,113,133,.08);
-      box-shadow:var(--shadow);
-    }
-
-    .guardbox.show{display:block}
-
-    .guardbox .gt{
-      font-weight:1000;
-      font-size:16px;
-      margin-bottom:8px;
-    }
-
-    .guardbox .gs{
-      color:#fecaca;
-      line-height:1.5;
-      font-size:14px;
-    }
-
-    .guard-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-
-    .app{
-      display:none;
-    }
-
-    .app.show{
-      display:block;
-    }
   </style>
 </head>
 
 <body>
 <div class="wrap">
 
-  <div id="guardBox" class="guardbox">
-    <div class="gt">🔒 Accès BUILD PRO requis</div>
-    <div class="gs" id="guardText">Vérification du rail pro…</div>
-    <div class="guard-actions">
-      <a class="btn primary" id="guardPinLink" href="./pin.html">🔑 Entrer par PIN</a>
-      <a class="btn" href="./index.html">← Retour</a>
+  <div class="top">
+    <div class="brand">
+      <div class="ico">🦅</div>
+      <div>
+        <h1>🛠️ MULTI SERVICES PRO — Cockpit</h1>
+        <div class="sub">
+          SLUG: <b id="slug">—</b> • PHONE: <b id="owner">—</b><br>
+          Statut: <b id="stat">initialisation…</b>
+        </div>
+      </div>
+    </div>
+    <div class="pill" id="modePill">build_pro</div>
+  </div>
+
+  <div id="previewBar" class="previewbar">
+    <div class="t">👁️ Mode aperçu actif</div>
+    <div class="s" id="previewText">
+      Tu vois le cockpit pour comprendre la valeur. Entre par PIN pour passer en mode vivant.
+    </div>
+    <div class="preview-actions">
+      <a class="btn primary" id="previewPinLink" href="./pin.html">🔑 Entrer par PIN</a>
     </div>
   </div>
 
-  <div id="app" class="app">
-    <div class="top">
-      <div class="brand">
-        <div class="ico">🦅</div>
-        <div>
-          <h1>🏗️ BUILD PRO — Cockpit</h1>
-          <div class="sub">
-            SLUG: <b id="slug">—</b> • PHONE: <b id="owner">—</b><br>
-            Statut: <b id="stat">initialisation…</b>
-          </div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="title">⚡ ACTIONS RAPIDES</div>
+      <div class="row">
+        <button class="btn profile" id="btnProfile">⚡ Générer / Modifier ma fiche</button>
+        <button class="btn primary" id="btnNew">➕ Nouveau devis</button>
+        <button class="btn" id="btnJobs">📌 Chantiers</button>
+        <button class="btn" id="btnPulse">🔔 Inbox</button>
+      </div>
+
+      <div style="height:10px"></div>
+      <div class="title">🌡️ TEMPÉRATURE MULTI SERVICES</div>
+      <div class="kpis">
+        <div class="kpi">
+          <div class="k">Devis à faire</div>
+          <div class="v" id="kDraft">0</div>
+          <div class="s">à envoyer</div>
+        </div>
+        <div class="kpi">
+          <div class="k">En attente</div>
+          <div class="v" id="kSent">0</div>
+          <div class="s">réponse client</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Acceptés</div>
+          <div class="v" id="kOk">0</div>
+          <div class="s">à démarrer</div>
+        </div>
+        <div class="kpi">
+          <div class="k">En cours</div>
+          <div class="v" id="kRun">0</div>
+          <div class="s">chantiers</div>
         </div>
       </div>
-      <div class="pill">build_pro</div>
+
+      <div style="height:10px"></div>
+      <div class="split">
+        <div class="title" style="flex:1">📋 DEVIS & CHANTIERS</div>
+        <select id="filter" style="max-width:260px">
+          <option value="all">Tous</option>
+          <option value="draft">Brouillons</option>
+          <option value="sent">Envoyés</option>
+          <option value="accepted">Acceptés</option>
+          <option value="running">En cours</option>
+          <option value="done">Terminés</option>
+          <option value="cancelled">Annulés</option>
+        </select>
+        <input id="q" placeholder="Recherche: client / tel / ville / note…" style="max-width:260px">
+      </div>
+
+      <div class="list" id="list"></div>
+
+      <div class="hint">
+        <b>V1 Terrain :</b> aperçu libre pour donner envie, puis mode vivant après PIN.<br>
+        <span class="tiny">V2 : Supabase + photos chantier + signature devis + factures.</span>
+      </div>
     </div>
 
-    <div class="grid">
-
-      <div class="card">
-        <div class="title">⚡ ACTIONS RAPIDES</div>
-        <div class="row">
-          <button class="btn profile" id="btnProfile">⚡ Générer / Modifier ma fiche</button>
-          <button class="btn primary" id="btnNew">➕ Nouveau devis</button>
-          <button class="btn" id="btnJobs">📌 Chantiers</button>
-          <button class="btn" id="btnPulse">🔔 Inbox</button>
-        </div>
-
-        <div style="height:10px"></div>
-        <div class="title">🌡️ TEMPÉRATURE BUILD</div>
-        <div class="kpis">
-          <div class="kpi">
-            <div class="k">Devis à faire</div>
-            <div class="v" id="kDraft">0</div>
-            <div class="s">à envoyer</div>
-          </div>
-          <div class="kpi">
-            <div class="k">En attente</div>
-            <div class="v" id="kSent">0</div>
-            <div class="s">réponse client</div>
-          </div>
-          <div class="kpi">
-            <div class="k">Acceptés</div>
-            <div class="v" id="kOk">0</div>
-            <div class="s">à démarrer</div>
-          </div>
-          <div class="kpi">
-            <div class="k">En cours</div>
-            <div class="v" id="kRun">0</div>
-            <div class="s">chantiers</div>
-          </div>
-        </div>
-
-        <div style="height:10px"></div>
-        <div class="split">
-          <div class="title" style="flex:1">📋 DEVIS & CHANTIERS</div>
-          <select id="filter" style="max-width:260px">
-            <option value="all">Tous</option>
-            <option value="draft">Brouillons</option>
-            <option value="sent">Envoyés</option>
-            <option value="accepted">Acceptés</option>
-            <option value="running">En cours</option>
-            <option value="done">Terminés</option>
-            <option value="cancelled">Annulés</option>
-          </select>
-          <input id="q" placeholder="Recherche: client / tel / ville / note…" style="max-width:260px">
-        </div>
-
-        <div class="list" id="list"></div>
-
-        <div class="hint">
-          <b>V1 Terrain :</b> devis stockés localement par slug, donc ça tourne direct sur le téléphone.<br>
-          <span class="tiny">V2 : Supabase + photos chantier + signature devis + factures.</span>
-        </div>
+    <div class="card">
+      <div class="title">🛟 SUPPORT</div>
+      <div class="row">
+        <button class="btn" id="btnHelp">💬 WhatsApp Support</button>
+        <a class="btn primary" id="btnPin" href="./pin.html">🔑 Entrer par PIN</a>
+        <button class="btn" id="btnLogout">🚪 Déconnexion</button>
       </div>
 
-      <div class="card">
-        <div class="title">🛟 SUPPORT</div>
-        <div class="row">
-          <button class="btn" id="btnHelp">💬 WhatsApp Support</button>
-          <button class="btn" id="btnLogout">🚪 Déconnexion</button>
-        </div>
-
-        <div style="height:12px"></div>
-        <div class="title">🧩 OUTILS</div>
-        <div class="row">
-          <button class="btn" id="btnExport">⬇️ Export JSON</button>
-          <button class="btn danger" id="btnReset">🧹 Reset Démo</button>
-        </div>
-
-        <div style="height:12px"></div>
-        <div class="title">⚙️ Raccourcis</div>
-        <div class="row">
-          <button class="btn" id="btnTemplate">📄 Modèle devis</button>
-          <button class="btn" id="btnPrint">🖨️ Imprimer</button>
-        </div>
-
-        <div class="list" style="margin-top:10px">
-          <div class="item">
-            <div>
-              <div class="a">🔔 Inbox</div>
-              <div class="b">V2 : demandes entrantes + notifications chantier.</div>
-            </div>
-            <div class="badge neutral">V2</div>
-          </div>
-        </div>
+      <div style="height:12px"></div>
+      <div class="title">🧩 OUTILS</div>
+      <div class="row">
+        <button class="btn" id="btnExport">⬇️ Export JSON</button>
+        <button class="btn danger" id="btnReset">🧹 Reset Démo</button>
       </div>
 
+      <div style="height:12px"></div>
+      <div class="title">⚙️ Raccourcis</div>
+      <div class="row">
+        <button class="btn" id="btnTemplate">📄 Modèle devis</button>
+        <button class="btn" id="btnPrint">🖨️ Imprimer</button>
+      </div>
+
+      <div class="list" style="margin-top:10px">
+        <div class="item">
+          <div>
+            <div class="a">🔔 Inbox</div>
+            <div class="b">V2 : demandes entrantes + notifications chantier.</div>
+          </div>
+          <div class="badge neutral">V2</div>
+        </div>
+      </div>
     </div>
+
   </div>
 </div>
 
@@ -606,7 +600,8 @@
 
   const ACCESS = {
     slug: "",
-    phone: ""
+    phone: "",
+    live: false
   };
 
   function uid() {
@@ -619,8 +614,18 @@
     return new Date().toISOString();
   }
 
+  function normSlug(v) {
+    return String(v || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+  }
+
   function storageKey() {
-    return "DIGIY_BUILD_QUOTES::" + (ACCESS.slug || "noslug");
+    return "DIGIY_BUILD_QUOTES::" + (ACCESS.live ? (ACCESS.slug || "noslug") : "preview");
   }
 
   function loadRows() {
@@ -661,8 +666,68 @@
     return hay.includes(q);
   }
 
+  function previewRows() {
+    return [
+      {
+        id: "pv1",
+        status: "draft",
+        client: "Mamadou",
+        phone: "221770000001",
+        city: "Saly",
+        type: "plomberie",
+        amount: "120000",
+        date: "2026-03-12",
+        note: "Refaire douche + fuite lavabo",
+        created_at: "2026-03-10T08:10:00.000Z"
+      },
+      {
+        id: "pv2",
+        status: "sent",
+        client: "Awa",
+        phone: "221770000002",
+        city: "Mbour",
+        type: "menuiserie",
+        amount: "250000",
+        date: "2026-03-14",
+        note: "Porte + cadre",
+        created_at: "2026-03-10T07:20:00.000Z"
+      },
+      {
+        id: "pv3",
+        status: "accepted",
+        client: "Cheikh",
+        phone: "221770000003",
+        city: "Ngaparou",
+        type: "electricite",
+        amount: "85000",
+        date: "2026-03-11",
+        note: "Tableau + prises",
+        created_at: "2026-03-09T20:15:00.000Z"
+      },
+      {
+        id: "pv4",
+        status: "running",
+        client: "Mariama",
+        phone: "221770000004",
+        city: "Somone",
+        type: "maconnerie",
+        amount: "420000",
+        date: "2026-03-18",
+        note: "Mur + dalle",
+        created_at: "2026-03-09T10:00:00.000Z"
+      }
+    ];
+  }
+
+  function getWorkingRows() {
+    const rows = loadRows();
+    if (rows.length > 0) return rows;
+    if (!ACCESS.live) return previewRows();
+    return [];
+  }
+
   function render() {
-    const rows = loadRows().sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""));
+    const rows = getWorkingRows().sort((a, b) => (b.created_at || "").localeCompare(a.created_at || ""));
     const filter = $("filter").value;
     const q = $("q").value;
 
@@ -688,10 +753,10 @@
       list.innerHTML = `
         <div class="item">
           <div>
-            <div class="a">Aucun devis</div>
-            <div class="b">Clique “Nouveau devis” pour commencer.</div>
+            <div class="a">${ACCESS.live ? "Aucun devis" : "Aperçu prêt"}</div>
+            <div class="b">${ACCESS.live ? "Clique “Nouveau devis” pour commencer." : "Entre par PIN pour commencer à travailler en vrai."}</div>
           </div>
-          <div class="badge neutral">VIDE</div>
+          <div class="badge neutral">${ACCESS.live ? "VIDE" : "APERÇU"}</div>
         </div>
       `;
       return;
@@ -706,20 +771,28 @@
         `Créé: ${new Date(r.created_at).toLocaleString("fr-FR")}`
       ].filter(Boolean).join("<br>");
 
+      const actionsHtml = ACCESS.live ? `
+        <div class="row" style="margin-top:10px">
+          <button class="tinybtn" data-act="sent" data-id="${r.id}">📤 Envoyer</button>
+          <button class="tinybtn" data-act="accept" data-id="${r.id}">✅ Accepté</button>
+          <button class="tinybtn" data-act="run" data-id="${r.id}">🏗️ En cours</button>
+          <button class="tinybtn" data-act="done" data-id="${r.id}">🏁 Terminer</button>
+          <button class="tinybtn" data-act="cancel" data-id="${r.id}">🧨 Annuler</button>
+          <button class="tinybtn" data-act="del" data-id="${r.id}">🗑️ Supprimer</button>
+        </div>
+      ` : `
+        <div class="row" style="margin-top:10px">
+          <a class="tinybtn" href="./pin.html${ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : ""}">🔑 Entrer pour agir</a>
+        </div>
+      `;
+
       const item = document.createElement("div");
       item.className = "item";
       item.innerHTML = `
         <div style="flex:1">
           <div class="a">${title}</div>
           <div class="b">${sub}</div>
-          <div class="row" style="margin-top:10px">
-            <button class="tinybtn" data-act="sent" data-id="${r.id}">📤 Envoyer</button>
-            <button class="tinybtn" data-act="accept" data-id="${r.id}">✅ Accepté</button>
-            <button class="tinybtn" data-act="run" data-id="${r.id}">🏗️ En cours</button>
-            <button class="tinybtn" data-act="done" data-id="${r.id}">🏁 Terminer</button>
-            <button class="tinybtn" data-act="cancel" data-id="${r.id}">🧨 Annuler</button>
-            <button class="tinybtn" data-act="del" data-id="${r.id}">🗑️ Supprimer</button>
-          </div>
+          ${actionsHtml}
         </div>
         <div>${badge(r.status)}</div>
       `;
@@ -728,6 +801,7 @@
   }
 
   function updateRow(id, patch) {
+    if (!ACCESS.live) return;
     const rows = loadRows();
     const i = rows.findIndex(x => x.id === id);
     if (i < 0) return;
@@ -737,6 +811,7 @@
   }
 
   function removeRow(id) {
+    if (!ACCESS.live) return;
     saveRows(loadRows().filter(x => x.id !== id));
     render();
   }
@@ -744,6 +819,10 @@
   const modal = $("modalNew");
 
   function openModal() {
+    if (!ACCESS.live) {
+      location.href = "./pin.html" + (ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : "");
+      return;
+    }
     $("mSlug").textContent = ACCESS.slug || "—";
     modal.style.display = "flex";
     setTimeout(() => $("client").focus(), 120);
@@ -758,6 +837,27 @@
     $("type").value = "plomberie";
   }
 
+  function applyMode() {
+    if (ACCESS.live) {
+      $("modePill").textContent = "mode_vivant";
+      $("stat").textContent = "accès OK";
+      $("previewBar").classList.remove("show");
+    } else {
+      $("modePill").textContent = "mode_apercu";
+      $("stat").textContent = "aperçu libre";
+      $("previewBar").classList.add("show");
+      $("previewText").textContent =
+        "Le pro peut regarder le cockpit pour comprendre la valeur. Entre par PIN pour passer en mode vivant et agir pour de vrai.";
+    }
+
+    $("slug").textContent = ACCESS.slug || "preview-build";
+    $("owner").textContent = ACCESS.phone || "—";
+
+    const pinHref = "./pin.html" + (ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : "");
+    $("btnPin").href = pinHref;
+    $("previewPinLink").href = pinHref;
+  }
+
   function bindUi() {
     $("btnNew").onclick = openModal;
     $("cancel").onclick = closeModal;
@@ -768,6 +868,11 @@
     });
 
     $("save").onclick = () => {
+      if (!ACCESS.live) {
+        location.href = "./pin.html" + (ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : "");
+        return;
+      }
+
       const row = {
         id: uid(),
         slug: ACCESS.slug,
@@ -794,7 +899,7 @@
 
     document.addEventListener("click", (e) => {
       const b = e.target.closest("[data-act]");
-      if (!b) return;
+      if (!b || !ACCESS.live) return;
 
       const id = b.getAttribute("data-id");
       const act = b.getAttribute("data-act");
@@ -814,6 +919,10 @@
     };
 
     $("btnPulse").onclick = () => {
+      if (!ACCESS.live) {
+        alert("🔔 Aperçu inbox. Entre par PIN pour utiliser le vrai rail pro.");
+        return;
+      }
       alert("🔔 Inbox: V2 demandes entrantes + notif chantier.");
     };
 
@@ -821,7 +930,8 @@
     $("filter").onchange = render;
 
     $("btnProfile").onclick = () => {
-      location.href = "./profile.html?slug=" + encodeURIComponent(ACCESS.slug || "");
+      const u = "./profile.html" + (ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : "");
+      location.href = u;
     };
 
     $("btnHelp").onclick = () => {
@@ -838,12 +948,6 @@
       try {
         if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.logout === "function") {
           window.DIGIY_GUARD.logout();
-        } else {
-          localStorage.removeItem("DIGIY_ACCESS");
-          localStorage.removeItem("DIGIY_SESSION");
-          sessionStorage.removeItem("digiy_build_slug");
-          sessionStorage.removeItem("digiy_build_last_slug");
-          sessionStorage.removeItem("digiy_build_phone");
         }
       } catch (_) {}
 
@@ -851,17 +955,25 @@
     };
 
     $("btnExport").onclick = () => {
-      const rows = loadRows();
+      const rows = getWorkingRows();
       const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = "build-" + (ACCESS.slug || "pro") + ".json";
+      a.download = "build-" + (ACCESS.slug || (ACCESS.live ? "pro" : "preview")) + ".json";
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 800);
     };
 
     $("btnReset").onclick = () => {
-      if (confirm("Reset démo pour ce slug ?")) {
+      if (ACCESS.live) {
+        if (confirm("Reset démo pour ce slug ?")) {
+          localStorage.removeItem(storageKey());
+          render();
+        }
+        return;
+      }
+
+      if (confirm("Réinitialiser l’aperçu local ?")) {
         localStorage.removeItem(storageKey());
         render();
       }
@@ -876,24 +988,7 @@
     };
   }
 
-  function showLocked(reason) {
-    $("guardBox").classList.add("show");
-    $("app").classList.remove("show");
-
-    let msg = "L’accès pro n’est pas disponible.";
-
-    if (reason === "preview_no_identity") {
-      msg = "Aucun slug BUILD détecté. Entre par PIN pour ouvrir ton cockpit.";
-    } else if (reason === "no_subscription") {
-      msg = "Abonnement BUILD non actif. Entre par PIN ou repasse par le rail de paiement.";
-    } else if (reason === "unknown_identity") {
-      msg = "Identité pro inconnue. Entre de nouveau par PIN.";
-    } else if (reason === "guard_error") {
-      msg = "Le guard n’a pas réussi à vérifier l’accès. Entre de nouveau par PIN.";
-    }
-
-    $("guardText").textContent = msg;
-
+  async function init() {
     const hintedSlug =
       new URLSearchParams(location.search).get("slug") ||
       sessionStorage.getItem("digiy_build_slug") ||
@@ -901,42 +996,42 @@
       localStorage.getItem("digiy_build_last_slug") ||
       "";
 
-    $("guardPinLink").href = hintedSlug
-      ? "./pin.html?slug=" + encodeURIComponent(hintedSlug)
-      : "./pin.html";
-  }
-
-  async function init() {
     if (!window.DIGIY_GUARD || !window.DIGIY_GUARD.ready) {
-      showLocked("guard_error");
+      ACCESS.live = false;
+      ACCESS.slug = normSlug(hintedSlug);
+      ACCESS.phone = "";
+      applyMode();
+      bindUi();
+      render();
       return;
     }
 
     await window.DIGIY_GUARD.ready;
     const st = window.DIGIY_GUARD.state || {};
 
-    if (st.preview || !st.access_ok || !st.slug) {
-      showLocked(st.reason || "preview_no_identity");
-      return;
+    if (st.access_ok && st.slug) {
+      ACCESS.live = true;
+      ACCESS.slug = String(st.slug || "").toLowerCase();
+      ACCESS.phone = String(st.phone || "");
+    } else {
+      ACCESS.live = false;
+      ACCESS.slug = normSlug(st.slug || hintedSlug);
+      ACCESS.phone = String(st.phone || "");
     }
 
-    ACCESS.slug = String(st.slug || "").toLowerCase();
-    ACCESS.phone = String(st.phone || "");
-
-    $("slug").textContent = st.slug || "—";
-    $("owner").textContent = ACCESS.phone || "—";
-    $("stat").textContent = "accès OK";
-
-    $("guardBox").classList.remove("show");
-    $("app").classList.add("show");
-
+    applyMode();
     bindUi();
     render();
   }
 
   init().catch((e) => {
     console.error(e);
-    showLocked("guard_error");
+    ACCESS.live = false;
+    ACCESS.slug = "";
+    ACCESS.phone = "";
+    applyMode();
+    bindUi();
+    render();
   });
 </script>
 </body>
