@@ -168,11 +168,53 @@
       font-weight:700;
     }
 
+    .floating-back{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:9999;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-height:52px;
+      padding:14px 18px;
+      border-radius:999px;
+      border:1px solid rgba(250,204,21,.28);
+      background:linear-gradient(135deg, rgba(250,204,21,.96), rgba(34,197,94,.92));
+      color:#062015;
+      text-decoration:none;
+      font-weight:1000;
+      font-size:14px;
+      box-shadow:0 16px 40px rgba(0,0,0,.35);
+      transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+
+    .floating-back:hover{
+      transform:translateY(-2px) scale(1.01);
+      box-shadow:0 22px 50px rgba(0,0,0,.42);
+    }
+
+    .floating-back:active{
+      transform:translateY(0);
+    }
+
     @media(max-width:640px){
       .card{padding:18px}
       h1{font-size:24px}
       .actions{width:100%}
       .actions .btn{min-width:100%}
+
+      .floating-back{
+        right:12px;
+        bottom:12px;
+        left:12px;
+        justify-content:center;
+        font-size:14px;
+        padding:14px 16px;
+      }
     }
   </style>
 </head>
@@ -213,6 +255,10 @@
       Astuce : si un <b>slug</b> ou un <b>phone</b> est présent dans l’URL, on le garde sur les deux boutons.
     </div>
   </div>
+
+  <a class="floating-back" href="https://digiylyfe.com/" aria-label="Retour au site DIGIYLYFE">
+    ↩️ Retour au site
+  </a>
 
   <!-- ✅ DIGIY KNOWLEDGE — Assistant BUILD PRO -->
   <div data-digiy-module="BUILD"></div>
