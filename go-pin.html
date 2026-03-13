@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#061b14"/>
+  <title>ENTREPRENEUR MULTI SERVICES — GO PIN</title>
+  <meta name="description" content="Entrée rapide vers l’accès PIN ENTREPRENEUR MULTI SERVICES.">
+
+  <style>
+    :root{
+      --bg:#061b14;
+      --bg2:#0a2b1f;
+      --card:rgba(8,33,24,.92);
+      --line:rgba(255,255,255,.12);
+      --text:#eafff1;
+      --muted:rgba(234,255,241,.74);
+      --gold:#facc15;
+      --ok:#22c55e;
+      --info:#38bdf8;
+      --shadow:0 22px 60px rgba(0,0,0,.45);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:16px;
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(250,204,21,.14), transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(34,197,94,.10), transparent 40%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+    }
+
+    .box{
+      width:100%;
+      max-width:520px;
+      background:linear-gradient(145deg,rgba(11,42,31,.96),rgba(6,35,25,.96));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:24px;
+    }
+
+    .top{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:12px;
+    }
+
+    .logo{
+      width:54px;
+      height:54px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      font-size:26px;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(250,204,21,.28), transparent 55%),
+        linear-gradient(135deg, rgba(34,197,94,.22), rgba(56,189,248,.12));
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+
+    h1{
+      margin:0;
+      font-size:22px;
+      line-height:1.1;
+      letter-spacing:.02em;
+    }
+
+    .sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      font-weight:700;
+    }
+
+    .hero{
+      margin-top:14px;
+      padding:14px 15px;
+      border-radius:16px;
+      border:1px solid rgba(250,204,21,.24);
+      background:rgba(250,204,21,.06);
+      color:#fde68a;
+      font-size:13px;
+      font-weight:800;
+      line-height:1.5;
+    }
+
+    .slugbox{
+      margin-top:14px;
+      padding:14px 15px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+    }
+
+    .sluglabel{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--muted);
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .slugvalue{
+      font-size:15px;
+      font-weight:1000;
+      word-break:break-word;
+    }
+
+    .slugvalue.empty{
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .btn{
+      flex:1;
+      min-width:180px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-weight:1000;
+      cursor:pointer;
+      transition:.15s;
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+      border-color:rgba(250,204,21,.42);
+    }
+
+    .btn.primary{
+      border:none;
+      background:linear-gradient(90deg,var(--ok),var(--gold));
+      color:#062015;
+    }
+
+    .btn.info{
+      border-color:rgba(56,189,248,.35);
+      background:rgba(56,189,248,.10);
+    }
+
+    .mini{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.5;
+      font-weight:700;
+    }
+
+    .mini b{color:var(--text)}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="top">
+      <div class="logo">🔑</div>
+      <div>
+        <h1>GO PIN — ENTREPRENEUR MULTI SERVICES</h1>
+        <div class="sub">
+          Porte d’entrée rapide vers ton accès PIN pro BUILD.
+        </div>
+      </div>
+    </div>
+
+    <div class="hero">
+      Accès simple, direct et propre. Cette page envoie vers le vrai <b>pin.html</b> du module BUILD sans mélanger les anciens rails.
+    </div>
+
+    <div class="slugbox">
+      <div class="sluglabel">Slug détecté</div>
+      <div class="slugvalue" id="slugValue">Chargement…</div>
+    </div>
+
+    <div class="actions">
+      <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir l’accès PIN</a>
+      <a class="btn info" id="btnCockpit" href="./cockpit.html">🛠️ Aller au cockpit</a>
+    </div>
+
+    <div class="actions">
+      <a class="btn" id="btnDashboard" href="./dashboard-pro.html">📊 Dashboard</a>
+      <a class="btn" id="btnSupport" target="_blank" rel="noopener"
+         href="https://wa.me/221771342889?text=Bonjour%20support%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s%20PIN.">
+        💬 Support
+      </a>
+    </div>
+
+    <div class="mini">
+      <b>Conseil :</b> garde le slug dans le lien quand tu partages l’accès.
+      Cette page ne remplace pas le rail PIN PRO validé, elle sert juste de raccourci propre.
+    </div>
+  </div>
+
+  <script>
+    const qs = new URLSearchParams(location.search);
+
+    function normSlug(v){
+      return String(v || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
+    function readSlug(){
+      return normSlug(
+        qs.get("slug") ||
+        sessionStorage.getItem("digiy_build_slug") ||
+        sessionStorage.getItem("digiy_build_last_slug") ||
+        localStorage.getItem("digiy_build_last_slug") ||
+        ""
+      );
+    }
+
+    function withSlug(path, slug){
+      return slug ? `${path}?slug=${encodeURIComponent(slug)}` : path;
+    }
+
+    const slug = readSlug();
+    const slugValue = document.getElementById("slugValue");
+    const btnEnter = document.getElementById("btnEnter");
+    const btnCockpit = document.getElementById("btnCockpit");
+    const btnDashboard = document.getElementById("btnDashboard");
+
+    if (slug) {
+      slugValue.textContent = slug;
+      btnEnter.href = withSlug("./pin.html", slug);
+      btnCockpit.href = withSlug("./cockpit.html", slug);
+      btnDashboard.href = withSlug("./dashboard-pro.html", slug);
+    } else {
+      slugValue.textContent = "Aucun slug détecté pour le moment.";
+      slugValue.classList.add("empty");
+      btnEnter.href = "./pin.html";
+      btnCockpit.href = "./cockpit.html";
+      btnDashboard.href = "./dashboard-pro.html";
+    }
+  </script>
+</body>
+</html>
