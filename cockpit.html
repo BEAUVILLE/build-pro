@@ -196,6 +196,12 @@
       color:#062015;
     }
 
+    .btn.dashboard{
+      border:none;
+      background:linear-gradient(90deg, rgba(99,102,241,.96), rgba(56,189,248,.92));
+      color:#eef1ff;
+    }
+
     .kpis{
       display:grid;
       gap:10px;
@@ -451,6 +457,7 @@
       <div class="title">⚡ ACTIONS RAPIDES</div>
       <div class="row">
         <button class="btn profile" id="btnProfile">⚡ Générer / Modifier ma fiche</button>
+        <button class="btn dashboard" id="btnDashboard">📊 Dashboard</button>
         <button class="btn primary" id="btnNew">➕ Nouveau devis</button>
         <button class="btn" id="btnJobs">📌 Chantiers</button>
         <button class="btn" id="btnPulse">🔔 Inbox</button>
@@ -630,6 +637,10 @@
 
   function storageKey() {
     return "DIGIY_BUILD_QUOTES::" + (ACCESS.live ? (ACCESS.slug || "noslug") : "preview");
+  }
+
+  function dashboardUrl() {
+    return "./dashboard-pro.html" + (ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : "");
   }
 
   function loadRows() {
@@ -866,6 +877,10 @@
     $("btnNew").onclick = openModal;
     $("cancel").onclick = closeModal;
     $("close").onclick = closeModal;
+
+    $("btnDashboard").onclick = () => {
+      location.href = dashboardUrl();
+    };
 
     modal.addEventListener("click", (e) => {
       if (e.target === modal) closeModal();
