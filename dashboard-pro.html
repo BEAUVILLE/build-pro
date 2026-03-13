@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ENTREPRENEUR MULTI SERVICES — Dashboard pro</title>
 
-  <script src="./guard.js?v=build-pro-dashboard-v1"></script>
+  <script src="./guard.js?v=build-pro-dashboard-v2"></script>
 
   <style>
     :root{
@@ -145,6 +145,7 @@
 
       <div class="right">
         <div class="pill" id="pillStatus">Statut : <b>…</b></div>
+        <button class="btn primary" id="btnCockpit" type="button">🛠️ Cockpit</button>
         <button class="btn" id="btnSettings" type="button">⚙️ Paramètres</button>
       </div>
     </div>
@@ -240,8 +241,8 @@
 
 const MODULE_CODE = "BUILD";
 const MODULE_LABEL = "ENTREPRENEUR MULTI SERVICES";
-const PRIMARY_ACTION_LABEL = "Ouvrir mon espace pro";
-const PRIMARY_ACTION_HINT  = "Accède à ta fiche, ton cockpit et ta gestion simple.";
+const PRIMARY_ACTION_LABEL = "🛠️ Ouvrir mon cockpit";
+const PRIMARY_ACTION_HINT  = "Retourne à ton cockpit pour piloter ta fiche, tes outils et ton activité.";
 
 /* SUPABASE OFFICIEL DIGIY */
 const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -284,6 +285,10 @@ function fmtDateFR(iso){
 function getSlugFromUrl(){
   const u = new URL(location.href);
   return normSlug(u.searchParams.get("slug") || "");
+}
+
+function cockpitUrl(slug){
+  return `${MODULE_HOME_FALLBACK}?slug=${encodeURIComponent(slug)}`;
 }
 
 function setNotifs(items){
@@ -475,6 +480,10 @@ async function digiyBuildPayUrl(module, phone, plan){
     phone = normPhone(subPublic.phone);
   }
 
+  $("btnCockpit").onclick = () => {
+    location.href = cockpitUrl(slug);
+  };
+
   let ok = false;
 
   if (guardState.access_ok === true && normPhone(guardState.phone) === phone) {
@@ -574,7 +583,7 @@ async function digiyBuildPayUrl(module, phone, plan){
   };
 
   $("btnPrimaryAction").onclick = () => {
-    location.href = `${MODULE_HOME_FALLBACK}?slug=${encodeURIComponent(slug)}`;
+    location.href = cockpitUrl(slug);
   };
 
   $("btnBoostInfo").onclick = () => {
