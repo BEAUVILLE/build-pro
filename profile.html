@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>DIGIY BUILD PRO — Ma fiche MULTI SERVICES</title>
+  <title>ENTREPRENEUR MULTI SERVICES — Ma fiche pro</title>
 
   <link rel="stylesheet" href="./profile.css?v=build-pro-profile-v4"/>
 
@@ -20,7 +20,7 @@
     <div class="wrap">
       <div class="card">
         <div class="head">
-          <h1>🛠️ Ma fiche MULTI SERVICES</h1>
+          <h1>🛠️ Ma fiche ENTREPRENEUR MULTI SERVICES</h1>
           <div class="head-actions">
             <button class="btn ghost" id="btnCopyLink" type="button">📋 Copier le lien</button>
             <button class="btn ghost" id="btnOpenLink" type="button">👁️ Ouvrir</button>
@@ -28,16 +28,16 @@
         </div>
 
         <p class="sub">
-          Ici tu crées / modifies ta fiche publique terrain.
-          <span class="ok">Si tu publies</span> → tu apparais dans la vitrine automatiquement.
+          Ici tu présentes ton activité, tes services, ta zone d’intervention et ton contact.
+          <span class="ok">Si tu publies</span> → ta fiche peut apparaître dans la vitrine automatiquement.
         </p>
 
         <div class="hr"></div>
 
         <div class="row">
           <div>
-            <label>Nom affiché (display_name)</label>
-            <input id="display_name" placeholder="Ex: Helage" />
+            <label>Nom visible</label>
+            <input id="display_name" placeholder="Ex: Ndiaga Services" />
           </div>
           <div>
             <label>Ville / Zone</label>
@@ -47,11 +47,11 @@
 
         <div class="row">
           <div>
-            <label>Métier (trade)</label>
-            <input id="trade" placeholder="Ex: Plombier multi-services" />
+            <label>Activité principale</label>
+            <input id="trade" placeholder="Ex: Entrepreneur multi services, plombier, électricien, maçon" />
           </div>
           <div>
-            <label>Région (region)</label>
+            <label>Zone d’intervention</label>
             <select id="region">
               <option value="petite-cote">petite-cote</option>
               <option value="dakar">dakar</option>
@@ -63,7 +63,7 @@
 
         <div class="row">
           <div>
-            <label>Secteur (sector)</label>
+            <label>Type de services</label>
             <select id="sector">
               <option value="multi">multi</option>
               <option value="construction">construction</option>
@@ -72,7 +72,7 @@
             </select>
           </div>
           <div>
-            <label>Priorité (0–100)</label>
+            <label>Priorité d’affichage (0–100)</label>
             <input id="priority" type="number" min="0" max="100" value="1" />
           </div>
         </div>
@@ -88,47 +88,47 @@
           </div>
         </div>
 
-        <label>Bio (courte, claire)</label>
-        <textarea id="bio" placeholder="Ex: Dépannage, installation, chauffe-eau, fuite, WC, douche…"></textarea>
+        <label>Présentation courte</label>
+        <textarea id="bio" placeholder="Ex: Travaux, dépannage, entretien, installation, réparation, chantier, services pratiques…"></textarea>
 
         <div class="row">
           <div>
-            <label>Photo vitrine (photo_url)</label>
+            <label>Photo de présentation</label>
             <input id="photo_url" placeholder="URL image (https://...png/jpg)" />
           </div>
           <div>
-            <label>URL fiche (profile_url)</label>
+            <label>Lien de ma fiche</label>
             <input id="profile_url" placeholder="https://digiylyfe.com/..." />
           </div>
         </div>
 
         <div class="row">
           <div>
-            <label>Badge (ex: ⚡ Intervention rapide)</label>
-            <input id="badge" placeholder="Ex: 🛠️ Intervention rapide" />
+            <label>Badge visible</label>
+            <input id="badge" placeholder="Ex: ⚡ Intervention rapide" />
           </div>
           <div>
-            <label>Hub badge</label>
-            <input id="hub_badge" placeholder="Ex: ✅ PARTENAIRE BUILD" />
+            <label>Badge vitrine</label>
+            <input id="hub_badge" placeholder="Ex: ✅ PARTENAIRE MULTI SERVICES" />
           </div>
         </div>
 
         <div class="row">
           <div>
-            <label>Price label</label>
-            <input id="price_label" placeholder="Ex: 0% commission" />
+            <label>Texte prix / avantage</label>
+            <input id="price_label" placeholder="Ex: Devis rapide • Paiement direct" />
           </div>
           <div>
             <label>Tags (JSON ou liste simple)</label>
-            <input id="tags" placeholder='Ex: btp,carrelage,piscine ou ["btp","piscine"]' />
+            <input id="tags" placeholder='Ex: travaux,depannage,chantier ou ["travaux","chantier"]' />
           </div>
         </div>
 
         <div class="row">
           <div>
-            <label>Slug (url interne)</label>
+            <label>Slug (lien interne)</label>
             <input id="slug" placeholder="auto" />
-            <div class="hint">Par défaut on garde le slug existant (stable). Tu peux le régénérer si tu veux.</div>
+            <div class="hint">Par défaut on garde le slug existant pour rester stable. Tu peux le régénérer si besoin.</div>
           </div>
           <div>
             <label>Publier maintenant ?</label>
