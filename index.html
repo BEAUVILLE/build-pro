@@ -269,7 +269,7 @@
 
     <div class="actions">
       <a class="btn tarif" id="btnTarifs" href="https://commencer-a-payer.digiylyfe.com/">💳 Tarifs</a>
-      <a class="btn pay" id="btnPay" href="https://commencer-a-payer.digiylyfe.com/">🚀 Commencer à payer</a>
+      <a class="btn pay" id="btnPay" href="https://commencer-a-payer.digiylyfe.com/">🚀 Activer mon module</a>
     </div>
 
     <div class="mini">
@@ -282,7 +282,7 @@
       const src = new URL(location.href);
       const cockpit = new URL("./cockpit.html", location.href);
       const pin = new URL("./pin.html", location.href);
-      const tarifs = new URL("https://commencer-a-payer.digiylyfe.com/");
+      const tarifs = new URL("https://tarifs.digiylyfe.com/?return=https%3A%2F%2Fdigiylyfe.com");
       const pay = new URL("https://commencer-a-payer.digiylyfe.com/");
 
       const slug = (src.searchParams.get("slug") || "").trim();
