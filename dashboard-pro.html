@@ -3,10 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DIGIY PRO — Dashboard</title>
-
-  <!-- Optionnel: ton guard-pro existant -->
-  <!-- <script src="./guard-pro.js?v=1"></script> -->
+  <title>ENTREPRENEUR MULTI SERVICES — Dashboard pro</title>
 
   <style>
     :root{
@@ -19,17 +16,18 @@
       --danger:#ef4444;
       --accent:#6366f1;
       --line:rgba(255,255,255,.09);
-      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --shadow:0 12px 30px rgba(0,0,0,.35);
       --radius:18px;
       --pad:16px;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
-      background: radial-gradient(1200px 700px at 20% -20%, rgba(99,102,241,.25), transparent 70%),
-                  radial-gradient(900px 600px at 100% 0%, rgba(34,197,94,.15), transparent 55%),
-                  var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 700px at 20% -20%, rgba(99,102,241,.25), transparent 70%),
+        radial-gradient(900px 600px at 100% 0%, rgba(34,197,94,.15), transparent 55%),
+        var(--bg);
       color:var(--text);
     }
     .wrap{max-width:980px;margin:0 auto;padding:18px 14px 34px}
@@ -72,12 +70,12 @@
     .btn:disabled{opacity:.55;cursor:not-allowed}
     .grid{
       display:grid;
-      grid-template-columns: 1fr;
+      grid-template-columns:1fr;
       gap:12px;
       margin-top:8px;
     }
     @media(min-width:920px){
-      .grid{grid-template-columns: 1.05fr .95fr}
+      .grid{grid-template-columns:1.05fr .95fr}
     }
     .card{
       background:rgba(18,26,51,.92);
@@ -132,14 +130,13 @@
 <body>
   <div class="wrap">
 
-    <!-- TOPBAR -->
     <div class="topbar">
       <div class="brand">
         <div class="badge">🦅</div>
         <div>
-          <div id="brandTitle">DIGIY PRO</div>
+          <div id="brandTitle">ENTREPRENEUR MULTI SERVICES</div>
           <div class="muted" style="font-size:12px;font-weight:700;margin-top:2px" id="brandSub">
-            Dashboard ultra simple
+            Dashboard pro simple et utile
           </div>
         </div>
       </div>
@@ -152,7 +149,6 @@
 
     <div class="grid">
 
-      <!-- CARD A: STATUT -->
       <div class="card" id="cardStatus">
         <h3>Statut & sécurité</h3>
 
@@ -177,13 +173,12 @@
         </div>
       </div>
 
-      <!-- CARD B: ARGENT + BOOST -->
       <div class="card" id="cardMoney">
         <h3>Argent</h3>
 
         <div class="bigMoney" id="moneyMonth">— FCFA</div>
         <div class="mini" id="moneyMeta">
-          <span id="txCount">— transactions</span>
+          <span id="txCount">— opérations</span>
           <span>•</span>
           <span id="todayHint">—</span>
         </div>
@@ -208,11 +203,10 @@
         </div>
       </div>
 
-      <!-- CARD C: ACTION PRINCIPALE -->
       <div class="card" id="cardAction" style="grid-column:1/-1">
         <h3>Action principale</h3>
         <div class="muted" style="font-weight:750;margin-bottom:10px" id="actionDesc">
-          Une action. Simple. Efficace.
+          Une action simple pour avancer tout de suite.
         </div>
 
         <div class="row" style="justify-content:space-between">
@@ -223,9 +217,7 @@
         <div class="hr"></div>
 
         <h3>Notifications</h3>
-        <div class="notifList" id="notifList">
-          <!-- inject -->
-        </div>
+        <div class="notifList" id="notifList"></div>
 
         <div class="footer">
           <a class="smallLink" href="#" id="linkSupport">Support</a>
@@ -238,42 +230,25 @@
 
 <script>
 /**
- * ✅ DIGIY PRO DASH — minimal, terrain, universel
- * - Lit ?slug=
- * - Résout phone via digiy_subscriptions_public (view)
- * - Vérifie accès via digiy_has_access(phone,module)
+ * DIGIY BUILD — dashboard pro léger
+ * Interne technique: BUILD
+ * Façade publique: ENTREPRENEUR MULTI SERVICES
+ * Rail: slug -> phone -> access -> dashboard
  */
 
-/* =========================
-   CONFIG — DIGIY MARKET
-   ========================= */
 const MODULE_CODE = "BUILD";
-const MODULE_LABEL = "DIGIY BUILD";
-const PRIMARY_ACTION_LABEL = "Publier un produit";
-const PRIMARY_ACTION_HINT  = "Ajoute un produit ou gère tes commandes.";
+const MODULE_LABEL = "ENTREPRENEUR MULTI SERVICES";
+const PRIMARY_ACTION_LABEL = "Ouvrir mon espace pro";
+const PRIMARY_ACTION_HINT  = "Accède à ta fiche, ton cockpit et ta gestion simple.";
 
-/* =========================
-   SUPABASE OFFICIEL DIGIY
-   ========================= */
+/* SUPABASE OFFICIEL DIGIY */
 const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
 const SUPABASE_ANON =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmVzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
 
-if(!SUPABASE_URL || !SUPABASE_ANON){
-  alert("Configuration Supabase manquante.");
-}
+const ABOS_URL = "https://commencer-a-payer.digiylyfe.com/";
+const MODULE_HOME_FALLBACK = "./cockpit.html";
 
-/* ====== ROUTES DIGIY ======
-   - ABOS: ton GitHub Pages qui propose plans
-   - Module home: page principale PRO une fois actif (souvent index du module)
-*/
-const ABOS_URL = "https://apps.digiylyfe.com/abos/"; // adapte si besoin
-const MODULE_HOME_FALLBACK = "/"; // ou "index.html" selon ton module
-
-/* ====== BOOST CONFIG ======
-   Ici on propose un BOOST simple.
-   Tu peux le gérer comme "module add-on" via digiy_build_pay_url + digiy_pay_admin_validate_order
-*/
 const BOOST = {
   module: "BOOST",
   plan: "boost_7d",
@@ -282,9 +257,6 @@ const BOOST = {
   duration_days: 7
 };
 
-/* =========================
-   UI HELPERS
-   ========================= */
 const $ = (id) => document.getElementById(id);
 
 function fmtDateFR(iso){
@@ -326,11 +298,7 @@ function daysBetween(aIso, bIso){
   return Math.ceil((b - a) / (1000*60*60*24));
 }
 
-/* =========================
-   SUPABASE CALLS (REST)
-   ========================= */
 async function sbGetSubscriptionBySlug(slug){
-  // View minimale: digiy_subscriptions_public (phone,module,slug)
   const url = `${SUPABASE_URL}/rest/v1/digiy_subscriptions_public?select=phone,module,slug&slug=eq.${encodeURIComponent(slug)}&limit=1`;
   const r = await fetch(url, {
     headers: {
@@ -362,9 +330,7 @@ async function sbRpc(name, payload){
 }
 
 async function digiyHasAccess(phone, module){
-  // ton RPC: digiy_has_access(phone,module) => boolean/json
   const res = await sbRpc("digiy_has_access", { p_phone: phone, p_module: module });
-  // adapte selon ton retour (boolean direct ou json)
   if(typeof res === "boolean") return res;
   if(res && typeof res.ok === "boolean") return res.ok;
   if(res && typeof res.has_access === "boolean") return res.has_access;
@@ -372,9 +338,6 @@ async function digiyHasAccess(phone, module){
 }
 
 async function digiyGetSubscriptionFull(phone, module){
-  // Si tu as une RPC publique minimaliste (recommandé) :
-  // ex: digiy_get_subscription_status(phone,module) -> {status,plan,expires_at,payment_ref}
-  // Sinon tu affiches juste info basique.
   try{
     return await sbRpc("digiy_get_subscription_status", { p_phone: phone, p_module: module });
   }catch(e){
@@ -383,18 +346,14 @@ async function digiyGetSubscriptionFull(phone, module){
 }
 
 async function digiyGetDashboardStats(phone, module){
-  // Optionnel: une RPC par module ou générique
-  // ex: digiy_get_dashboard_stats(p_phone,p_module) -> {month_xof,tx_count,today_hint}
   try{
     return await sbRpc("digiy_get_dashboard_stats", { p_phone: phone, p_module: module });
   }catch(e){
-    // fallback
     return { month_xof: null, tx_count: null, today_hint: "Aujourd’hui" };
   }
 }
 
 async function digiyGetBoostStatus(phone){
-  // Optionnel: digiy_get_boost_status(p_phone) -> {active,expires_at,views_today}
   try{
     return await sbRpc("digiy_get_boost_status", { p_phone: phone });
   }catch(e){
@@ -403,17 +362,12 @@ async function digiyGetBoostStatus(phone){
 }
 
 async function digiyBuildPayUrl(module, phone, plan){
-  // Ton backbone mentionne digiy_build_pay_url(ref)
-  // Ici on propose une signature: digiy_build_pay_url(p_module,p_phone,p_plan_code)
-  // Adapte si ta RPC attend d'autres paramètres.
   return await sbRpc("digiy_build_pay_url", { p_module: module, p_phone: phone, p_plan_code: plan });
 }
 
-/* =========================
-   MAIN
-   ========================= */
 (async function init(){
   $("brandTitle").textContent = MODULE_LABEL;
+  $("brandSub").textContent = "Dashboard pro simple et utile";
   $("btnPrimaryAction").textContent = PRIMARY_ACTION_LABEL;
   $("actionHint").textContent = PRIMARY_ACTION_HINT;
   $("pillStatus").innerHTML = `Statut : <b>…</b>`;
@@ -421,14 +375,13 @@ async function digiyBuildPayUrl(module, phone, plan){
   const slug = getSlug();
   if(!slug){
     $("statusLine").textContent = "Slug manquant";
-    $("expiryLine").textContent = "Ajoute ?slug=…";
+    $("expiryLine").textContent = "Ajoute ?slug=… dans le lien.";
     $("dot").classList.add("bad");
     $("pillStatus").innerHTML = `Statut : <b>Bloqué</b>`;
-    setNotifs([{level:"warn",tag:"ACTION",title:"Lien invalide",text:"Le lien doit contenir ?slug=…"}]);
+    setNotifs([{level:"warn",tag:"ACTION",title:"Lien incomplet",text:"Le dashboard doit être ouvert avec un slug valide."}]);
     return;
   }
 
-  // 1) resolve phone
   let subPublic = null;
   try{
     subPublic = await sbGetSubscriptionBySlug(slug);
@@ -436,7 +389,7 @@ async function digiyBuildPayUrl(module, phone, plan){
     $("statusLine").textContent = "Erreur connexion";
     $("expiryLine").textContent = "Impossible de vérifier le compte.";
     $("dot").classList.add("bad");
-    setNotifs([{level:"warn",tag:"RÉSEAU",title:"Connexion",text:"Vérifie internet ou config Supabase."}]);
+    setNotifs([{level:"warn",tag:"RÉSEAU",title:"Connexion",text:"Vérifie internet ou la configuration Supabase."}]);
     return;
   }
 
@@ -445,35 +398,43 @@ async function digiyBuildPayUrl(module, phone, plan){
     $("expiryLine").textContent = "Ce slug n’existe pas.";
     $("dot").classList.add("bad");
     $("pillStatus").innerHTML = `Statut : <b>Inconnu</b>`;
-    setNotifs([{level:"warn",tag:"INFO",title:"Slug inconnu",text:"Demande un nouveau lien d’accès."}]);
+    setNotifs([{level:"warn",tag:"INFO",title:"Slug inconnu",text:"Demande un nouveau lien d’accès ou vérifie le slug."}]);
     return;
   }
 
   const phone = subPublic.phone;
-
-  // 2) access check
   const ok = await digiyHasAccess(phone, MODULE_CODE).catch(()=> false);
 
   if(!ok){
     $("statusLine").textContent = "Abonnement requis";
-    $("expiryLine").textContent = "Active ton accès en 1 clic.";
+    $("expiryLine").textContent = "Active ton accès pour ouvrir ton espace.";
     $("dot").classList.add("bad");
     $("pillStatus").innerHTML = `Statut : <b>Inactif</b>`;
 
     setNotifs([
-      {level:"warn",tag:"ABO",title:"Accès fermé",text:"Ton abonnement n’est pas actif sur ce module."},
+      {level:"warn",tag:"ABO",title:"Accès fermé",text:"Ton abonnement n’est pas actif sur ce module."}
     ]);
 
     $("btnManageSub").onclick = () => {
       location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
     };
 
-    // On peut même rediriger direct si tu veux:
-    // location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
+    $("btnPrimaryAction").onclick = () => {
+      location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
+    };
+
+    $("btnSettings").onclick = () => alert("Active d’abord ton abonnement.");
+    $("linkSupport").onclick = (ev) => {
+      ev.preventDefault();
+      location.href = "https://wa.me/221771342889?text=" + encodeURIComponent("Bonjour, j’ai besoin d’aide pour mon accès ENTREPRENEUR MULTI SERVICES.");
+    };
+    $("linkPayments").onclick = (ev) => {
+      ev.preventDefault();
+      location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
+    };
     return;
   }
 
-  // 3) load status full (optional)
   const status = await digiyGetSubscriptionFull(phone, MODULE_CODE);
   let expiresAt = status?.expires_at || status?.current_period_end || null;
   let plan = status?.plan || "standard";
@@ -485,82 +446,80 @@ async function digiyBuildPayUrl(module, phone, plan){
   $("pillStatus").innerHTML = `Statut : <b>Actif</b>`;
   $("metaLine").innerHTML = `<span>Plan : ${plan}</span><span>•</span><span>Paiement : ${pay}</span>`;
 
-  // 4) stats
   const stats = await digiyGetDashboardStats(phone, MODULE_CODE);
   const month = (stats?.month_xof ?? null);
   const tx = (stats?.tx_count ?? null);
 
   $("moneyMonth").textContent = month ? `${Number(month).toLocaleString("fr-FR")} FCFA` : "— FCFA";
-  $("txCount").textContent = tx ? `${tx} transactions` : "— transactions";
+  $("txCount").textContent = tx ? `${tx} opérations` : "— opérations";
   $("todayHint").textContent = stats?.today_hint || "Aujourd’hui";
 
-  // 5) notifs rules
   const notifs = [];
   if(expiresAt){
     const d = daysBetween(new Date().toISOString(), expiresAt);
     if(d <= 3){
-      notifs.push({level:"warn",tag:"J-3",title:"Abonnement bientôt expiré",text:`Expire dans ${d} jour(s). Renouvelle pour éviter coupure.`});
+      notifs.push({level:"warn",tag:"J-3",title:"Abonnement bientôt expiré",text:`Expire dans ${d} jour(s). Renouvelle pour éviter une coupure.`});
     }else{
-      notifs.push({level:"ok",tag:"OK",title:"Abonnement",text:`Actif — prochain contrôle : J-3.`});
+      notifs.push({level:"ok",tag:"OK",title:"Abonnement",text:"Ton accès est actif."});
     }
   }
 
-  // 6) boost status
   const boost = await digiyGetBoostStatus(phone);
   if(boost?.active){
     $("boostStatus").textContent = `Statut boost : actif jusqu’au ${fmtDateFR(boost.expires_at)} • +${boost.views_today || 0} vues aujourd’hui`;
     $("btnBoost").textContent = "Actif";
     $("btnBoost").disabled = true;
-    notifs.push({level:"info",tag:"BOOST",title:"Boost actif",text:"Visibilité augmentée. Continue ton activité."});
+    notifs.push({level:"info",tag:"BOOST",title:"Boost actif",text:"Ta visibilité est augmentée."});
   }else{
     $("boostStatus").textContent = "Statut boost : inactif";
-    notifs.push({level:"info",tag:"OPTION",title:"Boost disponible",text:"Active le BOOST si tu veux plus de visibilité."});
+    notifs.push({level:"info",tag:"OPTION",title:"Boost disponible",text:"Active le boost si tu veux plus de visibilité."});
   }
 
   setNotifs(notifs);
 
-  // Buttons
   $("btnManageSub").onclick = () => {
     location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
   };
 
   $("btnPrimaryAction").onclick = () => {
-    // action module spécifique — à adapter
-    // exemple: ouvrir la page “online” / “orders” / “new sale”
-    alert("Action principale — branche ici ton flow module.");
+    location.href = `${MODULE_HOME_FALLBACK}?slug=${encodeURIComponent(slug)}`;
   };
 
   $("btnBoostInfo").onclick = () => {
-    alert("BOOST : +50% d’apparition pendant 7 jours. Paiement direct. Aucun spam.");
+    alert("BOOST visibilité : +50% d’apparition pendant 7 jours. Paiement direct.");
   };
 
   $("btnBoost").onclick = async () => {
     try{
       $("btnBoost").disabled = true;
       $("btnBoost").textContent = "…";
-
-      // Construire l’URL de paiement BOOST (via ton système)
-      const pay = await digiyBuildPayUrl(BOOST.module, phone, BOOST.plan);
-
-      // Ton RPC peut renvoyer {url} ou directement une string
-      const url = (typeof pay === "string") ? pay : (pay?.url || pay?.pay_url || null);
-
-      if(!url){
-        throw new Error("URL paiement BOOST manquante");
-      }
-
-      location.href = url; // puis wait.html fera le reste (confirmation / activation)
+      const payRes = await digiyBuildPayUrl(BOOST.module, phone, BOOST.plan);
+      const url = (typeof payRes === "string") ? payRes : (payRes?.url || payRes?.pay_url || null);
+      if(!url) throw new Error("URL paiement BOOST manquante");
+      location.href = url;
     }catch(e){
       console.error(e);
-      alert("Impossible d’activer le BOOST. Vérifie la config ou la RPC digiy_build_pay_url.");
+      alert("Impossible d’activer le boost. Vérifie la configuration.");
       $("btnBoost").disabled = false;
       $("btnBoost").textContent = "Activer";
     }
   };
 
-  $("btnSettings").onclick = () => alert("Paramètres — branche ici ton écran simple (profil, tel, etc.)");
-  $("linkSupport").onclick = (ev) => { ev.preventDefault(); alert("Support — branche ton WhatsApp/numéro support."); };
-  $("linkPayments").onclick = (ev) => { ev.preventDefault(); alert("Mes paiements — branche ton écran historique."); };
+  $("btnSettings").onclick = () => {
+    location.href = `./profile.html?slug=${encodeURIComponent(slug)}`;
+  };
+
+  $("linkSupport").onclick = (ev) => {
+    ev.preventDefault();
+    location.href = "https://wa.me/221771342889?text=" + encodeURIComponent(
+      "Bonjour support ENTREPRENEUR MULTI SERVICES.\nSlug : " + slug + "\nTéléphone : " + phone
+    );
+  };
+
+  $("linkPayments").onclick = (ev) => {
+    ev.preventDefault();
+    location.href = `${ABOS_URL}?module=${encodeURIComponent(MODULE_CODE)}&phone=${encodeURIComponent(phone)}`;
+  };
 
 })();
 </script>
