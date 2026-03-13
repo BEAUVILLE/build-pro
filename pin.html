@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>DIGIY BUILD PRO — Accès PIN</title>
+  <title>ENTREPRENEUR MULTI SERVICES — Accès PIN</title>
   <meta name="theme-color" content="#061b14">
-  <meta name="description" content="Accès BUILD PRO par slug et PIN.">
+  <meta name="description" content="Accès pro par slug et PIN pour ENTREPRENEUR MULTI SERVICES.">
 
   <script src="./guard.js"></script>
 
@@ -204,13 +204,13 @@
     <div class="top">
       <div class="logo">🔐</div>
       <div>
-        <h1>Accès BUILD PRO</h1>
-        <div class="sub">Entre ton slug pro et ton PIN pour ouvrir ton cockpit artisan.</div>
+        <h1>Accès ENTREPRENEUR MULTI SERVICES</h1>
+        <div class="sub">Entre ton slug pro et ton PIN pour ouvrir ton espace de gestion.</div>
       </div>
     </div>
 
     <div class="hintbox">
-      MULTI SERVICES terrain : plombier, électricien, maçon, soudeur, menuisier, mécanicien…
+      Travaux, dépannage, entretien, chantier et services pratiques.
     </div>
 
     <div>
@@ -225,7 +225,7 @@
 
     <div class="actions">
       <button class="btn primary" id="btnGo" type="button">🔑 Entrer</button>
-      <a class="btn whatsapp" id="btnSupport" href="https://wa.me/221771342889?text=Bonjour%20DIGIY%20BUILD.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s%20PIN." target="_blank" rel="noopener">
+      <a class="btn whatsapp" id="btnSupport" href="https://wa.me/221771342889?text=Bonjour%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s%20PIN." target="_blank" rel="noopener">
         💬 Support
       </a>
     </div>
@@ -320,7 +320,7 @@
           sessionStorage.setItem("digiy_build_last_slug", slug);
         }catch(_){}
 
-        setStatus("Accès validé. Ouverture du cockpit...", "ok");
+        setStatus("Accès validé. Ouverture de ton espace...", "ok");
         location.href = cockpitUrl(slug);
       }catch(e){
         console.error(e);
