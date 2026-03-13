@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ENTREPRENEUR MULTI SERVICES — Dashboard pro</title>
 
-  <script src="./guard.js?v=build-pro-dashboard-v2"></script>
+  <script src="./guard.js?v=build-pro-dashboard-v3"></script>
 
   <style>
     :root{
@@ -126,6 +126,22 @@
     }
     .smallLink{color:var(--muted);text-decoration:none;font-weight:750}
     .smallLink:hover{color:var(--text)}
+    .backupBox{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+      padding:12px;border-radius:16px;
+      background:rgba(34,197,94,.08);
+      border:1px solid rgba(34,197,94,.20);
+    }
+    .backupMeta{
+      margin-top:8px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      line-height:1.5;
+    }
+    .backupActions{
+      display:flex;flex-direction:column;gap:8px;min-width:190px;
+    }
   </style>
 </head>
 
@@ -206,6 +222,27 @@
         </div>
       </div>
 
+      <div class="card" id="cardBackup" style="grid-column:1/-1">
+        <h3>💾 Sauvegarde pro</h3>
+
+        <div class="backupBox">
+          <div>
+            <b>Devis stockés sur cet appareil</b>
+            <div class="backupMeta" id="backupText">
+              Vérification du stockage local…
+            </div>
+            <div class="backupMeta" id="backupCount">
+              —
+            </div>
+          </div>
+
+          <div class="backupActions">
+            <button class="btn primary" id="btnExportBackup" type="button">⬇️ Exporter mes devis</button>
+            <button class="btn" id="btnDriveGuide" type="button">☁️ Rappel Drive</button>
+          </div>
+        </div>
+      </div>
+
       <div class="card" id="cardAction" style="grid-column:1/-1">
         <h3>Action principale</h3>
         <div class="muted" style="font-weight:750;margin-bottom:10px" id="actionDesc">
@@ -259,6 +296,12 @@ const BOOST = {
   duration_days: 7
 };
 
+const CURRENT = {
+  slug: "",
+  phone: "",
+  live: false
+};
+
 const $ = (id) => document.getElementById(id);
 
 function normPhone(v){
@@ -289,6 +332,42 @@ function getSlugFromUrl(){
 
 function cockpitUrl(slug){
   return `${MODULE_HOME_FALLBACK}?slug=${encodeURIComponent(slug)}`;
+}
+
+function quotesStorageKey(slug, live){
+  return "DIGIY_BUILD_QUOTES::" + (live ? (slug || "noslug") : "preview");
+}
+
+function getLocalQuotes(slug, live){
+  try{
+    return JSON.parse(localStorage.getItem(quotesStorageKey(slug, live)) || "[]");
+  }catch(_){
+    return [];
+  }
+}
+
+function exportLocalQuotes(slug, live){
+  const rows = getLocalQuotes(slug, live);
+  const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `build-backup-${slug || (live ? "pro" : "preview")}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  return rows.length;
+}
+
+function refreshBackupCard(slug, live){
+  const rows = getLocalQuotes(slug, live);
+  const count = rows.length;
+
+  $("backupText").textContent =
+    "Tes devis sont gardés sur cet appareil. Pour travailler proprement comme un pro, exporte régulièrement une copie et envoie-la sur ton Drive.";
+
+  $("backupCount").textContent =
+    count > 0
+      ? `${count} devis trouvé(s) sur cet appareil pour ${slug || "ce profil"}.`
+      : `Aucun devis local trouvé pour ${slug || "ce profil"} pour le moment.`;
 }
 
 function setNotifs(items){
@@ -437,6 +516,7 @@ async function digiyBuildPayUrl(module, phone, plan){
   );
 
   if(!slug){
+    refreshBackupCard("", false);
     setBlockedStatus(
       "Slug manquant",
       "Ajoute ?slug=… dans le lien.",
@@ -458,6 +538,7 @@ async function digiyBuildPayUrl(module, phone, plan){
     try{
       subPublic = await sbGetSubscriptionBySlug(slug);
     }catch(e){
+      refreshBackupCard(slug, false);
       setBlockedStatus(
         "Erreur connexion",
         "Impossible de vérifier le compte.",
@@ -468,6 +549,7 @@ async function digiyBuildPayUrl(module, phone, plan){
     }
 
     if(!subPublic || !subPublic.phone){
+      refreshBackupCard(slug, false);
       setBlockedStatus(
         "Compte introuvable",
         "Ce slug n’existe pas.",
@@ -480,14 +562,37 @@ async function digiyBuildPayUrl(module, phone, plan){
     phone = normPhone(subPublic.phone);
   }
 
+  CURRENT.slug = slug;
+  CURRENT.phone = phone;
+  CURRENT.live = !!guardState.access_ok;
+
+  refreshBackupCard(slug, CURRENT.live);
+
   $("btnCockpit").onclick = () => {
     location.href = cockpitUrl(slug);
+  };
+
+  $("btnExportBackup").onclick = () => {
+    const count = exportLocalQuotes(CURRENT.slug, CURRENT.live);
+    alert(
+      count > 0
+        ? `Export terminé. ${count} devis exporté(s). Pense à envoyer le fichier sur ton Drive.`
+        : "Export terminé. Aucun devis local trouvé pour le moment. Tu peux quand même garder ce fichier comme point de départ."
+    );
+  };
+
+  $("btnDriveGuide").onclick = () => {
+    alert(
+      "Conseil pro : après un gros chantier ou en fin de journée, clique sur “Exporter mes devis”, puis envoie le fichier sur ton Drive pour garder une sauvegarde sécurité."
+    );
   };
 
   let ok = false;
 
   if (guardState.access_ok === true && normPhone(guardState.phone) === phone) {
     ok = true;
+    CURRENT.live = true;
+    refreshBackupCard(slug, true);
   } else {
     ok = await digiyHasAccess(phone, MODULE_CODE).catch(()=> false);
   }
@@ -563,6 +668,13 @@ async function digiyBuildPayUrl(module, phone, plan){
     }else{
       notifs.push({level:"ok",tag:"OK",title:"Abonnement",text:"Ton accès est actif."});
     }
+  }
+
+  const localCount = getLocalQuotes(slug, CURRENT.live).length;
+  if (localCount > 0) {
+    notifs.push({level:"info",tag:"BACKUP",title:"Sauvegarde conseillée",text:`${localCount} devis local(aux) détecté(s). Pense à exporter une copie sur ton Drive.`});
+  } else {
+    notifs.push({level:"info",tag:"LOCAL",title:"Stockage local prêt",text:"Tes futurs devis pourront être exportés depuis cette page pour sauvegarde."});
   }
 
   const boost = await digiyGetBoostStatus(phone);
