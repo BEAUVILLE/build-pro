@@ -288,36 +288,32 @@
     const p = normPin(pin);
     const ph = normPhone(phone);
 
-    const rpcNames = [
-      "build_pin_login",
-      "digiy_pin_login",
-      "pin_login",
-      "digiy_login_with_pin"
+    if (!ph || !p) return null;
+
+    const tries = [
+      {
+        name: "digiy_verify_pin",
+        body: { p_phone: ph, p_module: MODULE_CODE, p_pin: p }
+      },
+      {
+        name: "digiy_verify_pin",
+        body: { p_phone: ph, p_module: MODULE_CODE.toLowerCase(), p_pin: p }
+      }
     ];
 
-    const bodies = [
-      { p_slug: s, p_pin: p, p_module: MODULE_CODE, p_phone: ph },
-      { slug: s, pin: p, module: MODULE_CODE, phone: ph },
-      { p_slug: s, p_pin: p, p_module: MODULE_CODE },
-      { slug: s, pin: p, module: MODULE_CODE },
-      { p_slug: s, p_pin: p },
-      { slug: s, pin: p }
-    ];
+    for (const t of tries) {
+      const res = await rpc(t.name, t.body);
+      if (!res.ok) continue;
 
-    for (const name of rpcNames) {
-      for (const body of bodies) {
-        const res = await rpc(name, body);
-        if (!res.ok) continue;
+      const d = res.data;
+      const row = Array.isArray(d) ? d[0] : d;
 
-        const d = res.data;
-        if (d === true) return { ok: true, slug: s, phone: ph };
-        if (d?.ok === true || d?.success === true) {
-          return {
-            ok: true,
-            slug: normSlug(d.slug || s),
-            phone: normPhone(d.phone || ph)
-          };
-        }
+      if (row?.ok === true) {
+        return {
+          ok: true,
+          slug: s,
+          phone: normPhone(row.phone || ph)
+        };
       }
     }
 
@@ -325,48 +321,6 @@
   }
 
   async function attemptPinLoginTable(slug, pin, phone) {
-    const ph = normPhone(phone);
-    const p = normPin(pin);
-    if (!ph || !p) return null;
-
-    const res = await tableGet("digiy_access_pins", {
-      select: "*",
-      phone: `eq.${ph}`,
-      module: `eq.${MODULE_CODE}`,
-      limit: "10"
-    });
-
-    if (!res.ok || !Array.isArray(res.data)) return null;
-
-    const now = Date.now();
-
-    for (const row of res.data) {
-      const rawPin =
-        row.pin ??
-        row.pin_code ??
-        row.code ??
-        row.access_pin ??
-        row.plain_pin ??
-        "";
-
-      if (String(rawPin).trim() !== p) continue;
-      if (row.is_active === false) continue;
-
-      const status = String(row.status || "").toLowerCase().trim();
-      if (["revoked", "inactive", "disabled"].includes(status)) continue;
-
-      if (row.expires_at) {
-        const exp = Date.parse(row.expires_at);
-        if (!Number.isNaN(exp) && exp < now) continue;
-      }
-
-      return {
-        ok: true,
-        slug: normSlug(slug),
-        phone: ph
-      };
-    }
-
     return null;
   }
 
@@ -489,7 +443,7 @@
           slug: normSlug(slug),
           phone: ""
         });
-          return;
+        return;
       }
 
       goPay({ slug, phone: "" });
