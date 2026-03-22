@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
   <title>ENTREPRENEUR MULTI SERVICES — GO PIN</title>
-  <meta name="description" content="Entrée rapide vers l’accès PIN ENTREPRENEUR MULTI SERVICES.">
+  <meta
+    name="description"
+    content="Entrée rapide vers l’accès PIN ENTREPRENEUR MULTI SERVICES. Raccourci propre vers le rail BUILD."
+  />
 
   <style>
     :root{
@@ -40,7 +43,7 @@
 
     .box{
       width:100%;
-      max-width:520px;
+      max-width:560px;
       background:linear-gradient(145deg,rgba(11,42,31,.96),rgba(6,35,25,.96));
       border:1px solid var(--line);
       border-radius:var(--radius);
@@ -94,7 +97,7 @@
       color:#fde68a;
       font-size:13px;
       font-weight:800;
-      line-height:1.5;
+      line-height:1.55;
     }
 
     .slugbox{
@@ -123,6 +126,14 @@
     .slugvalue.empty{
       color:var(--muted);
       font-weight:800;
+    }
+
+    .meta{
+      margin-top:8px;
+      font-size:12.5px;
+      color:var(--muted);
+      line-height:1.5;
+      font-weight:700;
     }
 
     .actions{
@@ -170,7 +181,7 @@
       margin-top:14px;
       color:var(--muted);
       font-size:12.5px;
-      line-height:1.5;
+      line-height:1.55;
       font-weight:700;
     }
 
@@ -190,12 +201,15 @@
     </div>
 
     <div class="hero">
-      Accès simple, direct et propre. Cette page envoie vers le vrai <b>pin.html</b> du module BUILD sans mélanger les anciens rails.
+      Accès simple, direct et propre. Cette page envoie vers le vrai <b>pin.html</b> du module BUILD.
+      Le <b>PIN</b> reste la porte d’entrée externe. Une fois la session ouverte, la circulation interne
+      normale reprend entre cockpit, dashboard et fiche sans repasser par le PIN.
     </div>
 
     <div class="slugbox">
       <div class="sluglabel">Slug détecté</div>
       <div class="slugvalue" id="slugValue">Chargement…</div>
+      <div class="meta" id="phoneMeta">Phone : —</div>
     </div>
 
     <div class="actions">
@@ -205,8 +219,13 @@
 
     <div class="actions">
       <a class="btn" id="btnDashboard" href="./dashboard-pro.html">📊 Dashboard</a>
-      <a class="btn" id="btnSupport" target="_blank" rel="noopener"
-         href="https://wa.me/221771342889?text=Bonjour%20support%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s%20PIN.">
+      <a
+        class="btn"
+        id="btnSupport"
+        target="_blank"
+        rel="noopener"
+        href="https://wa.me/221771342889?text=Bonjour%20support%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s%20PIN."
+      >
         💬 Support
       </a>
     </div>
@@ -214,54 +233,98 @@
     <div class="mini">
       <b>Conseil :</b> garde le slug dans le lien quand tu partages l’accès.
       Cette page ne remplace pas le rail PIN PRO validé, elle sert juste de raccourci propre.
+      Si la session n’est pas ouverte, <b>cockpit</b> et <b>dashboard</b> repasseront naturellement par le PIN.
     </div>
   </div>
 
   <script>
-    const qs = new URLSearchParams(location.search);
+    (() => {
+      "use strict";
 
-    function normSlug(v){
-      return String(v || "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-    }
+      const qs = new URLSearchParams(location.search);
 
-    function readSlug(){
-      return normSlug(
-        qs.get("slug") ||
-        sessionStorage.getItem("digiy_build_slug") ||
-        sessionStorage.getItem("digiy_build_last_slug") ||
-        localStorage.getItem("digiy_build_last_slug") ||
-        ""
-      );
-    }
+      function normSlug(v){
+        return String(v || "")
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
+      }
 
-    function withSlug(path, slug){
-      return slug ? `${path}?slug=${encodeURIComponent(slug)}` : path;
-    }
+      function normPhone(v){
+        return String(v || "").replace(/[^\d]/g, "");
+      }
 
-    const slug = readSlug();
-    const slugValue = document.getElementById("slugValue");
-    const btnEnter = document.getElementById("btnEnter");
-    const btnCockpit = document.getElementById("btnCockpit");
-    const btnDashboard = document.getElementById("btnDashboard");
+      function readSlug(){
+        return normSlug(
+          qs.get("slug") ||
+          sessionStorage.getItem("digiy_build_slug") ||
+          sessionStorage.getItem("digiy_build_last_slug") ||
+          localStorage.getItem("digiy_build_last_slug") ||
+          ""
+        );
+      }
 
-    if (slug) {
-      slugValue.textContent = slug;
-      btnEnter.href = withSlug("./pin.html", slug);
-      btnCockpit.href = withSlug("./cockpit.html", slug);
-      btnDashboard.href = withSlug("./dashboard-pro.html", slug);
-    } else {
-      slugValue.textContent = "Aucun slug détecté pour le moment.";
-      slugValue.classList.add("empty");
-      btnEnter.href = "./pin.html";
-      btnCockpit.href = "./cockpit.html";
-      btnDashboard.href = "./dashboard-pro.html";
-    }
+      function readPhone(){
+        return normPhone(
+          qs.get("phone") ||
+          sessionStorage.getItem("digiy_build_phone") ||
+          localStorage.getItem("digiy_build_phone") ||
+          ""
+        );
+      }
+
+      function withContext(path, slug, phone){
+        const url = new URL(path, location.href);
+
+        url.searchParams.set("module", "BUILD");
+
+        if (slug) url.searchParams.set("slug", slug);
+        if (phone) url.searchParams.set("phone", phone);
+
+        for (const [k, v] of qs.entries()) {
+          if (k === "slug" || k === "phone" || k === "module") continue;
+          if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+        }
+
+        return url.toString();
+      }
+
+      const slug = readSlug();
+      const phone = readPhone();
+
+      const slugValue = document.getElementById("slugValue");
+      const phoneMeta = document.getElementById("phoneMeta");
+
+      const btnEnter = document.getElementById("btnEnter");
+      const btnCockpit = document.getElementById("btnCockpit");
+      const btnDashboard = document.getElementById("btnDashboard");
+      const btnSupport = document.getElementById("btnSupport");
+
+      if (slug) {
+        slugValue.textContent = slug;
+      } else {
+        slugValue.textContent = "Aucun slug détecté pour le moment.";
+        slugValue.classList.add("empty");
+      }
+
+      phoneMeta.textContent = phone ? `Phone : ${phone}` : "Phone : —";
+
+      btnEnter.href = withContext("./pin.html", slug, phone);
+      btnCockpit.href = withContext("./cockpit.html", slug, phone);
+      btnDashboard.href = withContext("./dashboard-pro.html", slug, phone);
+
+      const supportUrl = new URL("https://wa.me/221771342889");
+      const supportText =
+        "Bonjour support ENTREPRENEUR MULTI SERVICES.\n" +
+        "J’ai besoin d’aide pour mon accès PIN." +
+        (slug ? `\nSlug : ${slug}` : "") +
+        (phone ? `\nPhone : ${phone}` : "");
+      supportUrl.searchParams.set("text", supportText);
+      btnSupport.href = supportUrl.toString();
+    })();
   </script>
 </body>
 </html>
