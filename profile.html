@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
   <title>ENTREPRENEUR MULTI SERVICES — Ma fiche pro</title>
+  <meta
+    name="description"
+    content="Ma fiche pro ENTREPRENEUR MULTI SERVICES. Présentation, services, zone d’intervention, contact et publication."
+  />
 
-  <link rel="stylesheet" href="./profile.css?v=build-pro-profile-v4"/>
+  <link rel="stylesheet" href="./profile.css?v=build-pro-profile-v5"/>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./guard.js?v=build-pro-profile-v6"></script>
-  <script defer src="./profile.js?v=build-pro-profile-v4"></script>
+  <script src="./guard.js?v=build-pro-profile-v7"></script>
+  <script defer src="./profile.js?v=build-pro-profile-v5"></script>
 </head>
 
 <body>
@@ -20,35 +24,42 @@
     <div class="wrap">
       <div class="card">
         <div class="head">
-          <h1>🛠️ Ma fiche ENTREPRENEUR MULTI SERVICES</h1>
+          <div>
+            <h1>🛠️ Ma fiche ENTREPRENEUR MULTI SERVICES</h1>
+            <p class="sub">
+              Ici tu présentes ton activité, tes services, ta zone d’intervention et ton contact.
+              <span class="ok">Si tu publies</span>, ta fiche peut apparaître dans la vitrine du module selon le rail réel déjà posé.
+            </p>
+          </div>
+
           <div class="head-actions">
             <button class="btn ghost" id="btnCopyLink" type="button">📋 Copier le lien</button>
-            <button class="btn ghost" id="btnOpenLink" type="button">👁️ Ouvrir</button>
+            <button class="btn ghost" id="btnOpenLink" type="button">👁️ Ouvrir le lien</button>
           </div>
         </div>
 
-        <p class="sub">
-          Ici tu présentes ton activité, tes services, ta zone d’intervention et ton contact.
-          <span class="ok">Si tu publies</span> → ta fiche peut apparaître dans la vitrine automatiquement.
-        </p>
+        <div class="note">
+          <b>Lecture DIGIY :</b> cette page fait partie du circuit interne PRO.
+          Une fois la session ouverte, tu peux aller du cockpit à la fiche puis revenir sans repasser par le PIN.
+        </div>
 
         <div class="hr"></div>
 
         <div class="row">
           <div>
             <label>Nom visible</label>
-            <input id="display_name" placeholder="Ex: Ndiaga Services" />
+            <input id="display_name" placeholder="Ex : Ndiaga Services"/>
           </div>
           <div>
             <label>Ville / Zone</label>
-            <input id="city" placeholder="Ex: Saly – Petite Côte" />
+            <input id="city" placeholder="Ex : Saly – Petite Côte"/>
           </div>
         </div>
 
         <div class="row">
           <div>
             <label>Activité principale</label>
-            <input id="trade" placeholder="Ex: Entrepreneur multi services, plombier, électricien, maçon" />
+            <input id="trade" placeholder="Ex : Entrepreneur multi services, plombier, électricien, maçon"/>
           </div>
           <div>
             <label>Zone d’intervention</label>
@@ -73,62 +84,64 @@
           </div>
           <div>
             <label>Priorité d’affichage (0–100)</label>
-            <input id="priority" type="number" min="0" max="100" value="1" />
+            <input id="priority" type="number" min="0" max="100" value="1"/>
           </div>
         </div>
 
         <div class="row">
           <div>
             <label>WhatsApp (sans espaces)</label>
-            <input id="whatsapp" placeholder="Ex: 221774513523" />
+            <input id="whatsapp" placeholder="Ex : 221774513523"/>
           </div>
           <div>
             <label>Téléphone (optionnel)</label>
-            <input id="phone" placeholder="Ex: +221..." />
+            <input id="phone" placeholder="Ex : +221..."/>
           </div>
         </div>
 
         <label>Présentation courte</label>
-        <textarea id="bio" placeholder="Ex: Travaux, dépannage, entretien, installation, réparation, chantier, services pratiques…"></textarea>
+        <textarea id="bio" placeholder="Ex : Travaux, dépannage, entretien, installation, réparation, chantier, services pratiques…"></textarea>
 
         <div class="row">
           <div>
             <label>Photo de présentation</label>
-            <input id="photo_url" placeholder="URL image (https://...png/jpg)" />
+            <input id="photo_url" placeholder="URL image (https://...png/jpg)"/>
           </div>
           <div>
             <label>Lien de ma fiche</label>
-            <input id="profile_url" placeholder="https://digiylyfe.com/..." />
+            <input id="profile_url" placeholder="https://digiylyfe.com/..."/>
           </div>
         </div>
 
         <div class="row">
           <div>
             <label>Badge visible</label>
-            <input id="badge" placeholder="Ex: ⚡ Intervention rapide" />
+            <input id="badge" placeholder="Ex : ⚡ Intervention rapide"/>
           </div>
           <div>
             <label>Badge vitrine</label>
-            <input id="hub_badge" placeholder="Ex: ✅ PARTENAIRE MULTI SERVICES" />
+            <input id="hub_badge" placeholder="Ex : ✅ PARTENAIRE MULTI SERVICES"/>
           </div>
         </div>
 
         <div class="row">
           <div>
             <label>Texte prix / avantage</label>
-            <input id="price_label" placeholder="Ex: Devis rapide • Paiement direct" />
+            <input id="price_label" placeholder="Ex : Devis rapide • Paiement direct"/>
           </div>
           <div>
             <label>Tags (JSON ou liste simple)</label>
-            <input id="tags" placeholder='Ex: travaux,depannage,chantier ou ["travaux","chantier"]' />
+            <input id="tags" placeholder='Ex : travaux,depannage,chantier ou ["travaux","chantier"]'/>
           </div>
         </div>
 
         <div class="row">
           <div>
             <label>Slug (lien interne)</label>
-            <input id="slug" placeholder="auto" />
-            <div class="hint">Par défaut on garde le slug existant pour rester stable. Tu peux le régénérer si besoin.</div>
+            <input id="slug" placeholder="auto"/>
+            <div class="hint">
+              Par défaut on garde le slug existant pour rester stable. Tu peux le régénérer si besoin.
+            </div>
           </div>
           <div>
             <label>Publier maintenant ?</label>
@@ -144,7 +157,7 @@
         <div class="actions">
           <button class="btn primary" id="btnSave" type="button">💾 Enregistrer</button>
           <button class="btn secondary" id="btnReSlug" type="button">🧾 Régénérer le slug</button>
-          <a class="btn ghost" id="btnOpenListing" href="https://beauville.github.io/digiy-build/listing.html" target="_blank" rel="noopener">👷 Ouvrir la vitrine</a>
+          <a class="btn ghost" id="btnOpenListing" href="https://beauville.github.io/digiy-build/listing.html" target="_blank" rel="noopener">🌍 Ouvrir la vitrine</a>
           <button class="btn ghost" id="btnBack" type="button">↩️ Retour cockpit</button>
         </div>
 
