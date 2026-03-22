@@ -4,298 +4,225 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>ENTREPRENEUR MULTI SERVICES — Entrée pro</title>
+  <title>ENTREPRENEUR MULTI SERVICES — Redirection PIN</title>
   <meta
     name="description"
-    content="ENTREPRENEUR MULTI SERVICES — Travaux, dépannage, entretien, chantier et services pratiques. Entrée pro, PIN, tarifs et activation."
+    content="Redirection propre vers l’accès PIN ENTREPRENEUR MULTI SERVICES."
   />
 
   <style>
     :root{
       --bg:#061b14;
       --bg2:#0a2b1f;
+      --card:rgba(8,33,24,.94);
       --line:rgba(255,255,255,.12);
       --text:#eafff1;
-      --muted:rgba(234,255,241,.72);
+      --muted:rgba(234,255,241,.74);
       --gold:#facc15;
-      --green:#22c55e;
-      --blue:#38bdf8;
-      --shadow:0 18px 55px rgba(0,0,0,.45);
-      --r:22px;
+      --ok:#22c55e;
+      --shadow:0 22px 60px rgba(0,0,0,.45);
+      --radius:22px;
     }
 
     *{box-sizing:border-box}
 
-    html,body{margin:0;padding:0}
-
     body{
+      margin:0;
       min-height:100vh;
       display:grid;
       place-items:center;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      padding:16px;
       color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:
-        radial-gradient(circle at top, rgba(250,204,21,.10), transparent 55%),
+        radial-gradient(circle at 20% 0%, rgba(250,204,21,.14), transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(34,197,94,.10), transparent 40%),
         linear-gradient(135deg,var(--bg),var(--bg2));
-      padding:18px;
     }
 
-    .card{
-      width:min(820px,100%);
-      padding:26px;
-      border-radius:var(--r);
+    .box{
+      width:100%;
+      max-width:560px;
+      background:linear-gradient(145deg,rgba(11,42,31,.96),rgba(6,35,25,.96));
       border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius:var(--radius);
       box-shadow:var(--shadow);
+      padding:24px;
     }
 
     .top{
       display:flex;
       align-items:center;
       gap:14px;
-      flex-wrap:wrap;
+      margin-bottom:12px;
     }
 
     .logo{
-      width:64px;
-      height:64px;
-      border-radius:18px;
+      width:54px;
+      height:54px;
+      border-radius:16px;
       display:grid;
       place-items:center;
-      font-size:28px;
-      font-weight:1000;
-      color:#062015;
-      background:linear-gradient(135deg, rgba(34,197,94,.95), rgba(250,204,21,.92));
+      font-size:26px;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(250,204,21,.28), transparent 55%),
+        linear-gradient(135deg, rgba(34,197,94,.22), rgba(56,189,248,.12));
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
       flex:0 0 auto;
     }
 
     h1{
       margin:0;
-      font-size:28px;
-      line-height:1.08;
-      letter-spacing:.01em;
+      font-size:22px;
+      line-height:1.1;
+      letter-spacing:.02em;
     }
 
     .sub{
-      margin-top:6px;
+      margin-top:4px;
       color:var(--muted);
-      line-height:1.55;
-      font-size:14px;
-      font-weight:800;
-    }
-
-    .hero{
-      margin-top:18px;
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:18px;
-      padding:16px;
-      background:rgba(0,0,0,.14);
-    }
-
-    .hero-title{
-      font-size:18px;
-      font-weight:1000;
-      color:var(--gold);
-      margin-bottom:8px;
-    }
-
-    .hero p{
-      margin:0;
-      color:var(--text);
-      line-height:1.65;
-      font-size:14px;
+      font-size:13px;
+      line-height:1.45;
       font-weight:700;
     }
 
-    .pills{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
+    .hero{
       margin-top:14px;
-    }
-
-    .pill{
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      color:var(--muted);
-      font-size:12px;
-      font-weight:900;
-    }
-
-    .rail{
-      margin-top:14px;
-      padding:12px 14px;
+      padding:14px 15px;
       border-radius:16px;
-      border:1px solid rgba(56,189,248,.18);
-      background:rgba(56,189,248,.08);
-      color:#dff5ff;
+      border:1px solid rgba(250,204,21,.24);
+      background:rgba(250,204,21,.06);
+      color:#fde68a;
       font-size:13px;
-      line-height:1.55;
       font-weight:800;
+      line-height:1.55;
+    }
+
+    .slugbox{
+      margin-top:14px;
+      padding:14px 15px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+    }
+
+    .sluglabel{
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--muted);
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .slugvalue{
+      font-size:15px;
+      font-weight:1000;
+      word-break:break-word;
+    }
+
+    .slugvalue.empty{
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .meta{
+      margin-top:8px;
+      font-size:12.5px;
+      color:var(--muted);
+      line-height:1.5;
+      font-weight:700;
     }
 
     .actions{
       display:flex;
-      gap:12px;
+      gap:10px;
       flex-wrap:wrap;
-      margin-top:18px;
+      margin-top:16px;
     }
 
     .btn{
       flex:1;
-      min-width:220px;
-      padding:14px 16px;
+      min-width:180px;
+      padding:13px 14px;
       border-radius:14px;
       border:1px solid var(--line);
-      background:rgba(255,255,255,.06);
+      background:rgba(255,255,255,.05);
       color:var(--text);
       text-decoration:none;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      gap:10px;
+      gap:8px;
       font-weight:1000;
-      font-size:15px;
-      transition:.18s ease;
+      cursor:pointer;
+      transition:.15s;
     }
 
     .btn:hover{
       transform:translateY(-1px);
-      border-color:rgba(250,204,21,.35);
+      border-color:rgba(250,204,21,.42);
     }
 
     .btn.primary{
-      background:linear-gradient(135deg, rgba(34,197,94,.95), rgba(250,204,21,.92));
-      color:#062015;
       border:none;
-    }
-
-    .btn.secondary{
-      background:rgba(250,204,21,.12);
-      color:var(--text);
-      border:1px solid rgba(250,204,21,.22);
-    }
-
-    .btn.pay{
-      background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.92));
+      background:linear-gradient(90deg,var(--ok),var(--gold));
       color:#062015;
-      border:none;
-    }
-
-    .btn.tarif{
-      background:rgba(56,189,248,.12);
-      color:var(--text);
-      border:1px solid rgba(56,189,248,.24);
     }
 
     .mini{
       margin-top:14px;
       color:var(--muted);
       font-size:12.5px;
-      line-height:1.5;
+      line-height:1.55;
       font-weight:700;
     }
 
-    .floating-back{
-      position:fixed;
-      top:calc(env(safe-area-inset-top, 0px) + 14px);
-      left:calc(env(safe-area-inset-left, 0px) + 14px);
-      z-index:99999;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding:12px 16px;
-      border-radius:999px;
-      border:1px solid rgba(250,204,21,.32);
-      background:linear-gradient(135deg, rgba(250,204,21,.96), rgba(34,197,94,.92));
-      color:#062015;
-      text-decoration:none;
-      font-weight:1000;
-      font-size:14px;
-      line-height:1;
-      box-shadow:0 16px 40px rgba(0,0,0,.38);
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
-      transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
-    }
-
-    .floating-back:hover{
-      transform:translateY(-1px);
-      box-shadow:0 20px 46px rgba(0,0,0,.45);
-    }
-
-    .floating-back:active{
-      transform:translateY(0);
-    }
-
-    @media(max-width:640px){
-      .card{padding:18px}
-      h1{font-size:24px}
-      .actions{width:100%}
-      .actions .btn{min-width:100%}
-      .floating-back{
-        top:calc(env(safe-area-inset-top, 0px) + 10px);
-        left:calc(env(safe-area-inset-left, 0px) + 10px);
-        padding:11px 14px;
-        font-size:13px;
-      }
-    }
+    .mini b{color:var(--text)}
   </style>
 </head>
 <body>
-  <a class="floating-back" href="https://digiylyfe.com/" aria-label="Retour au site DIGIYLYFE">
-    ↩️ Retour site
-  </a>
-
-  <div class="card">
+  <div class="box">
     <div class="top">
-      <div class="logo">🛠️</div>
+      <div class="logo">🔑</div>
       <div>
-        <h1>ENTREPRENEUR MULTI SERVICES</h1>
+        <h1>GO PIN — ENTREPRENEUR MULTI SERVICES</h1>
         <div class="sub">
-          Travaux, dépannage, entretien, chantier et services pratiques.
+          Pont direct vers le vrai accès PIN du module BUILD.
         </div>
       </div>
     </div>
 
     <div class="hero">
-      <div class="hero-title">🔐 Entrée pro DIGIY</div>
-      <p>
-        Cette page est l’entrée propre du module pro.  
-        Le rail normal est simple : <b>PIN d’entrée</b>, puis circulation interne directe entre
-        le cockpit, le dashboard et la fiche, sans retaper le PIN à chaque page.
-      </p>
+      Cette page n’est plus une porte d’entrée autonome.  
+      Elle sert seulement de <b>redirection propre</b> vers <b>pin.html</b>, qui est maintenant
+      l’unique entrée normale du rail PRO.
+    </div>
 
-      <div class="pills">
-        <span class="pill">ENTREPRENEUR MULTI SERVICES</span>
-        <span class="pill">Accès PIN</span>
-        <span class="pill">Cockpit PRO</span>
-        <span class="pill">Tarifs</span>
-        <span class="pill">Activation</span>
-      </div>
-
-      <div class="rail">
-        <b>Lecture DIGIY :</b> BUILD reste le nom interne technique.  
-        En façade publique, on parle ici d’<b>ENTREPRENEUR MULTI SERVICES</b>.
-      </div>
+    <div class="slugbox">
+      <div class="sluglabel">Slug détecté</div>
+      <div class="slugvalue" id="slugValue">Chargement…</div>
+      <div class="meta" id="phoneMeta">Phone : —</div>
     </div>
 
     <div class="actions">
-      <a class="btn primary" id="btnPin" href="./pin.html">🔑 Ouvrir mon espace pro</a>
-      <a class="btn secondary" id="btnCockpit" href="./cockpit.html">🛠️ Reprendre mon cockpit</a>
-    </div>
-
-    <div class="actions">
-      <a class="btn tarif" id="btnTarifs" href="https://commencer-a-payer.digiylyfe.com/">💳 Tarifs</a>
-      <a class="btn pay" id="btnPay" href="https://commencer-a-payer.digiylyfe.com/">🚀 Activer mon module</a>
+      <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir l’accès PIN</a>
+      <a
+        class="btn"
+        id="btnSupport"
+        target="_blank"
+        rel="noopener"
+        href="https://wa.me/221771342889?text=Bonjour%20support%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s%20PIN."
+      >
+        💬 Support
+      </a>
     </div>
 
     <div class="mini">
-      Astuce : si un <b>slug</b> ou un <b>phone</b> est présent dans l’URL, on le garde sur les boutons utiles.
-      Le cockpit reste protégé par la session interne du module.
+      <b>Doctrine DIGIY :</b> QR, lien direct, bouton public et reprise d’accès doivent maintenant
+      viser <b>pin.html?slug=...</b>.  
+      Le cockpit, le dashboard et la fiche restent des pages internes, jamais des portes d’entrée.
     </div>
   </div>
 
@@ -303,48 +230,81 @@
     (() => {
       "use strict";
 
-      const src = new URL(location.href);
+      const qs = new URLSearchParams(location.search);
 
-      const pin = new URL("./pin.html", location.href);
-      const cockpit = new URL("./cockpit.html", location.href);
-      const tarifs = new URL("https://tarifs.digiylyfe.com/?return=https%3A%2F%2Fdigiylyfe.com");
-      const pay = new URL("https://commencer-a-payer.digiylyfe.com/");
+      function normSlug(v){
+        return String(v || "")
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
+      }
 
-      const slug = (src.searchParams.get("slug") || "").trim();
-      const phone = (src.searchParams.get("phone") || "").trim();
+      function normPhone(v){
+        return String(v || "").replace(/[^\d]/g, "");
+      }
 
-      pin.searchParams.set("module", "BUILD");
-      cockpit.searchParams.set("module", "BUILD");
-      tarifs.searchParams.set("module", "BUILD");
-      pay.searchParams.set("module", "BUILD");
+      function readSlug(){
+        return normSlug(
+          qs.get("slug") ||
+          sessionStorage.getItem("digiy_build_slug") ||
+          sessionStorage.getItem("digiy_build_last_slug") ||
+          localStorage.getItem("digiy_build_last_slug") ||
+          ""
+        );
+      }
+
+      function readPhone(){
+        return normPhone(
+          qs.get("phone") ||
+          sessionStorage.getItem("digiy_build_phone") ||
+          localStorage.getItem("digiy_build_phone") ||
+          ""
+        );
+      }
+
+      function buildPinUrl(slug, phone){
+        const url = new URL("./pin.html", location.href);
+        url.searchParams.set("module", "BUILD");
+        if (slug) url.searchParams.set("slug", slug);
+        if (phone) url.searchParams.set("phone", phone);
+
+        for (const [k, v] of qs.entries()) {
+          if (k === "slug" || k === "phone" || k === "module") continue;
+          if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+        }
+
+        url.searchParams.set("v", "12");
+        return url.toString();
+      }
+
+      const slug = readSlug();
+      const phone = readPhone();
+
+      const slugValue = document.getElementById("slugValue");
+      const phoneMeta = document.getElementById("phoneMeta");
+      const btnEnter = document.getElementById("btnEnter");
 
       if (slug) {
-        pin.searchParams.set("slug", slug);
-        cockpit.searchParams.set("slug", slug);
-        tarifs.searchParams.set("slug", slug);
-        pay.searchParams.set("slug", slug);
+        slugValue.textContent = slug;
+      } else {
+        slugValue.textContent = "Aucun slug détecté pour le moment.";
+        slugValue.classList.add("empty");
       }
 
-      if (phone) {
-        pin.searchParams.set("phone", phone);
-        cockpit.searchParams.set("phone", phone);
-        tarifs.searchParams.set("phone", phone);
-        pay.searchParams.set("phone", phone);
+      phoneMeta.textContent = phone ? `Phone : ${phone}` : "Phone : —";
+
+      const pinUrl = buildPinUrl(slug, phone);
+      btnEnter.href = pinUrl;
+
+      // Redirection auto après court délai si slug présent
+      if (slug) {
+        setTimeout(() => {
+          location.replace(pinUrl);
+        }, 350);
       }
-
-      for (const [k, v] of src.searchParams.entries()) {
-        if (k === "slug" || k === "phone" || k === "module") continue;
-
-        if (!pin.searchParams.has(k)) pin.searchParams.set(k, v);
-        if (!cockpit.searchParams.has(k)) cockpit.searchParams.set(k, v);
-        if (!tarifs.searchParams.has(k)) tarifs.searchParams.set(k, v);
-        if (!pay.searchParams.has(k)) pay.searchParams.set(k, v);
-      }
-
-      document.getElementById("btnPin").href = pin.toString();
-      document.getElementById("btnCockpit").href = cockpit.toString();
-      document.getElementById("btnTarifs").href = tarifs.toString();
-      document.getElementById("btnPay").href = pay.toString();
     })();
   </script>
 </body>
