@@ -394,6 +394,72 @@
     return false;
   }
 
+  function parseVerifyPinPayload(data, fallbackPhone = "") {
+    const raw = Array.isArray(data) ? data[0] : data;
+    if (!raw) return null;
+
+    // Cas 1 : objet JSON explicite
+    if (typeof raw === "object" && !Array.isArray(raw)) {
+      if (raw.ok === true) {
+        return {
+          ok: true,
+          phone: normPhone(raw.phone || raw.p_phone || fallbackPhone || ""),
+          module: String(raw.module || raw.p_module || MODULE_CODE).toUpperCase(),
+          owner_id: raw.owner_id || null
+        };
+      }
+
+      // Cas 2 : composite PostgREST sérialisé en objet {f1:true,f2:"BUILD",f3:"221..."}
+      const vals = Object.values(raw);
+      if (vals.length >= 3) {
+        const okLike =
+          vals[0] === true ||
+          vals[0] === "t" ||
+          vals[0] === "true" ||
+          vals[0] === 1;
+
+        if (okLike) {
+          return {
+            ok: true,
+            module: String(vals[1] || MODULE_CODE).toUpperCase(),
+            phone: normPhone(vals[2] || fallbackPhone || ""),
+            owner_id: vals[4] || null
+          };
+        }
+      }
+    }
+
+    // Cas 3 : string tuple PostgreSQL "(t,BUILD,221771342889,...)"
+    if (typeof raw === "string") {
+      const txt = raw.trim();
+
+      if (txt.startsWith("(") && txt.endsWith(")")) {
+        const tupleHead = txt.match(/^\(([^,]+),([^,]+),([^,]+),?(.*)\)$/);
+        if (tupleHead) {
+          const okToken = String(tupleHead[1] || "").trim().replace(/^"|"$/g, "");
+          const modToken = String(tupleHead[2] || "").trim().replace(/^"|"$/g, "");
+          const phoneToken = String(tupleHead[3] || "").trim().replace(/^"|"$/g, "");
+
+          const okLike =
+            okToken === "t" ||
+            okToken === "true" ||
+            okToken === "1";
+
+          if (okLike) {
+            return {
+              ok: true,
+              module: modToken ? modToken.toUpperCase() : MODULE_CODE,
+              phone: normPhone(phoneToken || fallbackPhone || ""),
+              owner_id: null
+            };
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   async function attemptPinLoginRPCs(slug, pin, phone) {
     const s = normSlug(slug);
     const p = normPin(pin);
@@ -416,12 +482,13 @@
       const res = await rpc(t.name, t.body);
       if (!res.ok) continue;
 
-      const row = Array.isArray(res.data) ? res.data[0] : res.data;
-      if (row?.ok === true) {
+      const parsed = parseVerifyPinPayload(res.data, ph);
+      if (parsed?.ok) {
         return {
           ok: true,
           slug: s,
-          phone: normPhone(row.phone || ph)
+          phone: normPhone(parsed.phone || ph),
+          owner_id: parsed.owner_id || null
         };
       }
     }
@@ -456,12 +523,14 @@
       return { ok: false, error: "PIN invalide." };
     }
 
-    const hasAccess = await checkAccess(phone);
+    const finalPhone = normPhone(auth.phone || phone);
+    const hasAccess = await checkAccess(finalPhone);
+
     if (!hasAccess) {
       return { ok: false, error: "Abonnement inactif." };
     }
 
-    rememberIdentity({ slug: s, phone });
+    rememberIdentity({ slug: s, phone: finalPhone });
     enrichUrlIfMissingSlug(s);
 
     setState({
@@ -469,7 +538,7 @@
       access_ok: true,
       reason: "pin_ok",
       slug: s,
-      phone
+      phone: finalPhone
     });
 
     showPage();
@@ -477,7 +546,8 @@
     return {
       ok: true,
       slug: s,
-      phone
+      phone: finalPhone,
+      owner_id: auth.owner_id || null
     };
   }
 
@@ -624,7 +694,6 @@
         phone: ""
       });
 
-      // jamais écran noir
       showPage();
       goLogin("");
       return null;
