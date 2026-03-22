@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>ENTREPRENEUR MULTI SERVICES — Accès PIN</title>
   <meta name="theme-color" content="#061b14">
-  <meta name="description" content="Accès pro par slug et PIN pour ENTREPRENEUR MULTI SERVICES.">
+  <meta name="description" content="Accès pro par slug et PIN pour ENTREPRENENEUR MULTI SERVICES.">
 
-<script src="./guard.js?v=build-guard-v9"></script>
+  <script src="./guard.js?v=build-guard-v10"></script>
 
   <style>
     :root{
@@ -178,6 +178,12 @@
       border-color:rgba(34,197,94,.38);
     }
 
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+
     .status{
       min-height:22px;
       font-size:13px;
@@ -268,8 +274,12 @@
       $("pin").disabled = !!on;
     }
 
-    function cockpitUrl(slug){
-      return "./cockpit.html?slug=" + encodeURIComponent(slug);
+    function cockpitUrl(slug, phone){
+      const u = new URL("./cockpit.html", location.href);
+      u.searchParams.set("slug", slug);
+      if (phone) u.searchParams.set("phone", phone);
+      u.searchParams.set("v", "10");
+      return u.toString();
     }
 
     function hydrateSlug(){
@@ -315,13 +325,17 @@
         }
 
         try{
-          localStorage.setItem(KEY_LAST_SLUG, slug);
-          sessionStorage.setItem("digiy_build_slug", slug);
-          sessionStorage.setItem("digiy_build_last_slug", slug);
+          localStorage.setItem(KEY_LAST_SLUG, r.slug || slug);
+          sessionStorage.setItem("digiy_build_slug", r.slug || slug);
+          sessionStorage.setItem("digiy_build_last_slug", r.slug || slug);
+          if (r.phone) {
+            sessionStorage.setItem("digiy_build_phone", r.phone);
+            localStorage.setItem("digiy_build_phone", r.phone);
+          }
         }catch(_){}
 
         setStatus("Accès validé. Ouverture de ton espace...", "ok");
-        location.href = cockpitUrl(slug);
+        window.location.replace(cockpitUrl(r.slug || slug, r.phone || ""));
       }catch(e){
         console.error(e);
         setStatus("Erreur pendant la vérification.", "err");
