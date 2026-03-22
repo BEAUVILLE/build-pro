@@ -12,15 +12,21 @@
   const SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
 
   const MODULE_CODE = "BUILD";
+  const MODULE_CODE_LOWER = "build";
   const LOGIN_URL = window.DIGIY_LOGIN_URL || "./pin.html";
   const PAY_URL = "https://commencer-a-payer.digiylyfe.com/";
 
-  // Sécurité : pas de preview libre sur page protégée
+  // Doctrine BUILD : pas de preview libre sur les pages protégées
   const ALLOW_PREVIEW_WITHOUT_IDENTITY = false;
 
-  const SESSION_KEY = "DIGIY_SESSION";
-  const ACCESS_KEY = "DIGIY_ACCESS";
+  // Clés module-first
   const MODULE_PREFIX = "digiy_build";
+  const MODULE_SESSION_KEY = "DIGIY_BUILD_SESSION";
+  const MODULE_ACCESS_KEY = "DIGIY_BUILD_ACCESS";
+
+  // Compatibilité ancienne génération
+  const LEGACY_SESSION_KEY = "DIGIY_SESSION";
+  const LEGACY_ACCESS_KEY = "DIGIY_ACCESS";
 
   const state = {
     preview: false,
@@ -129,18 +135,33 @@
     window.DIGIY_GUARD.state = state;
   }
 
+  function writeJsonStorage(key, obj) {
+    try {
+      localStorage.setItem(key, JSON.stringify(obj));
+    } catch (_) {}
+  }
+
+  function readJsonStorage(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   function rememberIdentity({ slug, phone }) {
     const s = normSlug(slug);
     const p = normPhone(phone);
 
-    try {
-      const sessionObj = {
-        module: MODULE_CODE,
-        slug: s || "",
-        phone: p || "",
-        at: nowIso()
-      };
+    const sessionObj = {
+      module: MODULE_CODE,
+      slug: s || "",
+      phone: p || "",
+      at: nowIso()
+    };
 
+    try {
       if (s) {
         sessionStorage.setItem(`${MODULE_PREFIX}_slug`, s);
         sessionStorage.setItem(`${MODULE_PREFIX}_last_slug`, s);
@@ -152,8 +173,14 @@
         localStorage.setItem(`${MODULE_PREFIX}_phone`, p);
       }
 
-      localStorage.setItem(SESSION_KEY, JSON.stringify(sessionObj));
-      localStorage.setItem(ACCESS_KEY, JSON.stringify(sessionObj));
+      // module-first
+      writeJsonStorage(MODULE_SESSION_KEY, sessionObj);
+      writeJsonStorage(MODULE_ACCESS_KEY, sessionObj);
+
+      // compat douce avec anciens fronts DIGIY
+      writeJsonStorage(LEGACY_SESSION_KEY, sessionObj);
+      writeJsonStorage(LEGACY_ACCESS_KEY, sessionObj);
+
       window.DIGIY_ACCESS = Object.assign({}, window.DIGIY_ACCESS || {}, sessionObj);
     } catch (_) {}
   }
@@ -163,12 +190,43 @@
       sessionStorage.removeItem(`${MODULE_PREFIX}_slug`);
       sessionStorage.removeItem(`${MODULE_PREFIX}_last_slug`);
       sessionStorage.removeItem(`${MODULE_PREFIX}_phone`);
+
       localStorage.removeItem(`${MODULE_PREFIX}_last_slug`);
       localStorage.removeItem(`${MODULE_PREFIX}_phone`);
-      localStorage.removeItem(SESSION_KEY);
-      localStorage.removeItem(ACCESS_KEY);
+
+      localStorage.removeItem(MODULE_SESSION_KEY);
+      localStorage.removeItem(MODULE_ACCESS_KEY);
+
+      // on nettoie aussi les anciennes clés pour éviter les collisions
+      localStorage.removeItem(LEGACY_SESSION_KEY);
+      localStorage.removeItem(LEGACY_ACCESS_KEY);
+
       delete window.DIGIY_ACCESS;
     } catch (_) {}
+  }
+
+  function readStoredSession() {
+    const candidates = [
+      readJsonStorage(MODULE_SESSION_KEY),
+      readJsonStorage(MODULE_ACCESS_KEY),
+      readJsonStorage(LEGACY_SESSION_KEY),
+      readJsonStorage(LEGACY_ACCESS_KEY),
+      window.DIGIY_ACCESS || null
+    ].filter(Boolean);
+
+    for (const item of candidates) {
+      const module = String(item.module || "").toUpperCase();
+      const slug = normSlug(item.slug);
+      const phone = normPhone(item.phone);
+
+      if (!slug && !phone) continue;
+
+      if (!module || module === MODULE_CODE) {
+        return { slug, phone, module: MODULE_CODE };
+      }
+    }
+
+    return null;
   }
 
   function getSession() {
@@ -176,13 +234,7 @@
 
     const fromUrlSlug = normSlug(qs.get("slug") || "");
     const fromUrlPhone = normPhone(qs.get("phone") || "");
-
-    let stored = null;
-
-    try {
-      const raw = localStorage.getItem(SESSION_KEY) || localStorage.getItem(ACCESS_KEY);
-      if (raw) stored = JSON.parse(raw);
-    } catch (_) {}
+    const stored = readStoredSession();
 
     const sessionSlug = normSlug(
       fromUrlSlug ||
@@ -190,7 +242,6 @@
       sessionStorage.getItem(`${MODULE_PREFIX}_last_slug`) ||
       localStorage.getItem(`${MODULE_PREFIX}_last_slug`) ||
       stored?.slug ||
-      window.DIGIY_ACCESS?.slug ||
       ""
     );
 
@@ -199,7 +250,6 @@
       sessionStorage.getItem(`${MODULE_PREFIX}_phone`) ||
       localStorage.getItem(`${MODULE_PREFIX}_phone`) ||
       stored?.phone ||
-      window.DIGIY_ACCESS?.phone ||
       ""
     );
 
@@ -258,40 +308,66 @@
     const s = normSlug(slug);
     if (!s) return null;
 
-    const res = await tableGet("digiy_subscriptions_public", {
-      select: "phone,slug,module",
-      slug: `eq.${s}`,
-      module: `eq.${MODULE_CODE}`,
-      limit: "1"
-    });
+    const tries = [
+      {
+        select: "phone,slug,module",
+        slug: `eq.${s}`,
+        module: `eq.${MODULE_CODE}`,
+        limit: "1"
+      },
+      {
+        select: "phone,slug,module",
+        slug: `eq.${s}`,
+        module: `eq.${MODULE_CODE_LOWER}`,
+        limit: "1"
+      }
+    ];
 
-    if (!res.ok || !Array.isArray(res.data) || !res.data[0]) return null;
+    for (const params of tries) {
+      const res = await tableGet("digiy_subscriptions_public", params);
+      if (!res.ok || !Array.isArray(res.data) || !res.data[0]) continue;
 
-    return {
-      slug: normSlug(res.data[0].slug),
-      phone: normPhone(res.data[0].phone),
-      module: String(res.data[0].module || "")
-    };
+      return {
+        slug: normSlug(res.data[0].slug),
+        phone: normPhone(res.data[0].phone),
+        module: String(res.data[0].module || "")
+      };
+    }
+
+    return null;
   }
 
   async function resolveSubByPhone(phone) {
     const p = normPhone(phone);
     if (!p) return null;
 
-    const res = await tableGet("digiy_subscriptions_public", {
-      select: "phone,slug,module",
-      phone: `eq.${p}`,
-      module: `eq.${MODULE_CODE}`,
-      limit: "1"
-    });
+    const tries = [
+      {
+        select: "phone,slug,module",
+        phone: `eq.${p}`,
+        module: `eq.${MODULE_CODE}`,
+        limit: "1"
+      },
+      {
+        select: "phone,slug,module",
+        phone: `eq.${p}`,
+        module: `eq.${MODULE_CODE_LOWER}`,
+        limit: "1"
+      }
+    ];
 
-    if (!res.ok || !Array.isArray(res.data) || !res.data[0]) return null;
+    for (const params of tries) {
+      const res = await tableGet("digiy_subscriptions_public", params);
+      if (!res.ok || !Array.isArray(res.data) || !res.data[0]) continue;
 
-    return {
-      slug: normSlug(res.data[0].slug),
-      phone: normPhone(res.data[0].phone),
-      module: String(res.data[0].module || "")
-    };
+      return {
+        slug: normSlug(res.data[0].slug),
+        phone: normPhone(res.data[0].phone),
+        module: String(res.data[0].module || "")
+      };
+    }
+
+    return null;
   }
 
   async function checkAccess(phone) {
@@ -300,15 +376,19 @@
 
     const tries = [
       { name: "digiy_has_access", body: { p_phone: p, p_module: MODULE_CODE } },
-      { name: "digiy_has_access", body: { phone: p, module: MODULE_CODE } }
+      { name: "digiy_has_access", body: { p_phone: p, p_module: MODULE_CODE_LOWER } },
+      { name: "digiy_has_access", body: { phone: p, module: MODULE_CODE } },
+      { name: "digiy_has_access", body: { phone: p, module: MODULE_CODE_LOWER } }
     ];
 
     for (const t of tries) {
       const res = await rpc(t.name, t.body);
       if (!res.ok) continue;
+
       if (res.data === true) return true;
       if (res.data?.ok === true) return true;
       if (res.data?.access === true) return true;
+      if (res.data?.has_access === true) return true;
     }
 
     return false;
@@ -328,7 +408,7 @@
       },
       {
         name: "digiy_verify_pin",
-        body: { p_phone: ph, p_module: MODULE_CODE.toLowerCase(), p_pin: p }
+        body: { p_phone: ph, p_module: MODULE_CODE_LOWER, p_pin: p }
       }
     ];
 
@@ -336,9 +416,7 @@
       const res = await rpc(t.name, t.body);
       if (!res.ok) continue;
 
-      const d = res.data;
-      const row = Array.isArray(d) ? d[0] : d;
-
+      const row = Array.isArray(res.data) ? res.data[0] : res.data;
       if (row?.ok === true) {
         return {
           ok: true,
@@ -351,7 +429,7 @@
     return null;
   }
 
-  async function attemptPinLoginTable(slug, pin, phone) {
+  async function attemptPinLoginTable() {
     return null;
   }
 
@@ -452,8 +530,30 @@
           return state;
         }
 
+        setState({
+          preview: false,
+          access_ok: false,
+          reason: "missing_identity",
+          slug: "",
+          phone: ""
+        });
+
         showPage();
         goLogin("");
+        return null;
+      }
+
+      if (!phone && slug) {
+        setState({
+          preview: false,
+          access_ok: false,
+          reason: "phone_unresolved",
+          slug: normSlug(slug),
+          phone: ""
+        });
+
+        showPage();
+        goLogin(slug);
         return null;
       }
 
@@ -462,6 +562,8 @@
 
         if (ok) {
           if (slug) enrichUrlIfMissingSlug(slug);
+
+          rememberIdentity({ slug, phone });
 
           setState({
             preview: false,
@@ -487,25 +589,29 @@
           return state;
         }
 
+        setState({
+          preview: false,
+          access_ok: false,
+          reason: "subscription_inactive",
+          slug: normSlug(slug),
+          phone: normPhone(phone)
+        });
+
         showPage();
         goLogin(slug || "");
         return null;
       }
 
-      if (ALLOW_PREVIEW_WITHOUT_IDENTITY) {
-        setState({
-          preview: true,
-          access_ok: false,
-          reason: "unknown_identity",
-          slug: normSlug(slug),
-          phone: ""
-        });
-        showPage();
-        return state;
-      }
+      setState({
+        preview: false,
+        access_ok: false,
+        reason: "unknown_identity",
+        slug: normSlug(slug),
+        phone: ""
+      });
 
       showPage();
-      goPay({ slug, phone: "" });
+      goLogin(slug || "");
       return null;
     } catch (e) {
       console.error("DIGIY_GUARD boot error:", e);
@@ -518,7 +624,7 @@
         phone: ""
       });
 
-      // très important : ne jamais laisser l'écran noir
+      // jamais écran noir
       showPage();
       goLogin("");
       return null;
