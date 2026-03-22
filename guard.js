@@ -145,17 +145,33 @@
     }
   }
 
-  function rememberIdentity({ slug, phone, access_ok = false }) {
+  // ✅ FIX : preserve_validation conserve le validated_at existant
+  function rememberIdentity({ slug, phone, access_ok = false, preserve_validation = false }) {
     const s = normSlug(slug);
     const p = normPhone(phone);
+
+    let final_access_ok = !!access_ok;
+    let validated_at = access_ok ? nowIso() : null;
+
+    if (preserve_validation) {
+      const existing =
+        readJsonStorage(MODULE_SESSION_KEY) ||
+        readJsonStorage(MODULE_ACCESS_KEY) ||
+        readJsonStorage(LEGACY_SESSION_KEY) ||
+        readJsonStorage(LEGACY_ACCESS_KEY);
+      if (existing && existing.access_ok && existing.validated_at) {
+        final_access_ok = true;
+        validated_at = existing.validated_at;
+      }
+    }
 
     const sessionObj = {
       module: MODULE_CODE,
       slug: s || "",
       phone: p || "",
       at: nowIso(),
-      access_ok: !!access_ok,
-      validated_at: access_ok ? nowIso() : null
+      access_ok: final_access_ok,
+      validated_at: validated_at
     };
 
     try {
@@ -172,7 +188,6 @@
 
       writeJsonStorage(MODULE_SESSION_KEY, sessionObj);
       writeJsonStorage(MODULE_ACCESS_KEY, sessionObj);
-
       writeJsonStorage(LEGACY_SESSION_KEY, sessionObj);
       writeJsonStorage(LEGACY_ACCESS_KEY, sessionObj);
 
@@ -191,7 +206,6 @@
 
       localStorage.removeItem(MODULE_SESSION_KEY);
       localStorage.removeItem(MODULE_ACCESS_KEY);
-
       localStorage.removeItem(LEGACY_SESSION_KEY);
       localStorage.removeItem(LEGACY_ACCESS_KEY);
 
@@ -232,7 +246,6 @@
     if (!stored) return false;
     if (!stored.access_ok) return false;
     if (!stored.validated_at) return false;
-
     const age = Date.now() - new Date(stored.validated_at).getTime();
     return age < EIGHT_HOURS;
   }
@@ -316,18 +329,8 @@
     if (!s) return null;
 
     const tries = [
-      {
-        select: "phone,slug,module",
-        slug: `eq.${s}`,
-        module: `eq.${MODULE_CODE}`,
-        limit: "1"
-      },
-      {
-        select: "phone,slug,module",
-        slug: `eq.${s}`,
-        module: `eq.${MODULE_CODE_LOWER}`,
-        limit: "1"
-      }
+      { select: "phone,slug,module", slug: `eq.${s}`, module: `eq.${MODULE_CODE}`, limit: "1" },
+      { select: "phone,slug,module", slug: `eq.${s}`, module: `eq.${MODULE_CODE_LOWER}`, limit: "1" }
     ];
 
     for (const params of tries) {
@@ -349,18 +352,8 @@
     if (!p) return null;
 
     const tries = [
-      {
-        select: "phone,slug,module",
-        phone: `eq.${p}`,
-        module: `eq.${MODULE_CODE}`,
-        limit: "1"
-      },
-      {
-        select: "phone,slug,module",
-        phone: `eq.${p}`,
-        module: `eq.${MODULE_CODE_LOWER}`,
-        limit: "1"
-      }
+      { select: "phone,slug,module", phone: `eq.${p}`, module: `eq.${MODULE_CODE}`, limit: "1" },
+      { select: "phone,slug,module", phone: `eq.${p}`, module: `eq.${MODULE_CODE_LOWER}`, limit: "1" }
     ];
 
     for (const params of tries) {
@@ -471,14 +464,8 @@
     if (!ph || !p) return null;
 
     const tries = [
-      {
-        name: "digiy_verify_pin",
-        body: { p_phone: ph, p_module: MODULE_CODE, p_pin: p }
-      },
-      {
-        name: "digiy_verify_pin",
-        body: { p_phone: ph, p_module: MODULE_CODE_LOWER, p_pin: p }
-      }
+      { name: "digiy_verify_pin", body: { p_phone: ph, p_module: MODULE_CODE, p_pin: p } },
+      { name: "digiy_verify_pin", body: { p_phone: ph, p_module: MODULE_CODE_LOWER, p_pin: p } }
     ];
 
     for (const t of tries) {
@@ -543,7 +530,7 @@
       return { ok: false, error: "Abonnement inactif." };
     }
 
-    // ✅ FIX : on mémorise avec access_ok: true + validated_at
+    // ✅ Mémorise avec access_ok: true et validated_at frais
     rememberIdentity({ slug: s, phone: finalPhone, access_ok: true });
     enrichUrlIfMissingSlug(s);
 
@@ -584,6 +571,10 @@
     hidePage();
 
     try {
+      // ✅ FIX CRITIQUE : lire le stored AVANT tout rememberIdentity qui écraserait validated_at
+      const storedBeforeBoot = readStoredSession();
+      const sessionAlreadyValid = isSessionStillValid(storedBeforeBoot);
+
       let { slug, phone } = getSession();
 
       if (slug && !phone) {
@@ -597,66 +588,38 @@
         if (sub?.slug) slug = normSlug(sub.slug);
       }
 
+      // ✅ preserve_validation = true → ne pas écraser validated_at posé par loginWithPin
       if (slug || phone) {
-        rememberIdentity({ slug, phone });
+        rememberIdentity({ slug, phone, preserve_validation: true });
       }
 
       if (!slug && !phone) {
         if (ALLOW_PREVIEW_WITHOUT_IDENTITY) {
-          setState({
-            preview: true,
-            access_ok: false,
-            reason: "preview_no_identity",
-            slug: "",
-            phone: ""
-          });
+          setState({ preview: true, access_ok: false, reason: "preview_no_identity", slug: "", phone: "" });
           showPage();
           return state;
         }
-
-        setState({
-          preview: false,
-          access_ok: false,
-          reason: "missing_identity",
-          slug: "",
-          phone: ""
-        });
-
+        setState({ preview: false, access_ok: false, reason: "missing_identity", slug: "", phone: "" });
         showPage();
         goLogin("");
         return null;
       }
 
       if (!phone && slug) {
-        setState({
-          preview: false,
-          access_ok: false,
-          reason: "phone_unresolved",
-          slug: normSlug(slug),
-          phone: ""
-        });
-
+        setState({ preview: false, access_ok: false, reason: "phone_unresolved", slug: normSlug(slug), phone: "" });
         showPage();
         goLogin(slug);
         return null;
       }
 
       if (phone) {
-        // ✅ FIX PRINCIPAL : si session validée < 8h → on ne rappelle pas checkAccess
-        const stored = readStoredSession();
-        const sessionValid = isSessionStillValid(stored);
-
-        const ok = sessionValid ? true : await checkAccess(phone);
+        // ✅ FIX PRINCIPAL : session < 8h → skip checkAccess Supabase
+        const ok = sessionAlreadyValid ? true : await checkAccess(phone);
 
         if (ok) {
           if (slug) enrichUrlIfMissingSlug(slug);
 
-          // ✅ FIX : on préserve validated_at si session déjà valide
-          rememberIdentity({
-            slug,
-            phone,
-            access_ok: true
-          });
+          rememberIdentity({ slug, phone, access_ok: true, preserve_validation: sessionAlreadyValid });
 
           setState({
             preview: false,
@@ -671,52 +634,25 @@
         }
 
         if (ALLOW_PREVIEW_WITHOUT_IDENTITY) {
-          setState({
-            preview: true,
-            access_ok: false,
-            reason: "no_subscription",
-            slug: normSlug(slug),
-            phone: normPhone(phone)
-          });
+          setState({ preview: true, access_ok: false, reason: "no_subscription", slug: normSlug(slug), phone: normPhone(phone) });
           showPage();
           return state;
         }
 
-        setState({
-          preview: false,
-          access_ok: false,
-          reason: "subscription_inactive",
-          slug: normSlug(slug),
-          phone: normPhone(phone)
-        });
-
+        setState({ preview: false, access_ok: false, reason: "subscription_inactive", slug: normSlug(slug), phone: normPhone(phone) });
         showPage();
         goLogin(slug || "");
         return null;
       }
 
-      setState({
-        preview: false,
-        access_ok: false,
-        reason: "unknown_identity",
-        slug: normSlug(slug),
-        phone: ""
-      });
-
+      setState({ preview: false, access_ok: false, reason: "unknown_identity", slug: normSlug(slug), phone: "" });
       showPage();
       goLogin(slug || "");
       return null;
+
     } catch (e) {
       console.error("DIGIY_GUARD boot error:", e);
-
-      setState({
-        preview: false,
-        access_ok: false,
-        reason: "guard_error",
-        slug: "",
-        phone: ""
-      });
-
+      setState({ preview: false, access_ok: false, reason: "guard_error", slug: "", phone: "" });
       showPage();
       goLogin("");
       return null;
