@@ -4,43 +4,63 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>ENTREPRENEUR MULTI SERVICES — Ma fiche pro</title>
+  <title>ENTREPRENEUR MULTI SERVICES — Ma fiche</title>
   <meta
     name="description"
-    content="Ma fiche pro ENTREPRENEUR MULTI SERVICES. Présentation, services, zone d’intervention, contact et publication."
+    content="Ma fiche ENTREPRENEUR MULTI SERVICES. Présentation, services, zone d’intervention, contact et publication."
   />
 
-  <link rel="stylesheet" href="./profile.css?v=build-pro-profile-v5"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="./profile.css?v=build-pro-profile-v6"/>
+
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "BUILD";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./guard.js?v=build-pro-profile-v7"></script>
-  <script defer src="./profile.js?v=build-pro-profile-v5"></script>
+  <script src="./guard.js?v=build-pro-profile-v8"></script>
+  <script defer src="./profile.js?v=build-pro-profile-v6"></script>
 </head>
 
 <body>
-  <div id="guard_status">🔐 Vérification…</div>
+  <div id="guard_status">Vérification…</div>
 
   <div class="app">
     <div class="wrap">
       <div class="card">
-        <div class="head">
-          <div>
-            <h1>🛠️ Ma fiche ENTREPRENEUR MULTI SERVICES</h1>
-            <p class="sub">
-              Ici tu présentes ton activité, tes services, ta zone d’intervention et ton contact.
-              <span class="ok">Si tu publies</span>, ta fiche peut apparaître dans la vitrine du module selon le rail réel déjà posé.
-            </p>
+
+        <div class="hero">
+          <div class="hero-brand">
+            <img
+              class="hero-logo"
+              src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg"
+              alt="Logo DIGIYLYFE"
+            />
+            <div>
+              <div class="hero-kicker">ENTREPRENEUR MULTI SERVICES</div>
+              <h1>🛠️ Ma fiche</h1>
+              <p class="sub">
+                Ici tu présentes ton activité, tes services, ta zone d’intervention et ton contact.
+                Si tu publies, ta fiche peut apparaître dans la vitrine du module.
+              </p>
+            </div>
           </div>
 
           <div class="head-actions">
-            <button class="btn ghost" id="btnCopyLink" type="button">📋 Copier le lien</button>
-            <button class="btn ghost" id="btnOpenLink" type="button">👁️ Ouvrir le lien</button>
+            <button class="btn ghost" id="btnCopyLink" type="button">📋 Copier mon lien</button>
+            <button class="btn ghost" id="btnOpenLink" type="button">🌍 Voir ma fiche</button>
           </div>
         </div>
 
-        <div class="note">
-          <b>Lecture DIGIY :</b> cette page fait partie du circuit interne PRO.
-          Une fois la session ouverte, tu peux aller du cockpit à la fiche puis revenir sans repasser par le PIN.
+        <div class="note top-note">
+          <b>Lecture DIGIY :</b> une fois ta session ouverte, tu peux passer de ta gestion à ta fiche et revenir sans repasser par le PIN.
         </div>
 
         <div class="hr"></div>
@@ -51,7 +71,7 @@
             <input id="display_name" placeholder="Ex : Ndiaga Services"/>
           </div>
           <div>
-            <label>Ville / Zone</label>
+            <label>Ville / zone</label>
             <input id="city" placeholder="Ex : Saly – Petite Côte"/>
           </div>
         </div>
@@ -64,22 +84,22 @@
           <div>
             <label>Zone d’intervention</label>
             <select id="region">
-              <option value="petite-cote">petite-cote</option>
-              <option value="dakar">dakar</option>
-              <option value="thies">thies</option>
-              <option value="national">national</option>
+              <option value="petite-cote">Petite Côte</option>
+              <option value="dakar">Dakar</option>
+              <option value="thies">Thiès</option>
+              <option value="national">National</option>
             </select>
           </div>
         </div>
 
         <div class="row">
           <div>
-            <label>Type de services</label>
+            <label>Famille de services</label>
             <select id="sector">
-              <option value="multi">multi</option>
-              <option value="construction">construction</option>
-              <option value="plomberie">plomberie</option>
-              <option value="electricite">electricite</option>
+              <option value="multi">Multi services</option>
+              <option value="construction">Construction</option>
+              <option value="plomberie">Plomberie</option>
+              <option value="electricite">Électricité</option>
             </select>
           </div>
           <div>
@@ -90,11 +110,11 @@
 
         <div class="row">
           <div>
-            <label>WhatsApp (sans espaces)</label>
+            <label>WhatsApp</label>
             <input id="whatsapp" placeholder="Ex : 221774513523"/>
           </div>
           <div>
-            <label>Téléphone (optionnel)</label>
+            <label>Téléphone</label>
             <input id="phone" placeholder="Ex : +221..."/>
           </div>
         </div>
@@ -130,24 +150,24 @@
             <input id="price_label" placeholder="Ex : Devis rapide • Paiement direct"/>
           </div>
           <div>
-            <label>Tags (JSON ou liste simple)</label>
+            <label>Tags</label>
             <input id="tags" placeholder='Ex : travaux,depannage,chantier ou ["travaux","chantier"]'/>
           </div>
         </div>
 
         <div class="row">
           <div>
-            <label>Slug (lien interne)</label>
+            <label>Identifiant de la fiche</label>
             <input id="slug" placeholder="auto"/>
             <div class="hint">
-              Par défaut on garde le slug existant pour rester stable. Tu peux le régénérer si besoin.
+              Par défaut on garde l’identifiant déjà posé pour rester stable. Tu peux le régénérer si besoin.
             </div>
           </div>
           <div>
-            <label>Publier maintenant ?</label>
+            <label>Visibilité</label>
             <select id="is_published">
-              <option value="true">Oui (visible)</option>
-              <option value="false">Non (brouillon)</option>
+              <option value="true">Visible</option>
+              <option value="false">Brouillon</option>
             </select>
           </div>
         </div>
@@ -156,9 +176,9 @@
 
         <div class="actions">
           <button class="btn primary" id="btnSave" type="button">💾 Enregistrer</button>
-          <button class="btn secondary" id="btnReSlug" type="button">🧾 Régénérer le slug</button>
-          <a class="btn ghost" id="btnOpenListing" href="https://beauville.github.io/digiy-build/listing.html" target="_blank" rel="noopener">🌍 Ouvrir la vitrine</a>
-          <button class="btn ghost" id="btnBack" type="button">↩️ Retour cockpit</button>
+          <button class="btn secondary" id="btnReSlug" type="button">🧾 Régénérer l’identifiant</button>
+          <button class="btn ghost" id="btnOpenListing" type="button">🌍 Ouvrir la vitrine</button>
+          <button class="btn ghost" id="btnBack" type="button">↩️ Retour à ma gestion</button>
         </div>
 
         <div class="note" id="msg">Statut : —</div>
