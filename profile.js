@@ -1,103 +1,165 @@
 (() => {
   "use strict";
 
-  const SUPABASE_URL = String(
-    window.DIGIY_SUPABASE_URL || "https://wesqmwjjtsefyjnluosj.supabase.co"
-  ).trim();
+  const MODULE = "BUILD";
+  const TABLE = "digiy_build_public_profiles";
+  const SUPPORT_PHONE = "221771342889";
+  const DRAFT_PREFIX = "DIGIY_BUILD_PROFILE_DRAFT::";
+  const CACHE_PREFIX = "DIGIY_BUILD_PROFILE_CACHE::";
 
-  const SUPABASE_ANON_KEY = String(
-    window.DIGIY_SUPABASE_ANON ||
-    window.DIGIY_SUPABASE_ANON_KEY ||
-    "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3"
-  ).trim();
-
-  const MODULE_CODE = "BUILD";
-  const PUBLIC_LISTING_URL = "https://beauville.github.io/digiy-build/listing.html";
-  const PROFILE_SLUG_KEY = "digiy_build_profile_slug";
-
-  const DEFAULT_HUB_BADGE = "";
-  const DEFAULT_PRICE_LABEL = "";
-
-  const gs = document.getElementById("guard_status");
-  const msg = document.getElementById("msg");
-  const $ = (id) => document.getElementById(id);
-
-  let sb = null;
-  let ACCESS = {
+  const state = {
     slug: "",
-    phone: ""
+    phone: "",
+    owner_id: null,
+    access_ok: false,
+    loading: false,
+    saving: false,
+    remote_loaded: false,
+    remote_available: false,
+    row: null,
+    client: null
   };
-  let EXISTING_ROW = null;
 
-  function setGuard(text) {
-    if (!gs) return;
-    gs.textContent = text;
+  const IDS = [
+    "display_name",
+    "city",
+    "trade",
+    "region",
+    "sector",
+    "priority",
+    "whatsapp",
+    "phone",
+    "bio",
+    "photo_url",
+    "profile_url",
+    "badge",
+    "hub_badge",
+    "price_label",
+    "tags",
+    "slug",
+    "is_published"
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const els = {};
+
+  function bindElements() {
+    IDS.forEach((id) => {
+      els[id] = $(id);
+    });
+    els.guard = $("guard_status");
+    els.msg = $("msg");
+    els.btnSave = $("btnSave");
+    els.btnReSlug = $("btnReSlug");
+    els.btnOpenListing = $("btnOpenListing");
+    els.btnBack = $("btnBack");
+    els.btnCopyLink = $("btnCopyLink");
+    els.btnOpenLink = $("btnOpenLink");
   }
 
-  function setMsg(text, ok = true) {
-    if (!msg) return;
-    msg.innerHTML = `Statut : <span class="${ok ? "ok" : "bad"}">${escapeHtml(text)}</span>`;
+  function text(v) {
+    return String(v ?? "").trim();
   }
 
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function normSlug(str) {
-    return String(str || "")
-      .toLowerCase()
+  function normSlug(value) {
+    return String(value || "")
       .trim()
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "") || "";
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
   }
 
-  function slugify(str) {
-    return normSlug(str) || ("pro-" + Math.random().toString(16).slice(2, 8));
+  function normPhone(value) {
+    const raw = String(value || "").trim();
+    const cleaned = raw.replace(/[^\d+]/g, "");
+    const digits = cleaned.replace(/[^\d]/g, "");
+    if (!digits) return "";
+    return cleaned.startsWith("+") ? `+${digits}` : digits;
   }
 
-  function digits(v) {
-    return String(v || "").replace(/[^\d]/g, "");
+  function clampNumber(value, fallback = 1, min = 0, max = 100) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return fallback;
+    return Math.min(max, Math.max(min, Math.round(n)));
   }
 
-  function parseTags(raw) {
-    const s = String(raw || "").trim();
-    if (!s) return null;
-
-    if (s.startsWith("[") && s.endsWith("]")) {
-      try {
-        const arr = JSON.parse(s);
-        return Array.isArray(arr) ? arr.map(x => String(x).trim()).filter(Boolean) : null;
-      } catch (_) {}
-    }
-
-    return s.split(",").map(x => x.trim()).filter(Boolean);
+  function toBool(value) {
+    if (typeof value === "boolean") return value;
+    const v = String(value ?? "").trim().toLowerCase();
+    return v === "true" || v === "1" || v === "yes" || v === "on";
   }
 
-  function rememberProfileSlug(slug) {
-    const s = normSlug(slug);
-    if (!s) return;
+  function maybeUrl(value) {
+    const raw = text(value);
+    if (!raw) return "";
     try {
-      sessionStorage.setItem(PROFILE_SLUG_KEY, s);
-      localStorage.setItem(PROFILE_SLUG_KEY, s);
-    } catch (_) {}
-  }
-
-  function getRememberedProfileSlug() {
-    try {
-      return normSlug(
-        sessionStorage.getItem(PROFILE_SLUG_KEY) ||
-        localStorage.getItem(PROFILE_SLUG_KEY) ||
-        ""
-      );
+      return new URL(raw).toString();
     } catch (_) {
       return "";
     }
+  }
+
+  function slugifyHuman(value) {
+    const slug = normSlug(value);
+    if (slug) return slug;
+    return state.slug || `build-${Date.now()}`;
+  }
+
+  function parseTags(raw) {
+    const source = text(raw);
+    if (!source) return [];
+
+    if (source.startsWith("[") && source.endsWith("]")) {
+      try {
+        const arr = JSON.parse(source);
+        if (Array.isArray(arr)) {
+          return arr
+            .map((v) => text(v))
+            .filter(Boolean);
+        }
+      } catch (_) {}
+    }
+
+    return source
+      .split(",")
+      .map((v) => text(v))
+      .filter(Boolean);
+  }
+
+  function formatTags(value) {
+    if (Array.isArray(value)) {
+      return value.map((v) => text(v)).filter(Boolean).join(",");
+    }
+    if (typeof value === "string") {
+      const raw = value.trim();
+      if (!raw) return "";
+      if (raw.startsWith("[") && raw.endsWith("]")) {
+        try {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            return arr.map((v) => text(v)).filter(Boolean).join(",");
+          }
+        } catch (_) {}
+      }
+      return raw;
+    }
+    return "";
+  }
+
+  function firstOf(obj, keys, fallback = "") {
+    for (const key of keys) {
+      if (!obj || !(key in obj)) continue;
+      const value = obj[key];
+      if (value === null || value === undefined) continue;
+      if (typeof value === "string") {
+        if (value.trim() === "") continue;
+        return value;
+      }
+      return value;
+    }
+    return fallback;
   }
 
   function buildSafeUrl(path, params = {}) {
@@ -114,334 +176,579 @@
     }
   }
 
-  function computePublicLink(row) {
-    const profileUrl = String(row?.profile_url || "").trim();
-    if (profileUrl) return profileUrl;
-
-    const q = row?.slug || row?.display_name || row?.trade || "";
-    if (!q) return PUBLIC_LISTING_URL;
-
-    return PUBLIC_LISTING_URL + "?q=" + encodeURIComponent(q);
+  function dashboardUrl() {
+    return buildSafeUrl("./dashboard-pro.html", {
+      slug: state.slug,
+      phone: state.phone
+    });
   }
 
-  function hydrateForm(row) {
-    $("display_name").value = row.display_name || "";
-    $("city").value = row.city || "";
-    $("trade").value = row.trade || "";
-    $("region").value = row.region || "petite-cote";
-    $("sector").value = row.sector || "multi";
-    $("whatsapp").value = row.whatsapp || "";
-    $("phone").value = row.phone || "";
-    $("bio").value = row.bio || "";
-    $("photo_url").value = row.photo_url || "";
-    $("profile_url").value = row.profile_url || "";
-    $("badge").value = row.badge || "";
-    $("hub_badge").value = row.hub_badge || "";
-    $("price_label").value = row.price_label || "";
-    $("priority").value = Number(row.priority ?? 1);
-    $("is_published").value = String(!!row.is_published);
-    $("slug").value = row.slug || "";
-
+  function publicOrigin() {
     try {
-      $("tags").value = Array.isArray(row.tags) ? JSON.stringify(row.tags) : "";
+      const url = new URL(window.location.href);
+      if (url.hostname.startsWith("pro-")) {
+        url.hostname = url.hostname.replace(/^pro-/, "");
+      }
+      return url.origin;
     } catch (_) {
-      $("tags").value = "";
+      return window.location.origin;
     }
   }
 
-  async function fetchByProfileSlug(profileSlug) {
-    if (!profileSlug) return null;
-
-    const { data, error } = await sb
-      .from("digiy_build_public_profiles")
-      .select("*")
-      .eq("slug", profileSlug)
-      .limit(1)
-      .maybeSingle();
-
-    if (error) throw error;
-    return data || null;
-  }
-
-  async function fetchByContactPhone(phone) {
-    const p = digits(phone);
-    if (!p) return null;
-
-    const { data, error } = await sb
-      .from("digiy_build_public_profiles")
-      .select("*")
-      .or(`whatsapp.eq.${p},phone.eq.${p}`)
-      .limit(1)
-      .maybeSingle();
-
-    if (error) throw error;
-    return data || null;
-  }
-
-  function fillDefaultsIfUseful() {
-    if (!$("whatsapp").value && ACCESS.phone) {
-      $("whatsapp").value = ACCESS.phone;
-    }
-    if (!$("phone").value && ACCESS.phone) {
-      $("phone").value = ACCESS.phone;
-    }
-  }
-
-  async function loadExisting() {
-    if (!sb) return;
+  function inferredProfileUrl() {
+    const explicit = maybeUrl(els.profile_url?.value);
+    if (explicit) return explicit;
 
     try {
-      let row = null;
-
-      const remembered = getRememberedProfileSlug();
-      if (remembered) {
-        row = await fetchByProfileSlug(remembered);
-      }
-
-      if (!row && ACCESS.phone) {
-        row = await fetchByContactPhone(ACCESS.phone);
-      }
-
-      if (!row && $("slug").value.trim()) {
-        row = await fetchByProfileSlug(normSlug($("slug").value));
-      }
-
-      EXISTING_ROW = row || null;
-
-      if (!row) {
-        $("slug").value = slugify($("display_name").value || "");
-        fillDefaultsIfUseful();
-        setMsg("Aucune fiche existante. Création possible.", true);
-        return;
-      }
-
-      hydrateForm(row);
-      fillDefaultsIfUseful();
-      rememberProfileSlug(row.slug || "");
-      setMsg("Fiche existante chargée.", true);
-    } catch (e) {
-      console.warn("loadExisting err:", e);
-      setMsg("Impossible de charger la fiche.", false);
+      const url = new URL("/", publicOrigin());
+      if (state.slug) url.searchParams.set("slug", state.slug);
+      return url.toString();
+    } catch (_) {
+      return "";
     }
   }
 
-  function buildPayload() {
-    const display_name = $("display_name").value.trim();
-    const city = $("city").value.trim();
-    const trade = $("trade").value.trim();
-    const region = $("region").value.trim();
-    const sector = $("sector").value.trim();
-    const whatsapp = digits($("whatsapp").value);
-    const phone = digits($("phone").value);
-    const bio = $("bio").value.trim();
-    const photo_url = $("photo_url").value.trim();
-    const profile_url = $("profile_url").value.trim();
-    const badge = $("badge").value.trim();
-    const hub_badge = $("hub_badge").value.trim();
-    const price_label = $("price_label").value.trim();
-    const priority = Math.max(0, Math.min(100, parseInt($("priority").value, 10) || 1));
-    const is_published = $("is_published").value === "true";
-    const tags = parseTags($("tags").value);
-
-    if (!display_name) throw new Error("Nom visible requis");
-    if (!whatsapp) throw new Error("WhatsApp requis");
-
-    let slug = normSlug($("slug").value);
-    if (!slug) {
-      slug = slugify(display_name);
-      $("slug").value = slug;
+  function listingUrl() {
+    try {
+      return new URL("/", publicOrigin()).toString();
+    } catch (_) {
+      return publicOrigin();
     }
+  }
+
+  function draftKey(slug = state.slug) {
+    return `${DRAFT_PREFIX}${normSlug(slug || "noslug")}`;
+  }
+
+  function cacheKey(slug = state.slug) {
+    return `${CACHE_PREFIX}${normSlug(slug || "noslug")}`;
+  }
+
+  function saveLocalObject(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (_) {}
+  }
+
+  function readLocalObject(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || "null");
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function removeLocalObject(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (_) {}
+  }
+
+  function setGuardStatus(message) {
+    if (els.guard) els.guard.textContent = message;
+  }
+
+  function setMsg(message, kind = "neutral") {
+    if (!els.msg) return;
+    els.msg.classList.remove("ok", "bad");
+    if (kind === "ok") els.msg.classList.add("ok");
+    if (kind === "bad") els.msg.classList.add("bad");
+    els.msg.innerHTML = message;
+  }
+
+  function setButtonsDisabled(disabled) {
+    [
+      els.btnSave,
+      els.btnReSlug,
+      els.btnOpenListing,
+      els.btnBack,
+      els.btnCopyLink,
+      els.btnOpenLink
+    ].forEach((button) => {
+      if (button) button.disabled = !!disabled;
+    });
+  }
+
+  function openAccess() {
+    document.documentElement.classList.add("access-ok");
+    setGuardStatus("Accès ouvert");
+  }
+
+  function closeAccess(message = "Accès fermé") {
+    document.documentElement.classList.remove("access-ok");
+    setGuardStatus(message);
+  }
+
+  function supportUrl() {
+    const txt = encodeURIComponent(
+      "Support ENTREPRENEUR MULTI SERVICES.\n" +
+      "Identifiant : " + (state.slug || "") + "\n" +
+      "Téléphone : " + (state.phone || "") + "\n" +
+      "Besoin d’aide sur la fiche."
+    );
+    return "https://wa.me/" + SUPPORT_PHONE + "?text=" + txt;
+  }
+
+  function getSupabaseClient() {
+    if (state.client) return state.client;
+
+    const url = window.DIGIY_SUPABASE_URL || "";
+    const key = window.DIGIY_SUPABASE_ANON || window.DIGIY_SUPABASE_ANON_KEY || "";
+
+    if (!url || !key || !window.supabase || typeof window.supabase.createClient !== "function") {
+      return null;
+    }
+
+    state.client = window.supabase.createClient(url, key, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    });
+
+    return state.client;
+  }
+
+  function buildFormState() {
+    const displayName = text(els.display_name?.value);
+    const slug = normSlug(els.slug?.value || state.slug || slugifyHuman(displayName || els.trade?.value));
+    const phone = normPhone(els.phone?.value || state.phone);
+    const whatsapp = normPhone(els.whatsapp?.value || phone);
+    const tagsArr = parseTags(els.tags?.value);
+    const profileUrl = maybeUrl(els.profile_url?.value) || inferredProfileUrl();
 
     return {
       slug,
-      display_name,
-      trade: trade || null,
-      sector: sector || null,
-      region: region || null,
-      city: city || null,
-      address: null,
+      phone,
+      display_name: displayName,
+      city: text(els.city?.value),
+      trade: text(els.trade?.value),
+      region: text(els.region?.value) || "petite-cote",
+      sector: text(els.sector?.value) || "multi",
+      priority: clampNumber(els.priority?.value, 1, 0, 100),
       whatsapp,
-      phone: phone || ACCESS.phone || null,
-      photo_url: photo_url || null,
-      bio: bio || null,
-      tags: tags || null,
-      profile_url: profile_url || null,
-      is_published,
-      is_active: true,
-      is_verified: true,
-      priority,
-      badge: badge || null,
-      hub_badge: hub_badge || DEFAULT_HUB_BADGE || null,
-      price_label: price_label || DEFAULT_PRICE_LABEL || null
+      bio: text(els.bio?.value),
+      photo_url: maybeUrl(els.photo_url?.value),
+      profile_url: profileUrl,
+      badge: text(els.badge?.value),
+      hub_badge: text(els.hub_badge?.value),
+      price_label: text(els.price_label?.value),
+      tags: tagsArr,
+      tags_text: tagsArr.join(","),
+      is_published: toBool(els.is_published?.value),
+      module: MODULE,
+      owner_id: state.owner_id || null,
+      updated_at: new Date().toISOString()
     };
   }
 
-  async function saveProfile() {
-    if (!sb) {
-      setMsg("Supabase non disponible.", false);
+  function fillDefaults() {
+    if (!els.slug.value) els.slug.value = state.slug || "";
+    if (!els.phone.value) els.phone.value = state.phone || "";
+    if (!els.whatsapp.value) els.whatsapp.value = state.phone || "";
+    if (!els.region.value) els.region.value = "petite-cote";
+    if (!els.sector.value) els.sector.value = "multi";
+    if (!els.priority.value) els.priority.value = "1";
+    if (!els.profile_url.value) els.profile_url.value = inferredProfileUrl();
+  }
+
+  function applyRow(row) {
+    const safe = row || {};
+
+    els.display_name.value = text(firstOf(safe, ["display_name", "public_label", "name", "title"]));
+    els.city.value = text(firstOf(safe, ["city", "zone", "quartier", "location"]));
+    els.trade.value = text(firstOf(safe, ["trade", "activity", "job_title", "profession"]));
+    els.region.value = text(firstOf(safe, ["region", "city_zone"], "petite-cote")) || "petite-cote";
+    els.sector.value = text(firstOf(safe, ["sector", "category"], "multi")) || "multi";
+    els.priority.value = String(clampNumber(firstOf(safe, ["priority", "priority_rank"], 1), 1, 0, 100));
+    els.whatsapp.value = normPhone(firstOf(safe, ["whatsapp", "whatsapp_phone", "phone"], state.phone));
+    els.phone.value = normPhone(firstOf(safe, ["phone", "owner_phone", "contact_phone"], state.phone));
+    els.bio.value = text(firstOf(safe, ["bio", "description", "short_description", "about"]));
+    els.photo_url.value = text(firstOf(safe, ["photo_url", "photo", "image_url", "cover_url"]));
+    els.profile_url.value = maybeUrl(firstOf(safe, ["profile_url", "public_url", "url"])) || inferredProfileUrl();
+    els.badge.value = text(firstOf(safe, ["badge", "tagline", "headline_badge"]));
+    els.hub_badge.value = text(firstOf(safe, ["hub_badge", "public_badge"]));
+    els.price_label.value = text(firstOf(safe, ["price_label", "price_text", "offer_label"]));
+    els.tags.value = formatTags(firstOf(safe, ["tags", "keywords", "tag_list"], []));
+    els.slug.value = normSlug(firstOf(safe, ["slug"], state.slug));
+    els.is_published.value = toBool(firstOf(safe, ["is_published", "published", "is_public"], false)) ? "true" : "false";
+
+    fillDefaults();
+  }
+
+  function applyDraft(row) {
+    if (!row || typeof row !== "object") {
+      fillDefaults();
       return;
     }
+    applyRow(row);
+  }
+
+  function saveDraft() {
+    const payload = buildFormState();
+    saveLocalObject(draftKey(payload.slug || state.slug), {
+      ...payload,
+      saved_locally_at: new Date().toISOString()
+    });
+  }
+
+  let draftTimer = null;
+  function scheduleDraftSave() {
+    if (draftTimer) clearTimeout(draftTimer);
+    draftTimer = setTimeout(() => {
+      try {
+        saveDraft();
+      } catch (_) {}
+    }, 250);
+  }
+
+  async function loadRemoteProfile() {
+    const client = getSupabaseClient();
+    if (!client || !state.slug) return { ok: false, data: null, error: null };
 
     try {
-      const payload = buildPayload();
-      setMsg("Enregistrement en cours…", true);
+      let res = await client
+        .from(TABLE)
+        .select("*")
+        .eq("slug", state.slug)
+        .limit(1)
+        .maybeSingle();
 
-      let res;
+      if (!res.error && res.data) {
+        return { ok: true, data: res.data, error: null };
+      }
 
-      if (EXISTING_ROW?.id) {
-        res = await sb
-          .from("digiy_build_public_profiles")
-          .update(payload)
-          .eq("id", EXISTING_ROW.id)
+      if (state.phone) {
+        res = await client
+          .from(TABLE)
           .select("*")
-          .maybeSingle();
-      } else {
-        res = await sb
-          .from("digiy_build_public_profiles")
-          .insert(payload)
-          .select("*")
+          .eq("phone", state.phone)
+          .limit(1)
           .maybeSingle();
 
-        if (res?.error) {
-          res = await sb
-            .from("digiy_build_public_profiles")
-            .upsert(payload, { onConflict: "slug" })
-            .select("*")
-            .maybeSingle();
+        if (!res.error && res.data) {
+          return { ok: true, data: res.data, error: null };
         }
       }
 
-      if (res?.error) {
-        console.error(res.error);
-        setMsg("Erreur : " + (res.error.message || res.error), false);
-        return;
+      return { ok: true, data: null, error: res.error || null };
+    } catch (error) {
+      return { ok: false, data: null, error };
+    }
+  }
+
+  async function upsertPayload(payload) {
+    const client = getSupabaseClient();
+    if (!client) {
+      return { ok: false, error: new Error("Supabase indisponible") };
+    }
+
+    try {
+      const { data, error } = await client
+        .from(TABLE)
+        .upsert(payload, { onConflict: "slug" })
+        .select("*")
+        .maybeSingle();
+
+      if (error) return { ok: false, error };
+      return { ok: true, data: data || payload };
+    } catch (error) {
+      return { ok: false, error };
+    }
+  }
+
+  async function saveRemoteProfile(form) {
+    const payloads = [
+      {
+        slug: form.slug,
+        phone: form.phone,
+        display_name: form.display_name,
+        city: form.city,
+        trade: form.trade,
+        region: form.region,
+        sector: form.sector,
+        priority: form.priority,
+        whatsapp: form.whatsapp,
+        bio: form.bio,
+        photo_url: form.photo_url,
+        profile_url: form.profile_url,
+        badge: form.badge,
+        hub_badge: form.hub_badge,
+        price_label: form.price_label,
+        tags: form.tags,
+        is_published: form.is_published,
+        module: form.module,
+        owner_id: form.owner_id,
+        updated_at: form.updated_at
+      },
+      {
+        slug: form.slug,
+        phone: form.phone,
+        display_name: form.display_name,
+        city: form.city,
+        trade: form.trade,
+        region: form.region,
+        sector: form.sector,
+        priority: form.priority,
+        whatsapp_phone: form.whatsapp,
+        bio: form.bio,
+        photo_url: form.photo_url,
+        public_url: form.profile_url,
+        badge: form.badge,
+        public_badge: form.hub_badge,
+        price_label: form.price_label,
+        tags: form.tags_text,
+        is_published: form.is_published,
+        module: form.module,
+        owner_id: form.owner_id,
+        updated_at: form.updated_at
+      },
+      {
+        slug: form.slug,
+        phone: form.phone,
+        display_name: form.display_name,
+        city: form.city,
+        trade: form.trade,
+        sector: form.sector,
+        bio: form.bio,
+        is_published: form.is_published,
+        updated_at: form.updated_at
+      },
+      {
+        slug: form.slug,
+        phone: form.phone,
+        display_name: form.display_name,
+        sector: form.sector,
+        updated_at: form.updated_at
       }
+    ];
 
-      EXISTING_ROW = res.data || payload;
-      rememberProfileSlug(EXISTING_ROW.slug || payload.slug);
+    let lastError = null;
 
-      setMsg(`OK ✅ fiche enregistrée • visible=${payload.is_published ? "oui" : "non"}`, true);
-    } catch (e) {
-      console.error(e);
-      setMsg(e?.message || "Erreur", false);
-    }
-  }
-
-  function reSlug() {
-    const dn = $("display_name").value.trim();
-    const newSlug = slugify(dn || "");
-    $("slug").value = newSlug;
-    setMsg("Identifiant régénéré ✅", true);
-  }
-
-  async function copyLink() {
-    let link = "";
-    try {
-      link = computePublicLink(EXISTING_ROW || buildPayload());
-    } catch (_) {
-      link = computePublicLink(EXISTING_ROW);
+    for (const payload of payloads) {
+      const res = await upsertPayload(payload);
+      if (res.ok) return res;
+      lastError = res.error || lastError;
     }
 
-    if (!link) {
-      setMsg("Pas de lien pour le moment.", false);
+    return { ok: false, error: lastError || new Error("Échec de sauvegarde distante") };
+  }
+
+  async function loadProfile() {
+    state.loading = true;
+    setMsg("Chargement de ta fiche…");
+
+    const localDraft = readLocalObject(draftKey());
+    const localCache = readLocalObject(cacheKey());
+    const remote = await loadRemoteProfile();
+
+    if (remote.ok && remote.data) {
+      state.row = remote.data;
+      state.remote_loaded = true;
+      state.remote_available = true;
+      applyRow(remote.data);
+      setMsg("Fiche chargée depuis le rail principal.", "ok");
+      saveLocalObject(cacheKey(state.slug), remote.data);
+      removeLocalObject(draftKey(state.slug));
+      state.loading = false;
+      return;
+    }
+
+    if (localDraft) {
+      applyDraft(localDraft);
+      setMsg("Aucun retour distant pour le moment. Brouillon local rechargé sur cet appareil.", "ok");
+      state.loading = false;
+      return;
+    }
+
+    if (localCache) {
+      applyDraft(localCache);
+      setMsg("Dernière fiche connue rechargée depuis cet appareil.", "ok");
+      state.loading = false;
+      return;
+    }
+
+    fillDefaults();
+    setMsg("Nouvelle fiche prête. Tu peux remplir puis enregistrer.");
+    state.loading = false;
+  }
+
+  async function saveProfile() {
+    if (state.saving) return;
+
+    const form = buildFormState();
+    if (!form.slug) {
+      setMsg("Ajoute un identifiant ou un nom visible pour générer ta fiche.", "bad");
+      els.slug.focus();
+      return;
+    }
+
+    if (!form.display_name) {
+      setMsg("Ajoute au moins un nom visible.", "bad");
+      els.display_name.focus();
+      return;
+    }
+
+    state.slug = form.slug;
+    state.phone = form.phone || state.phone;
+
+    els.slug.value = form.slug;
+    if (!els.phone.value && state.phone) els.phone.value = state.phone;
+    if (!els.profile_url.value) els.profile_url.value = inferredProfileUrl();
+
+    saveLocalObject(draftKey(form.slug), {
+      ...form,
+      saved_locally_at: new Date().toISOString()
+    });
+
+    state.saving = true;
+    setButtonsDisabled(true);
+    setMsg("Enregistrement en cours…");
+
+    const remote = await saveRemoteProfile(form);
+
+    state.saving = false;
+    setButtonsDisabled(false);
+
+    if (remote.ok) {
+      state.row = remote.data || form;
+      state.remote_available = true;
+      state.remote_loaded = true;
+      saveLocalObject(cacheKey(form.slug), state.row);
+      removeLocalObject(draftKey(form.slug));
+      setMsg("Fiche enregistrée. La page est proprement recousue et ta dernière version est gardée sur cet appareil.", "ok");
+      return;
+    }
+
+    saveLocalObject(cacheKey(form.slug), form);
+    const reason = text(remote.error?.message || remote.error?.details || remote.error?.hint || remote.error) || "sauvegarde distante indisponible";
+    setMsg(`Sauvegarde locale faite. Le push distant n’a pas répondu proprement pour le moment : ${reason}.`, "bad");
+  }
+
+  function regenerateSlug() {
+    const seed = text(els.display_name.value) || text(els.trade.value) || state.slug || `build-${Date.now()}`;
+    const newSlug = slugifyHuman(seed);
+    els.slug.value = newSlug;
+    state.slug = newSlug;
+    if (!els.profile_url.value || els.profile_url.value === inferredProfileUrl()) {
+      els.profile_url.value = inferredProfileUrl();
+    }
+    saveDraft();
+    setMsg("Identifiant régénéré. Vérifie-le avant d’enregistrer.");
+  }
+
+  async function copyProfileLink() {
+    const url = inferredProfileUrl();
+    if (!url) {
+      setMsg("Aucun lien disponible pour le moment.", "bad");
       return;
     }
 
     try {
-      await navigator.clipboard.writeText(link);
-      setMsg("Lien copié ✅", true);
+      await navigator.clipboard.writeText(url);
+      setMsg("Lien copié.", "ok");
     } catch (_) {
-      setMsg("Copie impossible. Lien : " + link, true);
+      const area = document.createElement("textarea");
+      area.value = url;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+      setMsg("Lien copié.", "ok");
     }
   }
 
-  function openLink() {
-    let link = "";
-    try {
-      link = computePublicLink(EXISTING_ROW || buildPayload());
-    } catch (_) {
-      link = computePublicLink(EXISTING_ROW);
-    }
-
-    if (!link) {
-      setMsg("Pas de lien pour le moment. Enregistre d’abord.", false);
+  function openProfileLink() {
+    const url = inferredProfileUrl();
+    if (!url) {
+      setMsg("Ajoute ou génère d’abord un lien de fiche.", "bad");
       return;
     }
-
-    window.open(link, "_blank", "noopener");
+    window.open(url, "_blank", "noopener");
   }
 
   function openListing() {
-    window.open(PUBLIC_LISTING_URL, "_blank", "noopener");
+    const url = listingUrl();
+    window.open(url, "_blank", "noopener");
   }
 
-  function goBack() {
-    const url = buildSafeUrl("./cockpit.html", {
-      slug: ACCESS.slug,
-      phone: ACCESS.phone
+  function bindUi() {
+    els.btnBack.addEventListener("click", () => {
+      window.location.href = dashboardUrl();
     });
-    window.location.href = url;
+
+    els.btnSave.addEventListener("click", saveProfile);
+    els.btnReSlug.addEventListener("click", regenerateSlug);
+    els.btnCopyLink.addEventListener("click", copyProfileLink);
+    els.btnOpenLink.addEventListener("click", openProfileLink);
+    els.btnOpenListing.addEventListener("click", openListing);
+
+    IDS.forEach((id) => {
+      const el = els[id];
+      if (!el) return;
+      el.addEventListener("input", scheduleDraftSave);
+      el.addEventListener("change", scheduleDraftSave);
+    });
+
+    window.addEventListener("beforeunload", () => {
+      try {
+        saveDraft();
+      } catch (_) {}
+    });
   }
 
   async function init() {
-    if (!window.supabase || typeof window.supabase.createClient !== "function") {
-      setGuard("Supabase non chargé");
+    bindElements();
+    bindUi();
+    setButtonsDisabled(true);
+    setGuardStatus("Vérification…");
+
+    if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
+      closeAccess("Guard absent");
+      setMsg(`Le guard BUILD n’est pas chargé. Ouvre ton accès par PIN ou vérifie le fichier guard.js. Besoin d’aide : <a href="${supportUrl()}" target="_blank" rel="noopener">support</a>.`, "bad");
       return;
     }
 
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false
+    try {
+      const session = await window.DIGIY_GUARD.ready();
+
+      state.slug = normSlug(session?.slug || window.DIGIY_GUARD.getSlug?.() || "");
+      state.phone = normPhone(session?.phone || window.DIGIY_GUARD.getPhone?.() || "");
+      state.owner_id = session?.owner_id || window.DIGIY_GUARD.getOwnerId?.() || null;
+      state.access_ok = !!(session && session.access_ok && state.slug);
+
+      if (!state.access_ok) {
+        closeAccess("Accès fermé");
+        setMsg(`Session absente ou fermée. Reviens par le PIN pour ouvrir ta fiche. Besoin d’aide : <a href="${supportUrl()}" target="_blank" rel="noopener">support</a>.`, "bad");
+        return;
       }
-    });
 
-    if (!window.DIGIY_GUARD || !window.DIGIY_GUARD.ready) {
-      setGuard("Protection non chargée");
-      return;
+      openAccess();
+      setButtonsDisabled(false);
+
+      try {
+        sessionStorage.setItem("digiy_build_slug", state.slug);
+        sessionStorage.setItem("digiy_build_last_slug", state.slug);
+        localStorage.setItem("digiy_build_last_slug", state.slug);
+        if (state.phone) {
+          sessionStorage.setItem("digiy_build_phone", state.phone);
+          localStorage.setItem("digiy_build_phone", state.phone);
+        }
+      } catch (_) {}
+
+      fillDefaults();
+      await loadProfile();
+    } catch (error) {
+      console.error("BUILD profile init error", error);
+      closeAccess("Erreur d’ouverture");
+      setMsg(`Erreur d’ouverture de la fiche. Vérifie ton guard ou ton profile.js. Besoin d’aide : <a href="${supportUrl()}" target="_blank" rel="noopener">support</a>.`, "bad");
     }
-
-    await window.DIGIY_GUARD.ready;
-    const st = window.DIGIY_GUARD.state || {};
-
-    if (st.preview || !st.access_ok || !st.slug) {
-      setGuard("Accès refusé");
-      const hinted = st.slug || new URLSearchParams(location.search).get("slug") || "";
-      setTimeout(() => {
-        location.replace("./pin.html" + (hinted ? ("?slug=" + encodeURIComponent(hinted)) : ""));
-      }, 500);
-      return;
-    }
-
-    ACCESS.slug = String(st.slug || "").toLowerCase();
-    ACCESS.phone = String(st.phone || "");
-
-    document.documentElement.classList.add("access-ok");
-
-    if (gs) {
-      gs.textContent = "Accès OK";
-      setTimeout(() => {
-        gs.style.display = "none";
-      }, 700);
-    }
-
-    fillDefaultsIfUseful();
-
-    setMsg("Prêt ✅ Chargement de la fiche…", true);
-    await loadExisting();
-
-    $("btnSave").addEventListener("click", saveProfile);
-    $("btnReSlug").addEventListener("click", reSlug);
-    $("btnCopyLink").addEventListener("click", copyLink);
-    $("btnOpenLink").addEventListener("click", openLink);
-    $("btnOpenListing").addEventListener("click", openListing);
-    $("btnBack").addEventListener("click", goBack);
   }
 
-  init().catch((e) => {
-    console.error(e);
-    setGuard("Erreur de chargement");
-    setMsg("Erreur chargement fiche.", false);
-  });
+  window.DIGIY_BUILD_PROFILE = {
+    state,
+    save: saveProfile,
+    load: loadProfile,
+    getPublicUrl: inferredProfileUrl,
+    getListingUrl: listingUrl
+  };
+
+  document.addEventListener("DOMContentLoaded", init);
 })();
