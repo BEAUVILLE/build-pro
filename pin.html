@@ -340,12 +340,12 @@
 
         <div class="meta">
           <div class="meta-row">
-            <div class="k">Module</div>
-            <div class="v">BUILD</div>
+            <div class="k">Activité</div>
+            <div class="v">Entrepreneur multi services</div>
           </div>
           <div class="meta-row">
             <div class="k">Retour</div>
-            <div class="v">cockpit.html</div>
+            <div class="v">ma gestion</div>
           </div>
           <div class="meta-row">
             <div class="k">Session</div>
@@ -355,7 +355,7 @@
       </div>
 
       <div class="foot">
-        DIGIYLYFE • entrée normale du rail PRO • session locale gardée 8h
+        DIGIYLYFE • entrée normale • session locale gardée 8h
       </div>
     </section>
   </div>
@@ -420,11 +420,22 @@
         el.status.textContent = message;
       }
 
+      function buildSafeUrl(path, params = {}){
+        try{
+          const url = new URL(path, window.location.href);
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && String(value).trim() !== "") {
+              url.searchParams.set(key, String(value));
+            }
+          });
+          return url.pathname + url.search + url.hash;
+        }catch(_){
+          return path || "#";
+        }
+      }
+
       function buildCockpitUrl(slug, phone){
-        const url = new URL("./cockpit.html", window.location.href);
-        if (slug) url.searchParams.set("slug", slug);
-        if (phone) url.searchParams.set("phone", phone);
-        return url.pathname + url.search;
+        return buildSafeUrl("./cockpit.html", { slug, phone });
       }
 
       function buildAbosUrl(slug, phone){
@@ -564,6 +575,37 @@
         return normSlug(data.slug);
       }
 
+      function parseCompositeTuple(raw){
+        const s = String(raw || "").trim();
+        if (!s.startsWith("(") || !s.endsWith(")")) return null;
+
+        const body = s.slice(1, -1);
+        const out = [];
+        let cur = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < body.length; i++) {
+          const ch = body[i];
+          const prev = i > 0 ? body[i - 1] : "";
+
+          if (ch === '"' && prev !== "\\") {
+            inQuotes = !inQuotes;
+            continue;
+          }
+
+          if (ch === "," && !inQuotes) {
+            out.push(cur);
+            cur = "";
+            continue;
+          }
+
+          cur += ch;
+        }
+
+        out.push(cur);
+        return out.map(part => String(part || "").trim());
+      }
+
       async function verifyPin(phone, pin){
         const { data, error } = await supabase.rpc("digiy_verify_pin", {
           p_phone: phone,
@@ -572,7 +614,77 @@
         });
 
         if (error) throw error;
-        return data;
+
+        if (!data) {
+          return { ok:false, reason:"pin_refuse" };
+        }
+
+        if (typeof data === "object" && !Array.isArray(data)) {
+          return {
+            ok: data.ok === true || data.ok === "t" || data.ok === "true",
+            reason: data.reason || (data.ok ? "pin_ok" : "pin_refuse"),
+            slug: data.slug || "",
+            phone: data.phone || phone,
+            module: data.module || MODULE,
+            label: data.label || ""
+          };
+        }
+
+        if (Array.isArray(data)) {
+          if (!data.length) return { ok:false, reason:"pin_refuse" };
+          const first = data[0];
+          if (typeof first === "object" && first !== null) {
+            return {
+              ok: first.ok === true || first.ok === "t" || first.ok === "true",
+              reason: first.reason || (first.ok ? "pin_ok" : "pin_refuse"),
+              slug: first.slug || "",
+              phone: first.phone || phone,
+              module: first.module || MODULE,
+              label: first.label || ""
+            };
+          }
+          if (typeof first === "string") {
+            const tuple = parseCompositeTuple(first);
+            if (tuple && tuple.length) {
+              return {
+                ok: tuple[0] === "t" || tuple[0] === "true",
+                module: tuple[1] || MODULE,
+                phone: normPhone(tuple[2] || phone),
+                label: tuple[3] || "",
+                session_token: tuple[4] || "",
+                slug: "",
+                reason: (tuple[0] === "t" || tuple[0] === "true") ? "pin_ok" : "pin_refuse",
+                raw: first
+              };
+            }
+          }
+        }
+
+        if (typeof data === "string") {
+          const tuple = parseCompositeTuple(data);
+          if (tuple && tuple.length) {
+            return {
+              ok: tuple[0] === "t" || tuple[0] === "true",
+              module: tuple[1] || MODULE,
+              phone: normPhone(tuple[2] || phone),
+              label: tuple[3] || "",
+              session_token: tuple[4] || "",
+              slug: "",
+              reason: (tuple[0] === "t" || tuple[0] === "true") ? "pin_ok" : "pin_refuse",
+              raw: data
+            };
+          }
+
+          if (data.trim() === "t" || data.trim() === "true") {
+            return { ok:true, reason:"pin_ok", phone, module:MODULE };
+          }
+
+          if (data.trim() === "f" || data.trim() === "false") {
+            return { ok:false, reason:"pin_refuse", phone, module:MODULE };
+          }
+        }
+
+        return { ok:false, reason:"pin_refuse", raw:data };
       }
 
       async function openWithPin(){
@@ -612,10 +724,8 @@
 
             if (reason === "subscription_inactive") {
               setStatus("Abonnement inactif. Passe par l’activation du module.", "err");
-            } else if (reason === "pin_invalid") {
-              setStatus("PIN invalide.", "err");
             } else {
-              setStatus(`Accès refusé : ${reason}`, "err");
+              setStatus("PIN invalide.", "err");
             }
 
             el.btnOpen.disabled = false;
