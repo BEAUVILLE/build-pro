@@ -1,15 +1,18 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <script src="./guard.js?v=build-guard-v9"></script>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>ENTREPRENEUR MULTI SERVICES — GO PIN</title>
+  <title>ENTREPRENEUR MULTI SERVICES — Ouvrir mon accès</title>
   <meta
     name="description"
-    content="Entrée rapide vers l’accès PIN ENTREPRENEUR MULTI SERVICES. Raccourci propre vers le rail BUILD."
+    content="Entrée rapide vers l’accès sécurisé ENTREPRENEUR MULTI SERVICES. Raccourci propre vers le PIN BUILD."
   />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
   <style>
     :root{
@@ -27,15 +30,15 @@
     }
 
     *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
 
     body{
-      margin:0;
       min-height:100vh;
       display:grid;
       place-items:center;
       padding:16px;
       color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:
         radial-gradient(circle at 20% 0%, rgba(250,204,21,.14), transparent 40%),
         radial-gradient(circle at 100% 100%, rgba(34,197,94,.10), transparent 40%),
@@ -60,17 +63,13 @@
     }
 
     .logo{
-      width:54px;
-      height:54px;
-      border-radius:16px;
-      display:grid;
-      place-items:center;
-      font-size:26px;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(250,204,21,.28), transparent 55%),
-        linear-gradient(135deg, rgba(34,197,94,.22), rgba(56,189,248,.12));
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
+      width:64px;
+      height:64px;
+      border-radius:18px;
+      object-fit:cover;
+      background:#fff;
+      border:1px solid rgba(250,204,21,.25);
+      box-shadow:0 12px 30px rgba(0,0,0,.20);
       flex:0 0 auto;
     }
 
@@ -79,6 +78,7 @@
       font-size:22px;
       line-height:1.1;
       letter-spacing:.02em;
+      font-weight:900;
     }
 
     .sub{
@@ -101,7 +101,7 @@
       line-height:1.55;
     }
 
-    .slugbox{
+    .idbox{
       margin-top:14px;
       padding:14px 15px;
       border-radius:16px;
@@ -109,7 +109,7 @@
       background:rgba(255,255,255,.04);
     }
 
-    .sluglabel{
+    .idlabel{
       font-size:12px;
       text-transform:uppercase;
       letter-spacing:.08em;
@@ -118,13 +118,13 @@
       margin-bottom:6px;
     }
 
-    .slugvalue{
+    .idvalue{
       font-size:15px;
       font-weight:1000;
       word-break:break-word;
     }
 
-    .slugvalue.empty{
+    .idvalue.empty{
       color:var(--muted);
       font-weight:800;
     }
@@ -192,49 +192,52 @@
 <body>
   <div class="box">
     <div class="top">
-      <div class="logo">🔑</div>
+      <img
+        class="logo"
+        src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg"
+        alt="Logo DIGIYLYFE"
+      />
       <div>
-        <h1>GO PIN — ENTREPRENEUR MULTI SERVICES</h1>
+        <h1>Ouvrir mon accès — ENTREPRENEUR MULTI SERVICES</h1>
         <div class="sub">
-          Porte d’entrée rapide vers ton accès PIN pro BUILD.
+          Porte d’entrée rapide vers ton code PIN.
         </div>
       </div>
     </div>
 
     <div class="hero">
-      Accès simple, direct et propre. Cette page envoie vers le vrai <b>pin.html</b> du module BUILD.
-      Le <b>PIN</b> reste la porte d’entrée externe. Une fois la session ouverte, la circulation interne
-      normale reprend entre cockpit, dashboard et fiche sans repasser par le PIN.
+      Accès simple, direct et propre. Cette page t’envoie vers la vraie page <b>PIN</b>.
+      Une fois la session ouverte, ta circulation normale reprend entre tes pages sans retaper ton code à chaque fois.
     </div>
 
-    <div class="slugbox">
-      <div class="sluglabel">Slug détecté</div>
-      <div class="slugvalue" id="slugValue">Chargement…</div>
-      <div class="meta" id="phoneMeta">Phone : —</div>
-    </div>
-
-    <div class="actions">
-      <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir l’accès PIN</a>
-      <a class="btn info" id="btnCockpit" href="./cockpit.html">🛠️ Aller au cockpit</a>
+    <div class="idbox">
+      <div class="idlabel">Identifiant détecté</div>
+      <div class="idvalue" id="idValue">Chargement…</div>
+      <div class="meta" id="phoneMeta">Téléphone : —</div>
     </div>
 
     <div class="actions">
-      <a class="btn" id="btnDashboard" href="./dashboard-pro.html">📊 Dashboard</a>
+      <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir mon code PIN</a>
+      <a class="btn info" id="btnSpace" href="./cockpit.html">🛠️ Aller à mon espace</a>
+    </div>
+
+    <div class="actions">
+      <a class="btn" id="btnActivity" href="./dashboard-pro.html">📊 Mon activité</a>
       <a
         class="btn"
         id="btnSupport"
         target="_blank"
         rel="noopener"
-        href="https://wa.me/221771342889?text=Bonjour%20support%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s%20PIN."
+        href="https://wa.me/221771342889?text=Bonjour%20support%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s."
       >
         💬 Support
       </a>
     </div>
 
     <div class="mini">
-      <b>Conseil :</b> garde le slug dans le lien quand tu partages l’accès.
-      Cette page ne remplace pas le rail PIN PRO validé, elle sert juste de raccourci propre.
-      Si la session n’est pas ouverte, <b>cockpit</b> et <b>dashboard</b> repasseront naturellement par le PIN.
+      <b>Conseil :</b> garde l’identifiant dans le lien quand tu partages cet accès.
+      Cette page ne remplace pas l’entrée sécurisée principale, elle sert juste de raccourci propre.
+      Si la session n’est pas encore ouverte, ton espace et ton activité repasseront naturellement par le PIN.
     </div>
   </div>
 
@@ -242,7 +245,7 @@
     (() => {
       "use strict";
 
-      const qs = new URLSearchParams(location.search);
+      const qs = new URLSearchParams(window.location.search);
 
       function normSlug(v){
         return String(v || "")
@@ -256,6 +259,26 @@
 
       function normPhone(v){
         return String(v || "").replace(/[^\d]/g, "");
+      }
+
+      function buildSafeUrl(path, params = {}){
+        try{
+          const url = new URL(path, window.location.href);
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && String(value).trim() !== "") {
+              url.searchParams.set(key, String(value));
+            }
+          });
+
+          for (const [k, v] of qs.entries()) {
+            if (k in params) continue;
+            if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+          }
+
+          return url.pathname + url.search + url.hash;
+        }catch(_){
+          return path || "#";
+        }
       }
 
       function readSlug(){
@@ -277,65 +300,93 @@
         );
       }
 
-      function withContext(path, slug, phone){
-        const url = new URL(path, location.href);
+      function hasLiveSession(){
+        const keys = [
+          "DIGIY_BUILD_PIN_SESSION",
+          "DIGIY_BUILD_SESSION",
+          "DIGIY_PIN_SESSION"
+        ];
 
-        url.searchParams.set("module", "BUILD");
+        for (const key of keys) {
+          try{
+            const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
+            if (!raw) continue;
+            const parsed = JSON.parse(raw);
+            if (!parsed || parsed.module !== "BUILD") continue;
+            if (!parsed.validated_at) continue;
 
-        if (slug) url.searchParams.set("slug", slug);
-        if (phone) url.searchParams.set("phone", phone);
-
-        for (const [k, v] of qs.entries()) {
-          if (k === "slug" || k === "phone" || k === "module") continue;
-          if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+            const age = Date.now() - new Date(parsed.validated_at).getTime();
+            if (age >= 0 && age < 8 * 60 * 60 * 1000 && parsed.access_ok) {
+              return {
+                ok: true,
+                slug: normSlug(parsed.slug || ""),
+                phone: normPhone(parsed.phone || "")
+              };
+            }
+          }catch(_){}
         }
 
-        return url.toString();
+        return { ok:false, slug:"", phone:"" };
       }
 
-    (async () => {
-  const slug = readSlug();
-  const phone = readPhone();
+      const slug = readSlug();
+      const phone = readPhone();
+      const liveSession = hasLiveSession();
 
-  // 👉 si session déjà existante → cockpit direct
-  if (phone && slug) {
-    location.href = `./cockpit.html?slug=${slug}&v=11`;
-    return;
-  }
-
-  // 👉 sinon on force passage PIN
-  location.href = `./pin.html?slug=${slug}`;
-})();
-
-      const slugValue = document.getElementById("slugValue");
+      const idValue = document.getElementById("idValue");
       const phoneMeta = document.getElementById("phoneMeta");
 
       const btnEnter = document.getElementById("btnEnter");
-      const btnCockpit = document.getElementById("btnCockpit");
-      const btnDashboard = document.getElementById("btnDashboard");
+      const btnSpace = document.getElementById("btnSpace");
+      const btnActivity = document.getElementById("btnActivity");
       const btnSupport = document.getElementById("btnSupport");
 
       if (slug) {
-        slugValue.textContent = slug;
+        idValue.textContent = slug;
       } else {
-        slugValue.textContent = "Aucun slug détecté pour le moment.";
-        slugValue.classList.add("empty");
+        idValue.textContent = "Aucun identifiant détecté pour le moment.";
+        idValue.classList.add("empty");
       }
 
-      phoneMeta.textContent = phone ? `Phone : ${phone}` : "Phone : —";
+      phoneMeta.textContent = phone ? `Téléphone : ${phone}` : "Téléphone : —";
 
-      btnEnter.href = withContext("./pin.html", slug, phone);
-      btnCockpit.href = withContext("./cockpit.html", slug, phone);
-      btnDashboard.href = withContext("./dashboard-pro.html", slug, phone);
+      btnEnter.href = buildSafeUrl("./pin.html", {
+        slug,
+        phone
+      });
+
+      btnSpace.href = buildSafeUrl("./cockpit.html", {
+        slug: liveSession.slug || slug,
+        phone: liveSession.phone || phone
+      });
+
+      btnActivity.href = buildSafeUrl("./dashboard-pro.html", {
+        slug: liveSession.slug || slug,
+        phone: liveSession.phone || phone
+      });
 
       const supportUrl = new URL("https://wa.me/221771342889");
       const supportText =
         "Bonjour support ENTREPRENEUR MULTI SERVICES.\n" +
-        "J’ai besoin d’aide pour mon accès PIN." +
-        (slug ? `\nSlug : ${slug}` : "") +
-        (phone ? `\nPhone : ${phone}` : "");
+        "J’ai besoin d’aide pour mon accès." +
+        (slug ? `\nIdentifiant : ${slug}` : "") +
+        (phone ? `\nTéléphone : ${phone}` : "");
       supportUrl.searchParams.set("text", supportText);
       btnSupport.href = supportUrl.toString();
+
+      if (liveSession.ok) {
+        const target = buildSafeUrl("./cockpit.html", {
+          slug: liveSession.slug || slug,
+          phone: liveSession.phone || phone
+        });
+        window.location.replace(target);
+        return;
+      }
+
+      if (!slug && !phone) {
+        btnSpace.href = "./pin.html";
+        btnActivity.href = "./pin.html";
+      }
     })();
   </script>
 </body>
