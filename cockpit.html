@@ -4,13 +4,17 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>ENTREPRENEUR MULTI SERVICES — Espace pro</title>
+  <title>ENTREPRENEUR MULTI SERVICES — Ma gestion</title>
   <meta
     name="description"
-    content="Cockpit pro ENTREPRENEUR MULTI SERVICES. Devis, chantiers, organisation terrain et circulation interne DIGIY en mode slug."
+    content="Espace pro ENTREPRENEUR MULTI SERVICES. Devis, chantiers, organisation terrain et circulation directe dans ton activité."
   />
 
- <script src="./guard.js?v=build-guard-v10"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+
+  <script src="./guard.js?v=build-guard-v10"></script>
 
   <style>
     :root{
@@ -25,6 +29,7 @@
       --bad:#fb7185;
       --info:#38bdf8;
       --warn:#f59e0b;
+      --violet:#818cf8;
       --shadow:0 18px 55px rgba(0,0,0,.45);
       --radius:22px;
     }
@@ -35,7 +40,7 @@
 
     body{
       color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:
         radial-gradient(circle at top, rgba(250,204,21,.10), transparent 55%),
         linear-gradient(135deg,var(--bg),var(--bg2));
@@ -61,35 +66,34 @@
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
+      gap:14px;
       min-width:0;
     }
 
-    .ico{
-      width:48px;
-      height:48px;
-      border-radius:50%;
-      display:grid;
-      place-items:center;
-      background:radial-gradient(circle at 30% 0,var(--gold),transparent 60%);
-      color:#062015;
-      font-weight:1000;
-      border:1px solid rgba(250,204,21,.35);
+    .brand-logo{
+      width:78px;
+      height:78px;
+      border-radius:22px;
+      object-fit:cover;
+      background:#fff;
+      border:1px solid rgba(250,204,21,.30);
+      box-shadow:0 14px 34px rgba(0,0,0,.28);
       flex:0 0 auto;
     }
 
     h1{
       margin:0;
-      font-size:16px;
-      letter-spacing:.08em;
-      line-height:1.25;
+      font-size:17px;
+      letter-spacing:.03em;
+      line-height:1.2;
+      font-weight:900;
     }
 
     .sub{
-      margin-top:5px;
+      margin-top:6px;
       font-size:12px;
       color:var(--muted);
-      line-height:1.45;
+      line-height:1.55;
     }
 
     .pill{
@@ -130,9 +134,10 @@
 
     .title{
       font-weight:1000;
-      letter-spacing:.08em;
+      letter-spacing:.04em;
       font-size:12px;
-      color:rgba(234,255,241,.88);
+      color:rgba(234,255,241,.90);
+      text-transform:uppercase;
     }
 
     .muted{
@@ -154,7 +159,7 @@
       border:1px solid var(--line);
       background:rgba(0,0,0,.18);
       color:var(--text);
-      font-weight:1000;
+      font-weight:900;
       cursor:pointer;
       text-decoration:none;
       display:inline-flex;
@@ -162,6 +167,7 @@
       justify-content:center;
       gap:8px;
       transition:transform .15s ease, border-color .15s ease, opacity .15s ease;
+      font-family:inherit;
     }
 
     .btn:hover{
@@ -280,9 +286,10 @@
       outline:none;
       width:100%;
       font:inherit;
+      font-family:inherit;
     }
 
-    input,select{font-weight:900}
+    input,select{font-weight:800}
     textarea{
       min-height:90px;
       resize:vertical;
@@ -363,13 +370,14 @@
       border:1px solid rgba(255,255,255,.16);
       background:rgba(0,0,0,.18);
       color:var(--text);
-      font-weight:1000;
+      font-weight:900;
       cursor:pointer;
       text-decoration:none;
       display:inline-flex;
       align-items:center;
       justify-content:center;
       font-size:12px;
+      font-family:inherit;
     }
 
     .tinybtn:hover{
@@ -438,6 +446,7 @@
       color:var(--text);
       font-weight:1000;
       cursor:pointer;
+      font-family:inherit;
     }
 
     .actions .primary{
@@ -456,6 +465,7 @@
       color:var(--text);
       font-weight:1000;
       cursor:pointer;
+      font-family:inherit;
     }
 
     .empty{
@@ -465,6 +475,13 @@
     }
 
     .hidden{display:none!important}
+
+    @media(max-width:680px){
+      .brand-logo{
+        width:68px;
+        height:68px;
+      }
+    }
   </style>
 </head>
 
@@ -473,29 +490,33 @@
 
   <div class="top">
     <div class="brand">
-      <div class="ico">🦅</div>
+      <img
+        class="brand-logo"
+        src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg"
+        alt="Logo DIGIYLYFE"
+      />
       <div>
-        <h1>🛠️ ENTREPRENEUR MULTI SERVICES — Espace pro</h1>
+        <h1>🛠️ ENTREPRENEUR MULTI SERVICES — Ma gestion</h1>
         <div class="sub">
-          SLUG : <b id="slug">—</b> • PHONE : <b id="owner">—</b><br>
-          Statut : <b id="stat">initialisation…</b>
+          Identifiant : <b id="slug">—</b> • Téléphone : <b id="owner">—</b><br>
+          Accès : <b id="stat">initialisation…</b>
         </div>
       </div>
     </div>
 
     <div class="top-actions">
-      <div class="pill" id="modePill">build_pro</div>
-      <button class="btn dashboard" id="btnDashboard" type="button">📊 Dashboard</button>
-      <button class="btn profile" id="btnProfile" type="button">⚙️ Ma fiche</button>
+      <div class="pill" id="modePill">activité terrain</div>
+      <button class="btn dashboard" id="btnDashboard" type="button">📊 Mon activité</button>
+      <button class="btn profile" id="btnProfile" type="button">🪪 Ma fiche</button>
       <button class="btn" id="btnHelp" type="button">💬 Support</button>
-      <button class="btn danger" id="btnLogout" type="button">🚪 Déconnexion</button>
+      <button class="btn danger" id="btnLogout" type="button">🚪 Sortir</button>
     </div>
   </div>
 
   <div id="lockBox" class="lock">
     <div class="big">🔒 Accès protégé</div>
     <div class="small" id="lockText">
-      Cette page fait partie du circuit interne PRO. Ouvre ta session avec ton PIN pour agir sur ton activité.
+      Cette page fait partie de ton espace privé. Ouvre ta session avec ton PIN pour gérer tes devis et tes chantiers.
     </div>
     <div class="row">
       <a class="btn primary" id="btnPinEntry" href="./pin.html">🔑 Ouvrir avec mon PIN</a>
@@ -506,73 +527,73 @@
   <div id="workspace" class="grid hidden">
 
     <div class="card">
-      <div class="title">⚡ ACTIONS RAPIDES</div>
+      <div class="title">⚡ Mes actions rapides</div>
       <div class="row">
         <button class="btn primary" id="btnNew" type="button">➕ Nouveau devis</button>
-        <button class="btn" id="btnJobs" type="button">📌 Voir les chantiers</button>
-        <button class="btn" id="btnExport" type="button">⬇️ Export JSON</button>
-        <button class="btn danger" id="btnReset" type="button">🧹 Vider ce stockage local</button>
+        <button class="btn" id="btnJobs" type="button">🏗️ Voir ce qui est en cours</button>
+        <button class="btn" id="btnExport" type="button">⬇️ Sauvegarder mes données</button>
+        <button class="btn danger" id="btnReset" type="button">🧹 Effacer mes données locales</button>
       </div>
 
       <div style="height:10px"></div>
 
-      <div class="title">🌡️ TEMPÉRATURE DE TON ACTIVITÉ</div>
+      <div class="title">🌡️ Température de mon activité</div>
       <div class="kpis">
         <div class="kpi">
-          <div class="k">Brouillons</div>
+          <div class="k">À préparer</div>
           <div class="v" id="kDraft">0</div>
-          <div class="s">devis à préparer</div>
+          <div class="s">devis encore en brouillon</div>
         </div>
         <div class="kpi">
-          <div class="k">Envoyés</div>
+          <div class="k">En attente</div>
           <div class="v" id="kSent">0</div>
-          <div class="s">en attente de réponse</div>
+          <div class="s">devis envoyés au client</div>
         </div>
         <div class="kpi">
-          <div class="k">Acceptés</div>
+          <div class="k">Prêts à démarrer</div>
           <div class="v" id="kOk">0</div>
-          <div class="s">à démarrer</div>
+          <div class="s">devis acceptés</div>
         </div>
         <div class="kpi">
-          <div class="k">En cours</div>
+          <div class="k">Sur le terrain</div>
           <div class="v" id="kRun">0</div>
-          <div class="s">chantiers actifs</div>
+          <div class="s">chantiers en cours</div>
         </div>
       </div>
 
       <div style="height:12px"></div>
 
       <div class="split">
-        <div class="title" style="flex:1">📋 DEVIS & CHANTIERS</div>
+        <div class="title" style="flex:1">📋 Mes devis et mes chantiers</div>
 
         <select id="filter" style="max-width:250px">
-          <option value="all">Tous</option>
-          <option value="draft">Brouillons</option>
-          <option value="sent">Envoyés</option>
+          <option value="all">Tout voir</option>
+          <option value="draft">À préparer</option>
+          <option value="sent">En attente</option>
           <option value="accepted">Acceptés</option>
           <option value="running">En cours</option>
           <option value="done">Terminés</option>
           <option value="cancelled">Annulés</option>
         </select>
 
-        <input id="q" placeholder="Recherche : client / téléphone / ville / note…" style="max-width:280px"/>
+        <input id="q" placeholder="Recherche : client, téléphone, ville, note…" style="max-width:280px"/>
       </div>
 
       <div class="list" id="list"></div>
 
       <div class="note">
-        <b>Lecture DIGIY :</b> ce cockpit reste sur le rail réel PRO.
-        Les devis sont gardés localement sur l’appareil pour ce slug tant qu’aucun backend métier devis n’a été confirmé.
+        <b>Lecture DIGIY :</b> tes devis et tes chantiers restent enregistrés sur cet appareil pour cette activité,
+        tant qu’aucun dossier central n’a été posé pour cette partie métier.
       </div>
     </div>
 
     <div class="card">
-      <div class="title">🧭 ÉTAT DU RAIL</div>
+      <div class="title">🧭 Mon accès</div>
 
       <div class="list" style="margin-top:10px">
         <div class="item">
           <div>
-            <div class="a">Session interne</div>
+            <div class="a">Accès en cours</div>
             <div class="b" id="sessionText">Chargement…</div>
           </div>
           <div class="badge info" id="sessionBadge">…</div>
@@ -580,7 +601,7 @@
 
         <div class="item">
           <div>
-            <div class="a">Stockage local de ce slug</div>
+            <div class="a">Sauvegarde sur cet appareil</div>
             <div class="b" id="backupText">Vérification…</div>
           </div>
           <div class="badge neutral" id="backupBadge">—</div>
@@ -588,29 +609,29 @@
 
         <div class="item">
           <div>
-            <div class="a">Action principale</div>
-            <div class="b">Retourne au dashboard ou à la fiche pro sans repasser par le PIN.</div>
+            <div class="a">Retour rapide</div>
+            <div class="b">Tu peux revenir à ta vue principale sans repasser par le PIN.</div>
           </div>
-          <button class="tinybtn" id="btnGoDashboard" type="button">📊 Dashboard</button>
+          <button class="tinybtn" id="btnGoDashboard" type="button">📊 Mon activité</button>
         </div>
       </div>
 
       <div style="height:12px"></div>
 
-      <div class="title">🧰 OUTILS SIMPLES</div>
+      <div class="title">🧰 Outils utiles</div>
       <div class="row">
         <button class="btn" id="btnPrint" type="button">🖨️ Imprimer</button>
-        <button class="btn" id="btnWhatsApp" type="button">📲 WhatsApp client</button>
+        <button class="btn" id="btnWhatsApp" type="button">📲 Écrire au client</button>
       </div>
 
       <div style="height:12px"></div>
 
-      <div class="title">📣 RACCROCHEMENT</div>
+      <div class="title">📣 Besoin d’aide</div>
       <div class="list" style="margin-top:10px">
         <div class="item">
           <div>
             <div class="a">Support DIGIY</div>
-            <div class="b">Assistance rapide si tu bloques sur l’accès ou la fiche.</div>
+            <div class="b">Assistance rapide si tu bloques sur ton accès ou sur ta fiche.</div>
           </div>
           <button class="tinybtn" id="btnSupportInline" type="button">💬 Écrire</button>
         </div>
@@ -637,11 +658,11 @@
         <input id="phone" placeholder="22177…"/>
       </div>
       <div>
-        <label>Ville / Quartier</label>
+        <label>Ville / quartier</label>
         <input id="city" placeholder="Ex : Saly / Dakar / Mbour"/>
       </div>
       <div>
-        <label>Type de travaux / service</label>
+        <label>Type de service</label>
         <select id="type">
           <option value="plomberie">Plomberie</option>
           <option value="electricite">Électricité</option>
@@ -666,7 +687,7 @@
     </div>
 
     <div style="margin-top:6px">
-      <label>Description / Note</label>
+      <label>Description / note</label>
       <textarea id="note" placeholder="Ex : dépannage, entretien, chantier, matériel, main d’œuvre, délai…"></textarea>
     </div>
 
@@ -723,20 +744,52 @@
     return String(v || "").replace(/[^\d]/g, "");
   }
 
+  function escapeHtml(v) {
+    return String(v ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function buildSafeUrl(path, params = {}) {
+    try {
+      const url = new URL(path, window.location.href);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          url.searchParams.set(key, String(value));
+        }
+      });
+      return url.pathname + url.search + url.hash;
+    } catch (_) {
+      return path || "#";
+    }
+  }
+
   function storageKey() {
     return "DIGIY_BUILD_QUOTES::" + (ACCESS.slug || "noslug");
   }
 
   function dashboardUrl() {
-    return "./dashboard-pro.html" + (ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : "");
+    return buildSafeUrl("./dashboard-pro.html", {
+      slug: ACCESS.slug,
+      phone: ACCESS.phone
+    });
   }
 
   function profileUrl() {
-    return "./profile.html" + (ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : "");
+    return buildSafeUrl("./profile.html", {
+      slug: ACCESS.slug,
+      phone: ACCESS.phone
+    });
   }
 
   function pinUrl() {
-    return "./pin.html" + (ACCESS.slug ? ("?slug=" + encodeURIComponent(ACCESS.slug)) : "");
+    return buildSafeUrl("./pin.html", {
+      slug: ACCESS.slug,
+      phone: ACCESS.phone
+    });
   }
 
   function manageSubUrl() {
@@ -744,6 +797,7 @@
     url.searchParams.set("module", MODULE_CODE);
     if (ACCESS.phone) url.searchParams.set("phone", ACCESS.phone);
     if (ACCESS.slug) url.searchParams.set("slug", ACCESS.slug);
+    url.searchParams.set("return", dashboardUrl());
     return url.toString();
   }
 
@@ -775,21 +829,22 @@
     const rows = loadRows();
     const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    const objectUrl = URL.createObjectURL(blob);
+    a.href = objectUrl;
     a.download = "build-" + (ACCESS.slug || "noslug") + ".json";
     a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 900);
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 900);
     return rows.length;
   }
 
   function badge(st) {
-    if (st === "draft") return `<span class="badge neutral">BROUILLON</span>`;
-    if (st === "sent") return `<span class="badge info">ENVOYÉ</span>`;
+    if (st === "draft") return `<span class="badge neutral">À PRÉPARER</span>`;
+    if (st === "sent") return `<span class="badge info">EN ATTENTE</span>`;
     if (st === "accepted") return `<span class="badge ok">ACCEPTÉ</span>`;
     if (st === "running") return `<span class="badge ok">EN COURS</span>`;
     if (st === "done") return `<span class="badge ok">TERMINÉ</span>`;
     if (st === "cancelled") return `<span class="badge bad">ANNULÉ</span>`;
-    return `<span class="badge neutral">${String(st || "—").toUpperCase()}</span>`;
+    return `<span class="badge neutral">${escapeHtml(String(st || "—").toUpperCase())}</span>`;
   }
 
   function matches(row, q) {
@@ -806,12 +861,12 @@
   function setTopState() {
     $("slug").textContent = ACCESS.slug || "—";
     $("owner").textContent = ACCESS.phone || "—";
-    $("modePill").textContent = ACCESS.live ? "mode_vivant" : "accès_protégé";
-    $("stat").textContent = ACCESS.live ? "accès OK" : "session absente ou expirée";
+    $("modePill").textContent = ACCESS.live ? "session active" : "accès sécurisé";
+    $("stat").textContent = ACCESS.live ? "ouvert" : "fermé";
     $("sessionText").textContent = ACCESS.live
-      ? "Session active. Tu peux circuler entre cockpit, dashboard et fiche sans repasser par le PIN."
-      : "Session non active. Le PIN reste la porte d’entrée ou de secours.";
-    $("sessionBadge").textContent = ACCESS.live ? "OK" : "BLOQUÉ";
+      ? "Ta session est active. Tu peux circuler entre ta gestion, ta fiche et tes autres pages sans repasser par le PIN."
+      : "Ta session n’est pas active. Le PIN reste ta porte d’entrée ou de secours.";
+    $("sessionBadge").textContent = ACCESS.live ? "OK" : "FERMÉ";
 
     $("btnPinEntry").href = pinUrl();
     $("btnManageSub").href = manageSubUrl();
@@ -821,8 +876,8 @@
     const rows = loadRows();
     const count = rows.length;
     $("backupText").textContent = count > 0
-      ? `${count} devis / chantier(s) local(aux) gardé(s) pour ce slug sur cet appareil.`
-      : "Aucun devis local enregistré pour le moment sur cet appareil.";
+      ? `${count} devis ou chantier(s) gardé(s) sur cet appareil pour cette activité.`
+      : "Aucun devis ni chantier enregistré pour le moment sur cet appareil.";
     $("backupBadge").textContent = count > 0 ? String(count) : "VIDE";
   }
 
@@ -861,7 +916,7 @@
 
     if (row) {
       EDIT.id = row.id;
-      $("modalTitle").textContent = "✏️ Modifier le devis / chantier";
+      $("modalTitle").textContent = "✏️ Modifier le devis ou le chantier";
       $("client").value = row.client || "";
       $("phone").value = row.phone || "";
       $("city").value = row.city || "";
@@ -900,23 +955,23 @@
     const wa = normPhone(row.phone);
     const quoteText = encodeURIComponent(
       "Bonjour " + (row.client || "") + ",\n" +
-      "Je te recontacte pour le devis / chantier.\n" +
-      "Type : " + (row.type || "—") + "\n" +
+      "Je te recontacte pour le devis ou le chantier.\n" +
+      "Service : " + (row.type || "—") + "\n" +
       "Montant : " + money(row.amount) + "\n" +
       "Date : " + (row.date || "—") + "\n" +
-      "Slug pro : " + (ACCESS.slug || "")
+      "Identifiant : " + (ACCESS.slug || "")
     );
 
     return `
       <div class="tinyrow">
         ${wa ? `<a class="tinybtn" href="https://wa.me/${wa}?text=${quoteText}" target="_blank" rel="noopener">💬 WhatsApp</a>` : ""}
-        <button class="tinybtn" data-act="edit" data-id="${row.id}">✏️ Modifier</button>
-        <button class="tinybtn" data-act="sent" data-id="${row.id}">📤 Envoyé</button>
-        <button class="tinybtn" data-act="accept" data-id="${row.id}">✅ Accepté</button>
-        <button class="tinybtn" data-act="run" data-id="${row.id}">🏗️ En cours</button>
-        <button class="tinybtn" data-act="done" data-id="${row.id}">🏁 Terminé</button>
-        <button class="tinybtn" data-act="cancel" data-id="${row.id}">🧨 Annuler</button>
-        <button class="tinybtn" data-act="del" data-id="${row.id}">🗑️ Supprimer</button>
+        <button class="tinybtn" data-act="edit" data-id="${escapeHtml(row.id)}">✏️ Modifier</button>
+        <button class="tinybtn" data-act="sent" data-id="${escapeHtml(row.id)}">📤 Envoyé</button>
+        <button class="tinybtn" data-act="accept" data-id="${escapeHtml(row.id)}">✅ Accepté</button>
+        <button class="tinybtn" data-act="run" data-id="${escapeHtml(row.id)}">🏗️ En cours</button>
+        <button class="tinybtn" data-act="done" data-id="${escapeHtml(row.id)}">🏁 Terminé</button>
+        <button class="tinybtn" data-act="cancel" data-id="${escapeHtml(row.id)}">🧨 Annuler</button>
+        <button class="tinybtn" data-act="del" data-id="${escapeHtml(row.id)}">🗑️ Supprimer</button>
       </div>
     `;
   }
@@ -932,20 +987,20 @@
     if (rows.length === 0) {
       list.innerHTML = `
         <div class="empty">
-          Aucun devis / chantier pour ce filtre. Clique sur <b>Nouveau devis</b> pour poser une première entrée.
+          Aucun devis ni chantier pour ce filtre. Clique sur <b>Nouveau devis</b> pour poser une première entrée.
         </div>
       `;
       return;
     }
 
     for (const row of rows) {
-      const title = `${row.client || "—"} • ${row.type || "—"} • ${row.city || "—"}`;
+      const title = `${escapeHtml(row.client || "—")} • ${escapeHtml(row.type || "—")} • ${escapeHtml(row.city || "—")}`;
       const sub = [
-        `Tel : ${row.phone || "—"} • Montant : ${money(row.amount)}`,
-        row.date ? `Date : ${row.date}` : null,
-        row.note ? `Note : ${row.note}` : null,
-        `Créé : ${fmtDate(row.created_at)}`,
-        row.updated_at ? `Maj : ${fmtDate(row.updated_at)}` : null
+        `Tel : ${escapeHtml(row.phone || "—")} • Montant : ${escapeHtml(money(row.amount))}`,
+        row.date ? `Date : ${escapeHtml(row.date)}` : null,
+        row.note ? `Note : ${escapeHtml(row.note)}` : null,
+        `Créé : ${escapeHtml(fmtDate(row.created_at))}`,
+        row.updated_at ? `Mise à jour : ${escapeHtml(fmtDate(row.updated_at))}` : null
       ].filter(Boolean).join("<br>");
 
       const item = document.createElement("div");
@@ -1029,8 +1084,8 @@
   function supportUrl() {
     const txt = encodeURIComponent(
       "Support ENTREPRENEUR MULTI SERVICES.\n" +
-      "Slug : " + (ACCESS.slug || "") + "\n" +
-      "Phone : " + (ACCESS.phone || "") + "\n" +
+      "Identifiant : " + (ACCESS.slug || "") + "\n" +
+      "Téléphone : " + (ACCESS.phone || "") + "\n" +
       "Besoin d’aide."
     );
     return "https://wa.me/" + SUPPORT_PHONE + "?text=" + txt;
@@ -1062,13 +1117,13 @@
       const count = exportRows();
       alert(
         count > 0
-          ? `Export terminé. ${count} entrée(s) exportée(s).`
-          : "Export terminé. Aucune entrée locale pour le moment."
+          ? `Sauvegarde terminée. ${count} entrée(s) exportée(s).`
+          : "Sauvegarde terminée. Aucune entrée locale pour le moment."
       );
     };
 
     $("btnReset").onclick = () => {
-      if (!confirm("Vider le stockage local de ce slug sur cet appareil ?")) return;
+      if (!confirm("Effacer les données locales de cette activité sur cet appareil ?")) return;
       localStorage.removeItem(storageKey());
       renderList();
     };
@@ -1085,8 +1140,8 @@
       const wa = normPhone(firstWithPhone.phone);
       const txt = encodeURIComponent(
         "Bonjour " + (firstWithPhone.client || "") + ",\n" +
-        "Je te recontacte pour ton devis / chantier.\n" +
-        "Type : " + (firstWithPhone.type || "—") + "\n" +
+        "Je te recontacte pour ton devis ou ton chantier.\n" +
+        "Service : " + (firstWithPhone.type || "—") + "\n" +
         "Montant : " + money(firstWithPhone.amount) + "\n" +
         "Date : " + (firstWithPhone.date || "—")
       );
