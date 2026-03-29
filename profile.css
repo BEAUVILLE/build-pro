@@ -26,7 +26,7 @@ html,body{
 body{
   margin:0;
   min-height:100vh;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   background:
     radial-gradient(900px 500px at 10% -10%, rgba(34,197,94,.20), transparent 60%),
     radial-gradient(900px 500px at 110% 0%, rgba(250,204,21,.14), transparent 55%),
@@ -72,12 +72,40 @@ html.access-ok .app{display:block;}
   -webkit-backdrop-filter:blur(4px);
 }
 
-.head{
+.hero{
   display:flex;
   align-items:flex-start;
   justify-content:space-between;
-  gap:10px;
+  gap:14px;
   flex-wrap:wrap;
+}
+
+.hero-brand{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  flex:1;
+  min-width:260px;
+}
+
+.hero-logo{
+  width:72px;
+  height:72px;
+  border-radius:18px;
+  object-fit:cover;
+  background:#fff;
+  border:1px solid rgba(250,204,21,.24);
+  box-shadow:0 12px 30px rgba(0,0,0,.20);
+  flex:0 0 auto;
+}
+
+.hero-kicker{
+  font-size:11px;
+  font-weight:1000;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:rgba(234,255,241,.68);
+  margin:2px 0 6px;
 }
 
 .head-actions{
@@ -139,6 +167,7 @@ select{
   outline:none;
   font:inherit;
   transition:border-color .18s ease, box-shadow .18s ease, background .18s ease, transform .18s ease;
+  font-family:inherit;
 }
 
 input,
@@ -200,6 +229,7 @@ textarea[readonly]{
   flex:1;
   min-width:210px;
   box-shadow:var(--shadow-soft);
+  font-family:inherit;
 }
 
 .primary{
@@ -260,6 +290,10 @@ textarea[readonly]{
   font-weight:850;
 }
 
+.top-note{
+  margin-top:16px;
+}
+
 .ok{
   color:#bbf7d0;
   font-weight:1000;
@@ -300,6 +334,12 @@ a{
 
   .card{
     padding:16px;
+  }
+
+  .hero-logo{
+    width:64px;
+    height:64px;
+    border-radius:16px;
   }
 
   h1{
