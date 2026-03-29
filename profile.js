@@ -1,362 +1,447 @@
-:root{
-  --bg:#061b14;
-  --bg2:#0a2b1f;
-  --line:rgba(255,255,255,.14);
-  --line-soft:rgba(255,255,255,.08);
-  --text:#eafff1;
-  --muted:rgba(234,255,241,.72);
-  --gold:#facc15;
-  --green:#22c55e;
-  --blue:#38bdf8;
-  --bad:#fb7185;
-  --ok:#22c55e;
-  --r:20px;
-  --r-sm:14px;
-  --shadow:0 18px 55px rgba(0,0,0,.45);
-  --shadow-soft:0 10px 28px rgba(0,0,0,.24);
-}
+(() => {
+  "use strict";
 
-*{box-sizing:border-box}
+  const SUPABASE_URL = String(
+    window.DIGIY_SUPABASE_URL || "https://wesqmwjjtsefyjnluosj.supabase.co"
+  ).trim();
 
-html,body{
-  max-width:100%;
-  overflow-x:hidden;
-}
+  const SUPABASE_ANON_KEY = String(
+    window.DIGIY_SUPABASE_ANON ||
+    window.DIGIY_SUPABASE_ANON_KEY ||
+    "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3"
+  ).trim();
 
-body{
-  margin:0;
-  min-height:100vh;
-  font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-  background:
-    radial-gradient(900px 500px at 10% -10%, rgba(34,197,94,.20), transparent 60%),
-    radial-gradient(900px 500px at 110% 0%, rgba(250,204,21,.14), transparent 55%),
-    linear-gradient(180deg, #04140f 0%, var(--bg) 60%, #04140f 100%);
-  color:var(--text);
-  padding:18px;
-}
+  const MODULE_CODE = "BUILD";
+  const PUBLIC_LISTING_URL = "https://beauville.github.io/digiy-build/listing.html";
+  const PROFILE_SLUG_KEY = "digiy_build_profile_slug";
 
-#guard_status{
-  position:fixed;
-  top:16px;
-  right:16px;
-  padding:10px 14px;
-  background:rgba(0,0,0,.88);
-  color:#fff;
-  border-radius:12px;
-  font-weight:900;
-  font-size:13px;
-  z-index:9999;
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow:0 12px 28px rgba(0,0,0,.28);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-}
+  const DEFAULT_HUB_BADGE = "";
+  const DEFAULT_PRICE_LABEL = "";
 
-.app{display:none;}
-html.access-ok .app{display:block;}
+  const gs = document.getElementById("guard_status");
+  const msg = document.getElementById("msg");
+  const $ = (id) => document.getElementById(id);
 
-.wrap{
-  max-width:920px;
-  margin:0 auto;
-  padding:10px 0 44px;
-}
+  let sb = null;
+  let ACCESS = {
+    slug: "",
+    phone: ""
+  };
+  let EXISTING_ROW = null;
 
-.card{
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-  border:1px solid var(--line);
-  border-radius:var(--r);
-  padding:20px;
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(4px);
-  -webkit-backdrop-filter:blur(4px);
-}
-
-.hero{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:14px;
-  flex-wrap:wrap;
-}
-
-.hero-brand{
-  display:flex;
-  align-items:flex-start;
-  gap:14px;
-  flex:1;
-  min-width:260px;
-}
-
-.hero-logo{
-  width:72px;
-  height:72px;
-  border-radius:18px;
-  object-fit:cover;
-  background:#fff;
-  border:1px solid rgba(250,204,21,.24);
-  box-shadow:0 12px 30px rgba(0,0,0,.20);
-  flex:0 0 auto;
-}
-
-.hero-kicker{
-  font-size:11px;
-  font-weight:1000;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:rgba(234,255,241,.68);
-  margin:2px 0 6px;
-}
-
-.head-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-h1{
-  margin:0;
-  font-size:30px;
-  line-height:1.08;
-  letter-spacing:.2px;
-  background:linear-gradient(135deg, var(--green), var(--gold));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  font-weight:1000;
-}
-
-.sub{
-  margin:8px 0 0;
-  color:var(--muted);
-  line-height:1.55;
-  font-size:15px;
-  font-weight:850;
-  max-width:760px;
-}
-
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-@media(max-width:720px){
-  .row{
-    grid-template-columns:1fr;
-  }
-}
-
-label{
-  display:block;
-  font-size:12px;
-  font-weight:950;
-  color:rgba(234,255,241,.85);
-  margin:10px 0 6px;
-  letter-spacing:.2px;
-}
-
-input,
-textarea,
-select{
-  width:100%;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.18);
-  padding:12px 12px;
-  color:var(--text);
-  outline:none;
-  font:inherit;
-  transition:border-color .18s ease, box-shadow .18s ease, background .18s ease, transform .18s ease;
-  font-family:inherit;
-}
-
-input,
-select{
-  font-weight:900;
-}
-
-textarea{
-  min-height:96px;
-  resize:vertical;
-  font-weight:850;
-  line-height:1.5;
-}
-
-input::placeholder,
-textarea::placeholder{
-  color:rgba(234,255,241,.40);
-}
-
-input:focus,
-textarea:focus,
-select:focus{
-  border-color:rgba(250,204,21,.40);
-  box-shadow:0 0 0 3px rgba(250,204,21,.10);
-  background:rgba(0,0,0,.24);
-}
-
-input[readonly],
-textarea[readonly]{
-  opacity:.92;
-  background:rgba(255,255,255,.04);
-}
-
-.hr{
-  height:1px;
-  background:rgba(255,255,255,.12);
-  margin:16px 0;
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  padding:13px 16px;
-  border-radius:14px;
-  font-weight:1000;
-  text-decoration:none;
-  border:1px solid transparent;
-  cursor:pointer;
-  font-size:15px;
-  transition:all .2s ease;
-  flex:1;
-  min-width:210px;
-  box-shadow:var(--shadow-soft);
-  font-family:inherit;
-}
-
-.primary{
-  background:linear-gradient(135deg, rgba(34,197,94,.95), rgba(16,185,129,.85));
-  color:#042012;
-  border:none;
-}
-
-.secondary{
-  background:rgba(250,204,21,.14);
-  border:1px solid rgba(250,204,21,.25);
-  color:var(--text);
-}
-
-.ghost{
-  background:rgba(255,255,255,.08);
-  border:1px solid var(--line);
-  color:var(--text);
-}
-
-.primary:hover,
-.secondary:hover,
-.ghost:hover{
-  transform:translateY(-2px);
-}
-
-.primary:hover{
-  box-shadow:0 14px 34px rgba(34,197,94,.20);
-}
-
-.secondary:hover{
-  border-color:rgba(250,204,21,.45);
-}
-
-.ghost:hover{
-  border-color:rgba(255,255,255,.24);
-}
-
-.primary:disabled,
-.secondary:disabled,
-.ghost:disabled,
-.btn[disabled]{
-  opacity:.56;
-  cursor:not-allowed;
-  transform:none;
-  box-shadow:none;
-}
-
-.note{
-  margin-top:14px;
-  font-size:13px;
-  color:rgba(234,255,241,.76);
-  line-height:1.55;
-  padding:12px;
-  background:rgba(0,0,0,.20);
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.08);
-  font-weight:850;
-}
-
-.top-note{
-  margin-top:16px;
-}
-
-.ok{
-  color:#bbf7d0;
-  font-weight:1000;
-}
-
-.bad{
-  color:#fecaca;
-  font-weight:1000;
-}
-
-.hint{
-  margin-top:6px;
-  font-size:12px;
-  color:rgba(234,255,241,.60);
-  font-weight:850;
-  line-height:1.45;
-}
-
-a{
-  color:inherit;
-}
-
-@media(max-width:640px){
-  body{
-    padding:14px;
+  function setGuard(text) {
+    if (!gs) return;
+    gs.textContent = text;
   }
 
-  #guard_status{
-    top:12px;
-    right:12px;
-    left:12px;
-    text-align:center;
+  function setMsg(text, ok = true) {
+    if (!msg) return;
+    msg.innerHTML = `Statut : <span class="${ok ? "ok" : "bad"}">${escapeHtml(text)}</span>`;
   }
 
-  .wrap{
-    padding-top:58px;
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
-  .card{
-    padding:16px;
+  function normSlug(str) {
+    return String(str || "")
+      .toLowerCase()
+      .trim()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "") || "";
   }
 
-  .hero-logo{
-    width:64px;
-    height:64px;
-    border-radius:16px;
+  function slugify(str) {
+    return normSlug(str) || ("pro-" + Math.random().toString(16).slice(2, 8));
   }
 
-  h1{
-    font-size:25px;
+  function digits(v) {
+    return String(v || "").replace(/[^\d]/g, "");
   }
 
-  .sub{
-    font-size:14px;
+  function parseTags(raw) {
+    const s = String(raw || "").trim();
+    if (!s) return null;
+
+    if (s.startsWith("[") && s.endsWith("]")) {
+      try {
+        const arr = JSON.parse(s);
+        return Array.isArray(arr) ? arr.map(x => String(x).trim()).filter(Boolean) : null;
+      } catch (_) {}
+    }
+
+    return s.split(",").map(x => x.trim()).filter(Boolean);
   }
 
-  .head-actions,
-  .actions{
-    width:100%;
+  function rememberProfileSlug(slug) {
+    const s = normSlug(slug);
+    if (!s) return;
+    try {
+      sessionStorage.setItem(PROFILE_SLUG_KEY, s);
+      localStorage.setItem(PROFILE_SLUG_KEY, s);
+    } catch (_) {}
   }
 
-  .head-actions .btn,
-  .actions .btn{
-    min-width:100%;
+  function getRememberedProfileSlug() {
+    try {
+      return normSlug(
+        sessionStorage.getItem(PROFILE_SLUG_KEY) ||
+        localStorage.getItem(PROFILE_SLUG_KEY) ||
+        ""
+      );
+    } catch (_) {
+      return "";
+    }
   }
-}
+
+  function buildSafeUrl(path, params = {}) {
+    try {
+      const url = new URL(path, window.location.href);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          url.searchParams.set(key, String(value));
+        }
+      });
+      return url.pathname + url.search + url.hash;
+    } catch (_) {
+      return path || "#";
+    }
+  }
+
+  function computePublicLink(row) {
+    const profileUrl = String(row?.profile_url || "").trim();
+    if (profileUrl) return profileUrl;
+
+    const q = row?.slug || row?.display_name || row?.trade || "";
+    if (!q) return PUBLIC_LISTING_URL;
+
+    return PUBLIC_LISTING_URL + "?q=" + encodeURIComponent(q);
+  }
+
+  function hydrateForm(row) {
+    $("display_name").value = row.display_name || "";
+    $("city").value = row.city || "";
+    $("trade").value = row.trade || "";
+    $("region").value = row.region || "petite-cote";
+    $("sector").value = row.sector || "multi";
+    $("whatsapp").value = row.whatsapp || "";
+    $("phone").value = row.phone || "";
+    $("bio").value = row.bio || "";
+    $("photo_url").value = row.photo_url || "";
+    $("profile_url").value = row.profile_url || "";
+    $("badge").value = row.badge || "";
+    $("hub_badge").value = row.hub_badge || "";
+    $("price_label").value = row.price_label || "";
+    $("priority").value = Number(row.priority ?? 1);
+    $("is_published").value = String(!!row.is_published);
+    $("slug").value = row.slug || "";
+
+    try {
+      $("tags").value = Array.isArray(row.tags) ? JSON.stringify(row.tags) : "";
+    } catch (_) {
+      $("tags").value = "";
+    }
+  }
+
+  async function fetchByProfileSlug(profileSlug) {
+    if (!profileSlug) return null;
+
+    const { data, error } = await sb
+      .from("digiy_build_public_profiles")
+      .select("*")
+      .eq("slug", profileSlug)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data || null;
+  }
+
+  async function fetchByContactPhone(phone) {
+    const p = digits(phone);
+    if (!p) return null;
+
+    const { data, error } = await sb
+      .from("digiy_build_public_profiles")
+      .select("*")
+      .or(`whatsapp.eq.${p},phone.eq.${p}`)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data || null;
+  }
+
+  function fillDefaultsIfUseful() {
+    if (!$("whatsapp").value && ACCESS.phone) {
+      $("whatsapp").value = ACCESS.phone;
+    }
+    if (!$("phone").value && ACCESS.phone) {
+      $("phone").value = ACCESS.phone;
+    }
+  }
+
+  async function loadExisting() {
+    if (!sb) return;
+
+    try {
+      let row = null;
+
+      const remembered = getRememberedProfileSlug();
+      if (remembered) {
+        row = await fetchByProfileSlug(remembered);
+      }
+
+      if (!row && ACCESS.phone) {
+        row = await fetchByContactPhone(ACCESS.phone);
+      }
+
+      if (!row && $("slug").value.trim()) {
+        row = await fetchByProfileSlug(normSlug($("slug").value));
+      }
+
+      EXISTING_ROW = row || null;
+
+      if (!row) {
+        $("slug").value = slugify($("display_name").value || "");
+        fillDefaultsIfUseful();
+        setMsg("Aucune fiche existante. Création possible.", true);
+        return;
+      }
+
+      hydrateForm(row);
+      fillDefaultsIfUseful();
+      rememberProfileSlug(row.slug || "");
+      setMsg("Fiche existante chargée.", true);
+    } catch (e) {
+      console.warn("loadExisting err:", e);
+      setMsg("Impossible de charger la fiche.", false);
+    }
+  }
+
+  function buildPayload() {
+    const display_name = $("display_name").value.trim();
+    const city = $("city").value.trim();
+    const trade = $("trade").value.trim();
+    const region = $("region").value.trim();
+    const sector = $("sector").value.trim();
+    const whatsapp = digits($("whatsapp").value);
+    const phone = digits($("phone").value);
+    const bio = $("bio").value.trim();
+    const photo_url = $("photo_url").value.trim();
+    const profile_url = $("profile_url").value.trim();
+    const badge = $("badge").value.trim();
+    const hub_badge = $("hub_badge").value.trim();
+    const price_label = $("price_label").value.trim();
+    const priority = Math.max(0, Math.min(100, parseInt($("priority").value, 10) || 1));
+    const is_published = $("is_published").value === "true";
+    const tags = parseTags($("tags").value);
+
+    if (!display_name) throw new Error("Nom visible requis");
+    if (!whatsapp) throw new Error("WhatsApp requis");
+
+    let slug = normSlug($("slug").value);
+    if (!slug) {
+      slug = slugify(display_name);
+      $("slug").value = slug;
+    }
+
+    return {
+      slug,
+      display_name,
+      trade: trade || null,
+      sector: sector || null,
+      region: region || null,
+      city: city || null,
+      address: null,
+      whatsapp,
+      phone: phone || ACCESS.phone || null,
+      photo_url: photo_url || null,
+      bio: bio || null,
+      tags: tags || null,
+      profile_url: profile_url || null,
+      is_published,
+      is_active: true,
+      is_verified: true,
+      priority,
+      badge: badge || null,
+      hub_badge: hub_badge || DEFAULT_HUB_BADGE || null,
+      price_label: price_label || DEFAULT_PRICE_LABEL || null
+    };
+  }
+
+  async function saveProfile() {
+    if (!sb) {
+      setMsg("Supabase non disponible.", false);
+      return;
+    }
+
+    try {
+      const payload = buildPayload();
+      setMsg("Enregistrement en cours…", true);
+
+      let res;
+
+      if (EXISTING_ROW?.id) {
+        res = await sb
+          .from("digiy_build_public_profiles")
+          .update(payload)
+          .eq("id", EXISTING_ROW.id)
+          .select("*")
+          .maybeSingle();
+      } else {
+        res = await sb
+          .from("digiy_build_public_profiles")
+          .insert(payload)
+          .select("*")
+          .maybeSingle();
+
+        if (res?.error) {
+          res = await sb
+            .from("digiy_build_public_profiles")
+            .upsert(payload, { onConflict: "slug" })
+            .select("*")
+            .maybeSingle();
+        }
+      }
+
+      if (res?.error) {
+        console.error(res.error);
+        setMsg("Erreur : " + (res.error.message || res.error), false);
+        return;
+      }
+
+      EXISTING_ROW = res.data || payload;
+      rememberProfileSlug(EXISTING_ROW.slug || payload.slug);
+
+      setMsg(`OK ✅ fiche enregistrée • visible=${payload.is_published ? "oui" : "non"}`, true);
+    } catch (e) {
+      console.error(e);
+      setMsg(e?.message || "Erreur", false);
+    }
+  }
+
+  function reSlug() {
+    const dn = $("display_name").value.trim();
+    const newSlug = slugify(dn || "");
+    $("slug").value = newSlug;
+    setMsg("Identifiant régénéré ✅", true);
+  }
+
+  async function copyLink() {
+    let link = "";
+    try {
+      link = computePublicLink(EXISTING_ROW || buildPayload());
+    } catch (_) {
+      link = computePublicLink(EXISTING_ROW);
+    }
+
+    if (!link) {
+      setMsg("Pas de lien pour le moment.", false);
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(link);
+      setMsg("Lien copié ✅", true);
+    } catch (_) {
+      setMsg("Copie impossible. Lien : " + link, true);
+    }
+  }
+
+  function openLink() {
+    let link = "";
+    try {
+      link = computePublicLink(EXISTING_ROW || buildPayload());
+    } catch (_) {
+      link = computePublicLink(EXISTING_ROW);
+    }
+
+    if (!link) {
+      setMsg("Pas de lien pour le moment. Enregistre d’abord.", false);
+      return;
+    }
+
+    window.open(link, "_blank", "noopener");
+  }
+
+  function openListing() {
+    window.open(PUBLIC_LISTING_URL, "_blank", "noopener");
+  }
+
+  function goBack() {
+    const url = buildSafeUrl("./cockpit.html", {
+      slug: ACCESS.slug,
+      phone: ACCESS.phone
+    });
+    window.location.href = url;
+  }
+
+  async function init() {
+    if (!window.supabase || typeof window.supabase.createClient !== "function") {
+      setGuard("Supabase non chargé");
+      return;
+    }
+
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
+      }
+    });
+
+    if (!window.DIGIY_GUARD || !window.DIGIY_GUARD.ready) {
+      setGuard("Protection non chargée");
+      return;
+    }
+
+    await window.DIGIY_GUARD.ready;
+    const st = window.DIGIY_GUARD.state || {};
+
+    if (st.preview || !st.access_ok || !st.slug) {
+      setGuard("Accès refusé");
+      const hinted = st.slug || new URLSearchParams(location.search).get("slug") || "";
+      setTimeout(() => {
+        location.replace("./pin.html" + (hinted ? ("?slug=" + encodeURIComponent(hinted)) : ""));
+      }, 500);
+      return;
+    }
+
+    ACCESS.slug = String(st.slug || "").toLowerCase();
+    ACCESS.phone = String(st.phone || "");
+
+    document.documentElement.classList.add("access-ok");
+
+    if (gs) {
+      gs.textContent = "Accès OK";
+      setTimeout(() => {
+        gs.style.display = "none";
+      }, 700);
+    }
+
+    fillDefaultsIfUseful();
+
+    setMsg("Prêt ✅ Chargement de la fiche…", true);
+    await loadExisting();
+
+    $("btnSave").addEventListener("click", saveProfile);
+    $("btnReSlug").addEventListener("click", reSlug);
+    $("btnCopyLink").addEventListener("click", copyLink);
+    $("btnOpenLink").addEventListener("click", openLink);
+    $("btnOpenListing").addEventListener("click", openListing);
+    $("btnBack").addEventListener("click", goBack);
+  }
+
+  init().catch((e) => {
+    console.error(e);
+    setGuard("Erreur de chargement");
+    setMsg("Erreur chargement fiche.", false);
+  });
+})();
