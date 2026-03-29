@@ -4,13 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#071711" />
-  <title>ENTREPRENEUR MULTI SERVICES — Dashboard pro</title>
+  <title>ENTREPRENEUR MULTI SERVICES — Mon activité</title>
   <meta
     name="description"
-    content="Dashboard pro ENTREPRENEUR MULTI SERVICES. Lecture simple du statut, de l’activité et des sauvegardes locales en mode slug."
+    content="Mon activité ENTREPRENEUR MULTI SERVICES. Lecture simple du statut, de l’activité et des sauvegardes locales."
   />
 
-<script src="./guard.js?v=build-guard-v10"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+
+  <script src="./guard.js?v=build-guard-v10"></script>
+
   <style>
     :root{
       --bg:#071711;
@@ -35,7 +40,7 @@
     body{
       min-height:100vh;
       color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background:
         radial-gradient(circle at top, rgba(250,204,21,.10), transparent 55%),
         radial-gradient(circle at 100% 0, rgba(99,102,241,.15), transparent 35%),
@@ -61,34 +66,34 @@
     .brand{
       display:flex;
       align-items:center;
-      gap:12px;
+      gap:14px;
       min-width:0;
     }
 
-    .badge{
-      width:46px;
-      height:46px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:rgba(99,102,241,.18);
-      border:1px solid rgba(99,102,241,.30);
-      font-size:22px;
+    .brand-logo{
+      width:74px;
+      height:74px;
+      border-radius:20px;
+      object-fit:cover;
+      background:#fff;
+      border:1px solid rgba(250,204,21,.28);
+      box-shadow:0 14px 34px rgba(0,0,0,.28);
       flex:0 0 auto;
     }
 
     h1{
       margin:0;
-      font-size:16px;
-      letter-spacing:.06em;
-      line-height:1.25;
+      font-size:17px;
+      letter-spacing:.03em;
+      line-height:1.2;
+      font-weight:900;
     }
 
     .sub{
-      margin-top:5px;
+      margin-top:6px;
       font-size:12px;
       color:var(--muted);
-      line-height:1.45;
+      line-height:1.55;
     }
 
     .right{
@@ -129,6 +134,7 @@
       justify-content:center;
       gap:8px;
       transition:transform .15s ease, border-color .15s ease, opacity .15s ease;
+      font-family:inherit;
     }
 
     .btn:hover{
@@ -220,7 +226,7 @@
     .card h3{
       margin:0 0 8px 0;
       font-size:14px;
-      letter-spacing:.04em;
+      letter-spacing:.03em;
     }
 
     .row{
@@ -276,13 +282,6 @@
       line-height:1.1;
     }
 
-    .box{
-      padding:12px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.16);
-    }
-
     .boostBox{
       display:flex;
       justify-content:space-between;
@@ -298,7 +297,7 @@
       display:flex;
       flex-direction:column;
       gap:8px;
-      min-width:160px;
+      min-width:170px;
     }
 
     .backupBox{
@@ -380,6 +379,36 @@
     }
 
     .smallLink:hover{color:var(--text)}
+
+    @media(max-width:680px){
+      .brand-logo{
+        width:66px;
+        height:66px;
+        border-radius:18px;
+      }
+
+      .right{
+        width:100%;
+      }
+
+      .right .btn,
+      .lock .row .btn,
+      .backupActions .btn,
+      .boostActions .btn{
+        width:100%;
+      }
+
+      .backupBox,
+      .boostBox{
+        flex-direction:column;
+      }
+
+      .backupActions,
+      .boostActions{
+        width:100%;
+        min-width:100%;
+      }
+    }
   </style>
 </head>
 
@@ -388,28 +417,32 @@
 
     <div class="topbar">
       <div class="brand">
-        <div class="badge">🦅</div>
+        <img
+          class="brand-logo"
+          src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg"
+          alt="Logo DIGIYLYFE"
+        />
         <div>
-          <h1>ENTREPRENEUR MULTI SERVICES</h1>
+          <h1>ENTREPRENEUR MULTI SERVICES — Mon activité</h1>
           <div class="sub">
-            Dashboard pro simple et utile<br>
-            SLUG : <b id="slugText">—</b> • PHONE : <b id="phoneText">—</b>
+            Lecture simple de ton accès, de ton activité et de tes sauvegardes.<br>
+            Identifiant : <b id="slugText">—</b> • Téléphone : <b id="phoneText">—</b>
           </div>
         </div>
       </div>
 
       <div class="right">
-        <div class="pill" id="pillStatus">Statut : <b>…</b></div>
-        <button class="btn dashboard" id="btnCockpit" type="button">🛠️ Cockpit</button>
-        <button class="btn profile" id="btnSettings" type="button">⚙️ Ma fiche</button>
-        <button class="btn danger" id="btnLogout" type="button">🚪 Déconnexion</button>
+        <div class="pill" id="pillStatus">Accès : <b>…</b></div>
+        <button class="btn dashboard" id="btnCockpit" type="button">🛠️ Ma gestion</button>
+        <button class="btn profile" id="btnSettings" type="button">🪪 Ma fiche</button>
+        <button class="btn danger" id="btnLogout" type="button">🚪 Sortir</button>
       </div>
     </div>
 
     <div id="lockBox" class="lock">
-      <div class="big">🔒 Page interne protégée</div>
+      <div class="big">🔒 Accès protégé</div>
       <div class="small" id="lockText">
-        Le dashboard fait partie du circuit interne PRO. Ouvre ta session avec ton PIN pour accéder à ton activité, sans repasser par le PIN ensuite entre les pages internes.
+        Cette page fait partie de ton espace interne. Ouvre ta session avec ton PIN pour retrouver ton activité.
       </div>
       <div class="row">
         <a class="btn primary" id="btnPinEntry" href="./pin.html">🔑 Ouvrir avec mon PIN</a>
@@ -420,7 +453,7 @@
     <div id="workspace" class="grid hidden">
 
       <div class="card">
-        <h3>Statut & sécurité</h3>
+        <h3>Statut et accès</h3>
 
         <div class="row">
           <div class="statusDot" id="dot"></div>
@@ -433,7 +466,7 @@
         <div class="hr"></div>
 
         <div class="mini" id="metaLine">
-          <span>Plan : —</span>
+          <span>Formule : —</span>
           <span>•</span>
           <span>Paiement : —</span>
         </div>
@@ -444,7 +477,7 @@
       </div>
 
       <div class="card">
-        <h3>Argent</h3>
+        <h3>Mon argent</h3>
 
         <div class="bigMoney" id="moneyMonth">— FCFA</div>
         <div class="mini" id="moneyMeta">
@@ -457,12 +490,12 @@
 
         <div class="boostBox">
           <div>
-            <div style="font-weight:1000;margin-bottom:4px">🚀 BOOST visibilité</div>
+            <div style="font-weight:1000;margin-bottom:4px">🚀 Coup de pouce visibilité</div>
             <div class="muted" style="font-weight:750;font-size:13px" id="boostText">
               +50% d’apparition • 7 jours • 5 000 FCFA
             </div>
             <div class="muted" style="font-weight:750;font-size:12px;margin-top:6px" id="boostStatus">
-              Statut boost : —
+              Statut : —
             </div>
           </div>
 
@@ -474,11 +507,11 @@
       </div>
 
       <div class="card" style="grid-column:1/-1">
-        <h3>💾 Sauvegarde pro</h3>
+        <h3>💾 Mes sauvegardes</h3>
 
         <div class="backupBox">
           <div>
-            <div style="font-weight:1000">Devis stockés sur cet appareil</div>
+            <div style="font-weight:1000">Devis gardés sur cet appareil</div>
             <div class="muted" style="font-weight:750;font-size:13px;line-height:1.55;margin-top:8px" id="backupText">
               Vérification du stockage local…
             </div>
@@ -495,16 +528,16 @@
       </div>
 
       <div class="card" style="grid-column:1/-1">
-        <h3>Action principale</h3>
+        <h3>Action du moment</h3>
         <div class="muted" style="font-weight:750;margin-bottom:10px" id="actionDesc">
           Une action simple pour avancer tout de suite.
         </div>
 
         <div class="row" style="justify-content:space-between">
           <div class="muted" style="font-weight:800" id="actionHint">
-            Retourne à ton cockpit pour piloter ta fiche, tes outils et ton activité.
+            Retourne à ta gestion pour piloter ta fiche, tes outils et ton activité.
           </div>
-          <button class="btn primary" id="btnPrimaryAction" type="button">🛠️ Ouvrir mon cockpit</button>
+          <button class="btn primary" id="btnPrimaryAction" type="button">🛠️ Ouvrir ma gestion</button>
         </div>
 
         <div class="hr"></div>
@@ -575,6 +608,20 @@
     return Math.ceil((b - a) / (1000 * 60 * 60 * 24));
   }
 
+  function buildSafeUrl(path, params = {}){
+    try{
+      const url = new URL(path, window.location.href);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && String(value).trim() !== "") {
+          url.searchParams.set(key, String(value));
+        }
+      });
+      return url.pathname + url.search + url.hash;
+    }catch(_){
+      return path || "#";
+    }
+  }
+
   function getHintedSlug(){
     const params = new URLSearchParams(location.search);
     return normSlug(
@@ -587,15 +634,24 @@
   }
 
   function cockpitUrl(){
-    return "./cockpit.html" + (CURRENT.slug ? ("?slug=" + encodeURIComponent(CURRENT.slug)) : "");
+    return buildSafeUrl("./cockpit.html", {
+      slug: CURRENT.slug,
+      phone: CURRENT.phone
+    });
   }
 
   function profileUrl(){
-    return "./profile.html" + (CURRENT.slug ? ("?slug=" + encodeURIComponent(CURRENT.slug)) : "");
+    return buildSafeUrl("./profile.html", {
+      slug: CURRENT.slug,
+      phone: CURRENT.phone
+    });
   }
 
   function pinUrl(){
-    return "./pin.html" + (CURRENT.slug ? ("?slug=" + encodeURIComponent(CURRENT.slug)) : "");
+    return buildSafeUrl("./pin.html", {
+      slug: CURRENT.slug,
+      phone: CURRENT.phone
+    });
   }
 
   function manageSubUrl(){
@@ -603,13 +659,14 @@
     url.searchParams.set("module", MODULE_CODE);
     if (CURRENT.phone) url.searchParams.set("phone", CURRENT.phone);
     if (CURRENT.slug) url.searchParams.set("slug", CURRENT.slug);
+    url.searchParams.set("return", cockpitUrl());
     return url.toString();
   }
 
   function supportUrl(){
     const msg = encodeURIComponent(
       "Bonjour support " + MODULE_LABEL + ".\n" +
-      "Slug : " + (CURRENT.slug || "") + "\n" +
+      "Identifiant : " + (CURRENT.slug || "") + "\n" +
       "Téléphone : " + (CURRENT.phone || "")
     );
     return "https://wa.me/" + SUPPORT_PHONE + "?text=" + msg;
@@ -631,10 +688,11 @@
     const rows = getLocalQuotes();
     const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    const objectUrl = URL.createObjectURL(blob);
+    a.href = objectUrl;
     a.download = "build-backup-" + (CURRENT.slug || "noslug") + ".json";
     a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
     return rows.length;
   }
 
@@ -643,12 +701,12 @@
     const count = rows.length;
 
     $("backupText").textContent =
-      "Tes devis sont gardés localement pour ce slug sur cet appareil. Pense à exporter une copie régulièrement pour garder une sécurité simple.";
+      "Tes devis sont gardés localement pour cette activité sur cet appareil. Pense à exporter une copie régulièrement pour garder une sécurité simple.";
 
     $("backupCount").textContent =
       count > 0
-        ? count + " devis trouvé(s) sur cet appareil pour " + (CURRENT.slug || "ce profil") + "."
-        : "Aucun devis local trouvé pour " + (CURRENT.slug || "ce profil") + " pour le moment.";
+        ? count + " devis trouvé(s) sur cet appareil pour " + (CURRENT.slug || "cette activité") + "."
+        : "Aucun devis local trouvé pour " + (CURRENT.slug || "cette activité") + " pour le moment.";
   }
 
   function setNotifs(items){
@@ -691,8 +749,8 @@
   }
 
   function setLockedView(title, subtitle){
-    $("lockText").textContent = subtitle || "Ouvre ta session avec ton PIN pour accéder à ton dashboard interne.";
-    $("pillStatus").innerHTML = `Statut : <b>Bloqué</b>`;
+    $("lockText").textContent = subtitle || "Ouvre ta session avec ton PIN pour accéder à ton activité.";
+    $("pillStatus").innerHTML = `Accès : <b>fermé</b>`;
     $("dot").classList.remove("ok");
     $("dot").classList.add("bad");
     $("statusLine").textContent = title || "Accès protégé";
@@ -704,7 +762,7 @@
   function setLiveView(){
     $("lockBox").classList.remove("show");
     $("workspace").classList.remove("hidden");
-    $("pillStatus").innerHTML = `Statut : <b>Actif</b>`;
+    $("pillStatus").innerHTML = `Accès : <b>actif</b>`;
     $("dot").classList.remove("bad");
     $("dot").classList.add("ok");
   }
@@ -793,7 +851,7 @@
     };
 
     $("btnBoostInfo").onclick = () => {
-      alert("BOOST visibilité : +50% d’apparition pendant 7 jours. Paiement direct.");
+      alert("Coup de pouce visibilité : +50% d’apparition pendant 7 jours. Paiement direct.");
     };
 
     $("linkSupport").onclick = (ev) => {
@@ -826,7 +884,10 @@
       CURRENT.phone = "";
       CURRENT.live = false;
       setHeader();
-      setLockedView("Session absente", "Le dashboard interne a besoin d’une vraie session PRO. Ouvre avec ton PIN pour reprendre la circulation normale.");
+      setLockedView(
+        "Session absente",
+        "Cette page a besoin d’une vraie session ouverte. Rentre par le PIN pour reprendre ta circulation normale."
+      );
       return;
     }
 
@@ -848,25 +909,31 @@
     setHeader();
 
     if (!CURRENT.slug) {
-      setLockedView("Slug manquant", "Ajoute un slug valide ou repasse par le PIN pour reconstruire la session proprement.");
+      setLockedView(
+        "Identifiant manquant",
+        "Repasse par le PIN pour reconstruire ton accès proprement."
+      );
       return;
     }
 
     if (!CURRENT.live) {
-      setLockedView("Session interne requise", "Le dashboard ne s’ouvre pas en mode libre. Le PIN sert d’entrée ou de secours, puis la circulation interne reprend normalement.");
+      setLockedView(
+        "Session interne requise",
+        "Cette page ne s’ouvre pas en mode libre. Le PIN sert d’entrée ou de secours, puis la circulation interne reprend normalement."
+      );
       return;
     }
 
     setLiveView();
     refreshBackupCard();
 
-    $("statusLine").textContent = "Session PIN active";
+    $("statusLine").textContent = "Session active";
     $("expiryLine").textContent = "Lecture de l’abonnement…";
-    $("metaLine").innerHTML = `<span>Plan : —</span><span>•</span><span>Paiement : —</span>`;
+    $("metaLine").innerHTML = `<span>Formule : —</span><span>•</span><span>Paiement : —</span>`;
     $("moneyMonth").textContent = "— FCFA";
     $("txCount").textContent = "— opérations";
     $("todayHint").textContent = "Aujourd’hui";
-    $("boostStatus").textContent = "Statut boost : vérification…";
+    $("boostStatus").textContent = "Statut : vérification…";
 
     const [status, stats, boost] = await Promise.all([
       getSubscriptionStatus(CURRENT.phone),
@@ -878,9 +945,9 @@
     const plan = status?.plan || status?.plan_code || "standard";
     const pay = status?.payment_ref ? "validé" : "ok";
 
-    $("statusLine").textContent = "Session PIN active";
+    $("statusLine").textContent = "Session active";
     $("expiryLine").textContent = expiresAt ? `Expire le ${fmtDateFR(expiresAt)}` : "Expiration : —";
-    $("metaLine").innerHTML = `<span>Plan : ${plan}</span><span>•</span><span>Paiement : ${pay}</span>`;
+    $("metaLine").innerHTML = `<span>Formule : ${plan}</span><span>•</span><span>Paiement : ${pay}</span>`;
 
     const month = stats?.month_xof ?? null;
     const tx = stats?.tx_count ?? null;
@@ -896,7 +963,7 @@
       level: "ok",
       tag: "PIN",
       title: "Session ouverte",
-      text: "Ta session interne est active. Tu peux circuler entre dashboard, cockpit et fiche sans repasser par le PIN."
+      text: "Ta session interne est active. Tu peux circuler entre ton activité, ta gestion et ta fiche sans repasser par le PIN."
     });
 
     if (expiresAt) {
@@ -930,32 +997,32 @@
         level: "info",
         tag: "LOCAL",
         title: "Stockage local prêt",
-        text: "Tes futurs devis resteront attachés à ce slug sur cet appareil."
+        text: "Tes futurs devis resteront attachés à cette activité sur cet appareil."
       });
     }
 
     if (boost?.active) {
       $("boostStatus").textContent =
-        `Statut boost : actif jusqu’au ${fmtDateFR(boost.expires_at)} • +${boost.views_today || 0} vues aujourd’hui`;
+        `Statut : actif jusqu’au ${fmtDateFR(boost.expires_at)} • +${boost.views_today || 0} vues aujourd’hui`;
       $("btnBoost").textContent = "Actif";
       $("btnBoost").disabled = true;
 
       notifs.push({
         level: "info",
         tag: "BOOST",
-        title: "Boost actif",
+        title: "Coup de pouce actif",
         text: "Ta visibilité est actuellement augmentée."
       });
     } else {
-      $("boostStatus").textContent = "Statut boost : inactif";
+      $("boostStatus").textContent = "Statut : inactif";
       $("btnBoost").textContent = "Activer";
       $("btnBoost").disabled = false;
 
       notifs.push({
         level: "info",
         tag: "OPTION",
-        title: "Boost disponible",
-        text: "Active le boost si tu veux pousser ta visibilité."
+        title: "Coup de pouce disponible",
+        text: "Active cette option si tu veux pousser ta visibilité."
       });
     }
 
@@ -975,7 +1042,7 @@
         location.href = url;
       } catch (e) {
         console.error(e);
-        alert("Impossible d’activer le boost. Vérifie la configuration.");
+        alert("Impossible d’activer le coup de pouce pour le moment.");
         $("btnBoost").disabled = false;
         $("btnBoost").textContent = "Activer";
       }
@@ -988,7 +1055,10 @@
     CURRENT.phone = "";
     CURRENT.live = false;
     setHeader();
-    setLockedView("Erreur de chargement", "Le dashboard n’a pas pu se charger proprement. Rentre par le PIN pour reconstruire la session.");
+    setLockedView(
+      "Erreur de chargement",
+      "Cette page n’a pas pu se charger proprement. Rentre par le PIN pour reconstruire ta session."
+    );
   });
 })();
 </script>
