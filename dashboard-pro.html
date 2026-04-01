@@ -442,10 +442,10 @@
     <div id="lockBox" class="lock">
       <div class="big">🔒 Accès protégé</div>
       <div class="small" id="lockText">
-        Cette page fait partie de ton espace interne. Ouvre ta session avec ton PIN pour retrouver ton activité.
+        Cette page fait partie de ton espace interne. Ouvre ta session avec ton code d’accès pour retrouver ton activité.
       </div>
       <div class="row">
-        <a class="btn primary" id="btnPinEntry" href="./pin.html">🔑 Ouvrir avec mon PIN</a>
+        <a class="btn primary" id="btnPinEntry" href="./pin.html">🔑 Ouvrir avec mon code</a>
         <a class="btn" id="btnManageSubLocked" href="https://commencer-a-payer.digiylyfe.com/">💳 Gérer mon abonnement</a>
       </div>
     </div>
@@ -749,7 +749,7 @@
   }
 
   function setLockedView(title, subtitle){
-    $("lockText").textContent = subtitle || "Ouvre ta session avec ton PIN pour accéder à ton activité.";
+    $("lockText").textContent = subtitle || "Ouvre ta session avec ton code d’accès pour accéder à ton activité.";
     $("pillStatus").innerHTML = `Accès : <b>fermé</b>`;
     $("dot").classList.remove("ok");
     $("dot").classList.add("bad");
@@ -886,7 +886,7 @@
       setHeader();
       setLockedView(
         "Session absente",
-        "Cette page a besoin d’une vraie session ouverte. Rentre par le PIN pour reprendre ta circulation normale."
+        "Cette page a besoin d’une vraie session ouverte. Rentre par le code d’accès pour reprendre ta circulation normale."
       );
       return;
     }
@@ -911,7 +911,7 @@
     if (!CURRENT.slug) {
       setLockedView(
         "Identifiant manquant",
-        "Repasse par le PIN pour reconstruire ton accès proprement."
+        "Repasse par le code d’accès pour reconstruire ton accès proprement."
       );
       return;
     }
@@ -919,7 +919,7 @@
     if (!CURRENT.live) {
       setLockedView(
         "Session interne requise",
-        "Cette page ne s’ouvre pas en mode libre. Le PIN sert d’entrée ou de secours, puis la circulation interne reprend normalement."
+        "Cette page ne s’ouvre pas en mode libre. Le code d’accès sert d’entrée ou de secours, puis la circulation interne reprend normalement."
       );
       return;
     }
@@ -961,9 +961,9 @@
 
     notifs.push({
       level: "ok",
-      tag: "PIN",
+      tag: "CODE",
       title: "Session ouverte",
-      text: "Ta session interne est active. Tu peux circuler entre ton activité, ta gestion et ta fiche sans repasser par le PIN."
+      text: "Ta session interne est active. Tu peux circuler entre ton activité, ta gestion et ta fiche sans repasser par le code d’accès."
     });
 
     if (expiresAt) {
@@ -1057,7 +1057,7 @@
     setHeader();
     setLockedView(
       "Erreur de chargement",
-      "Cette page n’a pas pu se charger proprement. Rentre par le PIN pour reconstruire ta session."
+      "Cette page n’a pas pu se charger proprement. Rentre par le code d’accès pour reconstruire ta session."
     );
   });
 })();

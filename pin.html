@@ -7,7 +7,7 @@
   <title>ENTREPRENEUR MULTI SERVICES — Mon accès</title>
   <meta
     name="description"
-    content="Accès sécurisé ENTREPRENEUR MULTI SERVICES par identifiant, téléphone et PIN."
+    content="Accès sécurisé ENTREPRENEUR MULTI SERVICES par identifiant, téléphone et code."
   />
 
   <script>
@@ -301,14 +301,14 @@
           />
           <div>
             <h1>ENTREPRENEUR MULTI SERVICES</h1>
-            <p>Mon accès sécurisé par identifiant, téléphone et PIN</p>
+            <p>Mon accès sécurisé par identifiant, téléphone et code</p>
           </div>
         </div>
       </div>
 
       <div class="body">
         <p class="intro">
-          Entre avec ton <strong>identifiant</strong> ou ton <strong>téléphone</strong>, puis ton <strong>PIN</strong>.
+          Entre avec ton <strong>identifiant</strong> ou ton <strong>téléphone</strong>, puis ton <strong>code d’accès</strong>.
           Une fois validé, ta session interne suit la navigation normale entre tes pages.
         </p>
 
@@ -323,10 +323,10 @@
         </div>
 
         <div class="field">
-          <label for="pin">Code PIN</label>
+          <label for="pin">Code d’accès</label>
           <div class="pin-row">
             <input id="pin" type="password" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="one-time-code"/>
-            <button id="togglePin" class="mini-btn" type="button" aria-label="Afficher le PIN">👁️</button>
+            <button id="togglePin" class="mini-btn" type="button" aria-label="Afficher le code">👁️</button>
           </div>
         </div>
 
@@ -725,7 +725,7 @@
             if (reason === "subscription_inactive") {
               setStatus("Abonnement inactif. Passe par l’activation du module.", "err");
             } else {
-              setStatus("PIN invalide.", "err");
+              setStatus("Code invalide.", "err");
             }
 
             el.btnOpen.disabled = false;

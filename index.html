@@ -4,10 +4,10 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>ENTREPRENEUR MULTI SERVICES — Redirection PIN</title>
+  <title>ENTREPRENEUR MULTI SERVICES — Accès sécurisé</title>
   <meta
     name="description"
-    content="Redirection propre vers l’accès PIN ENTREPRENEUR MULTI SERVICES."
+    content="Accès sécurisé ENTREPRENEUR MULTI SERVICES avec reprise directe."
   />
 
   <style>
@@ -187,42 +187,40 @@
     <div class="top">
       <div class="logo">🔑</div>
       <div>
-        <h1>GO PIN — ENTREPRENEUR MULTI SERVICES</h1>
+        <h1>ENTREPRENEUR MULTI SERVICES</h1>
         <div class="sub">
-          Pont direct vers le vrai accès PIN du module BUILD.
+          Entrée directe vers ton accès sécurisé.
         </div>
       </div>
     </div>
 
     <div class="hero">
-      Cette page n’est plus une porte d’entrée autonome.  
-      Elle sert seulement de <b>redirection propre</b> vers <b>pin.html</b>, qui est maintenant
-      l’unique entrée normale du rail PRO.
+      Cette page sert de <b>passage rapide</b> vers ton accès sécurisé.
+      Une fois validé, tu reprends ton activité normalement.
     </div>
 
     <div class="slugbox">
-      <div class="sluglabel">Slug détecté</div>
+      <div class="sluglabel">Identifiant détecté</div>
       <div class="slugvalue" id="slugValue">Chargement…</div>
-      <div class="meta" id="phoneMeta">Phone : —</div>
+      <div class="meta" id="phoneMeta">Téléphone : —</div>
     </div>
 
     <div class="actions">
-      <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir l’accès PIN</a>
+      <a class="btn primary" id="btnEnter" href="./pin.html">🔐 Ouvrir mon code d’accès</a>
       <a
         class="btn"
         id="btnSupport"
         target="_blank"
         rel="noopener"
-        href="https://wa.me/221771342889?text=Bonjour%20support%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s%20PIN."
+        href="https://wa.me/221771342889?text=Bonjour%20support%20ENTREPRENEUR%20MULTI%20SERVICES.%20J%E2%80%99ai%20besoin%20d%E2%80%99aide%20pour%20mon%20acc%C3%A8s."
       >
         💬 Support
       </a>
     </div>
 
     <div class="mini">
-      <b>Doctrine DIGIY :</b> QR, lien direct, bouton public et reprise d’accès doivent maintenant
-      viser <b>pin.html?slug=...</b>.  
-      Le cockpit, le dashboard et la fiche restent des pages internes, jamais des portes d’entrée.
+      <b>Conseil :</b> garde l’identifiant dans le lien quand tu reprends l’accès.
+      L’entrée sécurisée reste le bon passage pour revenir proprement dans ton activité.
     </div>
   </div>
 
@@ -290,7 +288,7 @@
       if (slug) {
         slugValue.textContent = slug;
       } else {
-        slugValue.textContent = "Aucun slug détecté pour le moment.";
+        slugValue.textContent = "Aucun identifiant détecté pour le moment.";
         slugValue.classList.add("empty");
       }
 

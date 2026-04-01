@@ -496,7 +496,7 @@
         alt="Logo DIGIYLYFE"
       />
       <div>
-        <h1>🛠️ ENTREPRENEUR MULTI SERVICES — Ma gestion</h1>
+        <h1>🛠️ ENTREPRENEUR MULTI SERVICES — Mon espace</h1>
         <div class="sub">
           Identifiant : <b id="slug">—</b> • Téléphone : <b id="owner">—</b><br>
           Accès : <b id="stat">initialisation…</b>
@@ -516,10 +516,10 @@
   <div id="lockBox" class="lock">
     <div class="big">🔒 Accès protégé</div>
     <div class="small" id="lockText">
-      Cette page fait partie de ton espace privé. Ouvre ta session avec ton PIN pour gérer tes devis et tes chantiers.
+      Cette page fait partie de ton espace privé. Ouvre ta session avec ton code d’accès pour gérer tes devis et tes chantiers.
     </div>
     <div class="row">
-      <a class="btn primary" id="btnPinEntry" href="./pin.html">🔑 Ouvrir avec mon PIN</a>
+      <a class="btn primary" id="btnPinEntry" href="./pin.html">🔑 Ouvrir avec mon code</a>
       <a class="btn warn" id="btnManageSub" href="https://commencer-a-payer.digiylyfe.com/">💳 Gérer mon abonnement</a>
     </div>
   </div>
@@ -610,7 +610,7 @@
         <div class="item">
           <div>
             <div class="a">Retour rapide</div>
-            <div class="b">Tu peux revenir à ta vue principale sans repasser par le PIN.</div>
+            <div class="b">Tu peux revenir à ta vue principale sans repasser par le code d’accès.</div>
           </div>
           <button class="tinybtn" id="btnGoDashboard" type="button">📊 Mon activité</button>
         </div>
@@ -864,8 +864,8 @@
     $("modePill").textContent = ACCESS.live ? "session active" : "accès sécurisé";
     $("stat").textContent = ACCESS.live ? "ouvert" : "fermé";
     $("sessionText").textContent = ACCESS.live
-      ? "Ta session est active. Tu peux circuler entre ta gestion, ta fiche et tes autres pages sans repasser par le PIN."
-      : "Ta session n’est pas active. Le PIN reste ta porte d’entrée ou de secours.";
+      ? "Ta session est active. Tu peux circuler entre ta gestion, ta fiche et tes autres pages sans repasser par le code d’accès."
+      : "Ta session n’est pas active. Le code d’accès reste ta porte d’entrée ou de secours.";
     $("sessionBadge").textContent = ACCESS.live ? "OK" : "FERMÉ";
 
     $("btnPinEntry").href = pinUrl();
