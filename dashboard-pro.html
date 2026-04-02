@@ -513,7 +513,7 @@
           <div>
             <div style="font-weight:1000">Devis gardés sur cet appareil</div>
             <div class="muted" style="font-weight:750;font-size:13px;line-height:1.55;margin-top:8px" id="backupText">
-              Vérification du stockage local…
+              Vérification des copies gardées ici…
             </div>
             <div class="muted" style="font-weight:800;font-size:13px;line-height:1.55;margin-top:8px" id="backupCount">
               —
@@ -521,7 +521,7 @@
           </div>
 
           <div class="backupActions">
-            <button class="btn primary" id="btnExportBackup" type="button">⬇️ Exporter mes devis</button>
+            <button class="btn primary" id="btnExportBackup" type="button">⬇️ Sauvegarder une copie de mes devis</button>
             <button class="btn" id="btnDriveGuide" type="button">☁️ Rappel Drive</button>
           </div>
         </div>
@@ -942,12 +942,14 @@
     ]);
 
     const expiresAt = status?.expires_at || status?.current_period_end || null;
-    const plan = status?.plan || status?.plan_code || "standard";
+    const plan = status?.plan || status?.plan_code || "";
     const pay = status?.payment_ref ? "validé" : "ok";
 
     $("statusLine").textContent = "Session active";
     $("expiryLine").textContent = expiresAt ? `Expire le ${fmtDateFR(expiresAt)}` : "Expiration : —";
-    $("metaLine").innerHTML = `<span>Formule : ${plan}</span><span>•</span><span>Paiement : ${pay}</span>`;
+    $("metaLine").innerHTML = plan
+      ? `<span>Formule active : ${plan}</span><span>•</span><span>Paiement : ${pay}</span>`
+      : `<span>Abonnement actif</span><span>•</span><span>Paiement : ${pay}</span>`;
 
     const month = stats?.month_xof ?? null;
     const tx = stats?.tx_count ?? null;
@@ -963,7 +965,7 @@
       level: "ok",
       tag: "CODE",
       title: "Session ouverte",
-      text: "Ta session interne est active. Tu peux circuler entre ton activité, ta gestion et ta fiche sans repasser par le code d’accès."
+      text: "Ton accès est actif. Tu peux circuler entre ton activité, ta gestion et ta fiche sans repasser par le code d’accès."
     });
 
     if (expiresAt) {

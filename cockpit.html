@@ -580,8 +580,8 @@
       <div class="list" id="list"></div>
 
       <div class="note">
-        <b>Lecture DIGIY :</b> tes devis et tes chantiers restent enregistrés sur cet appareil pour cette activité,
-        tant qu’aucun dossier central n’a été posé pour cette partie métier.
+        <b>Repère utile :</b> tes devis et tes chantiers restent gardés sur cet appareil pour cette activité,
+        tant qu’aucune copie partagée n’a encore été mise en place pour cette partie métier.
       </div>
     </div>
 
@@ -626,8 +626,8 @@
 
       <div class="title">Outils secondaires</div>
       <div class="row">
-        <button class="btn" id="btnExport" type="button">⬇️ Sauvegarder mes données</button>
-        <button class="btn danger" id="btnReset" type="button">🧹 Effacer mes données locales</button>
+        <button class="btn" id="btnExport" type="button">⬇️ Sauvegarder une copie</button>
+        <button class="btn danger" id="btnReset" type="button">🧹 Effacer les copies de cet appareil</button>
       </div>
 
       <div style="height:12px"></div>
@@ -1129,7 +1129,7 @@
     };
 
     $("btnReset").onclick = () => {
-      if (!confirm("Effacer les données locales de cette activité sur cet appareil ?")) return;
+      if (!confirm("Effacer les copies gardées sur cet appareil pour cette activité ?")) return;
       localStorage.removeItem(storageKey());
       renderList();
     };

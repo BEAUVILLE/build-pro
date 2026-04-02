@@ -200,7 +200,7 @@
     </div>
 
     <div class="slugbox">
-      <div class="sluglabel">Identifiant détecté</div>
+      <div class="sluglabel">Repère retrouvé</div>
       <div class="slugvalue" id="slugValue">Chargement…</div>
       <div class="meta" id="phoneMeta">Téléphone : —</div>
     </div>
@@ -292,7 +292,7 @@
         slugValue.classList.add("empty");
       }
 
-      phoneMeta.textContent = phone ? `Phone : ${phone}` : "Phone : —";
+      phoneMeta.textContent = phone ? `Téléphone : ${phone}` : "Téléphone : —";
 
       const pinUrl = buildPinUrl(slug, phone);
       btnEnter.href = pinUrl;
