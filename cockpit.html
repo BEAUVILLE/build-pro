@@ -391,6 +391,205 @@
       line-height:1.55;
     }
 
+
+    .quickBuild{
+      margin-top:12px;
+      border-color:rgba(250,204,21,.22);
+      background:
+        radial-gradient(420px 170px at 100% 0%, rgba(250,204,21,.10), transparent 70%),
+        linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
+    }
+
+    .quickBuildTitle{
+      font-weight:1000;
+      letter-spacing:.04em;
+      font-size:12px;
+      color:rgba(234,255,241,.90);
+      text-transform:uppercase;
+    }
+
+    .quickBuildSub{
+      margin-top:6px;
+      color:var(--muted);
+      font-weight:850;
+      line-height:1.45;
+      font-size:13px;
+    }
+
+    .quickGuide{
+      margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.16);
+      display:grid;
+      gap:8px;
+    }
+
+    .quickGuide strong{
+      color:#fde68a;
+      font-size:13px;
+      font-weight:1000;
+    }
+
+    .quickGuide p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.45;
+    }
+
+    .quickExamples{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .quickExamples button{
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      font-family:inherit;
+    }
+
+    .quickExamples button:hover{
+      border-color:rgba(250,204,21,.55);
+      color:#fde68a;
+    }
+
+    .quickDraft{
+      display:none;
+      margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(34,197,94,.35);
+      background:rgba(34,197,94,.10);
+      color:#bbf7d0;
+      font-size:13px;
+      font-weight:850;
+      line-height:1.5;
+    }
+
+    .quickDraft strong{color:#fff}
+
+    .memoryBox{
+      margin-top:10px;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.16);
+      display:grid;
+      gap:10px;
+    }
+
+    .memoryHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .memoryTitle{
+      font-size:13px;
+      font-weight:1000;
+      color:#fde68a;
+      line-height:1.25;
+    }
+
+    .memoryHelp{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.4;
+    }
+
+    .memoryList{
+      display:grid;
+      gap:8px;
+    }
+
+    .memoryItem{
+      padding:10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.15);
+      display:grid;
+      gap:5px;
+    }
+
+    .memoryItemTop{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+
+    .memoryItemTitle{
+      font-size:13px;
+      font-weight:1000;
+      color:var(--text);
+      line-height:1.35;
+    }
+
+    .memoryItemAmount{
+      font-size:12px;
+      font-weight:1000;
+      color:#bbf7d0;
+      white-space:nowrap;
+    }
+
+    .memoryItemMeta{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.35;
+    }
+
+    .memoryEmpty{
+      padding:10px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.16);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.45;
+    }
+
+    .memoryPayAction{
+      margin-top:6px;
+      display:inline-flex;
+      width:max-content;
+      max-width:100%;
+      min-height:36px;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:8px 11px;
+      border-radius:999px;
+      border:1px solid rgba(250,204,21,.32);
+      background:rgba(250,204,21,.12);
+      color:#fde68a;
+      font-size:12px;
+      font-weight:1000;
+      text-decoration:none;
+    }
+
+    .memoryPayHint{
+      color:rgba(234,255,241,.70);
+      font-size:11px;
+      font-weight:800;
+      line-height:1.35;
+    }
+
     .modal{
       position:fixed;
       inset:0;
@@ -531,6 +730,48 @@
       <div class="title">⚡ Mes actions rapides</div>
       <div class="row">
         <button class="btn" id="btnJobs" type="button">🏗️ Voir ce qui est en cours</button>
+      </div>
+
+
+      <div class="card quickBuild" id="quickBuildNote">
+        <div class="quickBuildTitle">🧠 Note rapide chantier</div>
+        <div class="quickBuildSub">Écris court, DIGIY prépare. Tu confirmes avant toute suite.</div>
+
+        <div class="quickGuide">
+          <strong>Une phrase suffit.</strong>
+          <p>Exemples : dépannage, achat matériel, avance client, main d’œuvre ou client qui doit encore.</p>
+          <div class="quickExamples" id="quickBuildExamples">
+            <button type="button">Dépannage plomberie 15000 cash</button>
+            <button type="button">Achat ciment 12000</button>
+            <button type="button">Avance client 50000 Wave</button>
+            <button type="button">Main d’œuvre 10000</button>
+            <button type="button">Client Moussa doit 20000</button>
+            <button type="button">Réparation porte 8000 cash</button>
+          </div>
+        </div>
+
+        <textarea id="quickBuildInput" placeholder="Ex : Dépannage plomberie 15000 cash"></textarea>
+
+        <div class="row">
+          <button class="btn primary" id="btnQuickBuildPrepare" type="button">Préparer</button>
+          <button class="btn" id="btnQuickBuildConfirm" type="button" style="display:none">✅ Confirmer</button>
+          <button class="btn" id="btnQuickBuildClear" type="button">Effacer</button>
+        </div>
+
+        <div class="quickDraft" id="quickBuildDraft"></div>
+
+        <div class="memoryBox">
+          <div class="memoryHead">
+            <div>
+              <div class="memoryTitle">Aide-mémoire chantier</div>
+              <div class="memoryHelp">Dernières notes confirmées ici. Avec Mon argent, tu peux les transformer en entrées, dépenses ou suivi clair.</div>
+            </div>
+            <button class="tinybtn" id="btnQuickBuildMemoryClear" type="button">Vider</button>
+          </div>
+          <div class="memoryList" id="quickBuildMemoryList">
+            <div class="memoryEmpty">Aucune note chantier confirmée pour le moment.</div>
+          </div>
+        </div>
       </div>
 
       <div style="height:10px"></div>
@@ -1097,7 +1338,345 @@
     return "https://wa.me/" + SUPPORT_PHONE + "?text=" + txt;
   }
 
+
+  function quickBuildNorm(text){
+    return String(text || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  }
+
+  function quickBuildAmount(text){
+    const m = String(text || "").replace(/\s+/g, " ").match(/(\d[\d\s.,]*)\s*(f|fcfa|xof)?/i);
+    if(!m) return 0;
+    const raw = String(m[1] || "").replace(/[^\d]/g, "");
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function quickBuildChannel(text){
+    const t = quickBuildNorm(text);
+    if(/\bwave\b/.test(t)) return "wave";
+    if(/\b(cash|especes|liquide)\b/.test(t)) return "cash";
+    if(/\b(orange money|om)\b/.test(t)) return "orange_money";
+    if(/\b(banque|virement)\b/.test(t)) return "bank";
+    return "other";
+  }
+
+  function quickBuildComplement(text, type){
+    const lower = quickBuildNorm(text);
+    if(/\b(plomberie|robinet|fuite)\b/.test(lower)) return "plomberie";
+    if(/\b(electricite|cable|ampoule|prise)\b/.test(lower)) return "électricité";
+    if(/\b(ciment|fer|sable|peinture|bois|materiel|materiaux)\b/.test(lower)) return "matériel";
+    if(/\b(main d oeuvre|main-d oeuvre|ouvrier|manoeuvre|macon|maconerie|maconnerie)\b/.test(lower)) return "main d’œuvre";
+    if(/\b(porte|serrure|menuiserie)\b/.test(lower)) return "porte";
+    if(/\b(acompte|avance)\b/.test(lower)) return "avance";
+    if(/\b(client)\b/.test(lower) && /\b(doit|reste)\b/.test(lower)){
+      const words = String(text || "").replace(/[.,;:!?]/g, " ").split(/\s+/).filter(Boolean);
+      const banned = new Set(["client","doit","reste","payer","cash","wave","fcfa","xof","f"]);
+      const candidates = words.filter(w => {
+        const clean = quickBuildNorm(w).replace(/[^\p{L}\p{N}-]/gu, "");
+        if(!clean || /^\d+$/.test(clean)) return false;
+        return !banned.has(clean);
+      });
+      if(candidates.length){
+        const raw = candidates[candidates.length - 1].replace(/[^\p{L}\p{N}-]/gu, "");
+        return raw ? raw.charAt(0).toUpperCase() + raw.slice(1) : "";
+      }
+    }
+    return "";
+  }
+
+  function quickBuildDraftFromText(text){
+    const sentence = String(text || "").trim().replace(/\s+/g, " ");
+    const lower = quickBuildNorm(sentence);
+    const amount = quickBuildAmount(sentence);
+    const channel = quickBuildChannel(sentence);
+
+    let type = "note";
+    let title = "Note chantier";
+    let direction = "none";
+    let category = "build_note";
+    let kind = "other";
+    let impact = "à classer";
+
+    if(/\b(client)\b.*\b(doit|reste)\b|\b(doit|reste)\b/.test(lower)){
+      type = "client_debt";
+      title = "Client doit encore";
+      direction = "out";
+      category = "client_debt";
+      kind = "expense";
+      impact = "à suivre";
+    } else if(/\b(acompte|avance)\b/.test(lower)){
+      type = "advance";
+      title = "Avance client";
+      direction = "in";
+      category = "advance";
+      kind = "sale";
+      impact = "entrée chantier";
+    } else if(/\b(achat|ciment|fer|sable|peinture|bois|materiel|materiaux)\b/.test(lower)){
+      type = "material_purchase";
+      title = "Achat matériel";
+      direction = "out";
+      category = "material_purchase";
+      kind = "expense";
+      impact = "dépense chantier";
+    } else if(/\b(main d oeuvre|main-d oeuvre|ouvrier|manoeuvre|macon|maconnerie)\b/.test(lower)){
+      type = "labor_cost";
+      title = "Main d’œuvre";
+      direction = "out";
+      category = "labor_cost";
+      kind = "expense";
+      impact = "dépense chantier";
+    } else if(/\b(depannage|reparation|service|chantier|plomberie|electricite|porte|serrure|peinture)\b/.test(lower)){
+      type = "service_income";
+      title = "Service encaissé";
+      direction = "in";
+      category = "service_income";
+      kind = "sale";
+      impact = "recette chantier";
+    }
+
+    const complement = quickBuildComplement(sentence, type);
+
+    return {
+      sentence,
+      type,
+      title,
+      amount_xof: amount,
+      channel,
+      direction,
+      category,
+      kind,
+      impact,
+      complement,
+      module: "BUILD",
+      status: "draft",
+      created_at: nowISO()
+    };
+  }
+
+  function quickBuildMemoryKey(){
+    return "DIGIY_BUILD_QUICK_MEMORY::" + (ACCESS.slug || "noslug");
+  }
+
+  function quickBuildDraftKey(){
+    return "DIGIY_BUILD_QUICK_DRAFT::" + (ACCESS.slug || "noslug");
+  }
+
+  function readQuickBuildMemory(){
+    try{
+      const raw = localStorage.getItem(quickBuildMemoryKey());
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    }catch(_){
+      return [];
+    }
+  }
+
+  function writeQuickBuildMemory(items){
+    try{
+      localStorage.setItem(quickBuildMemoryKey(), JSON.stringify((items || []).slice(0, 10)));
+      return true;
+    }catch(_){
+      return false;
+    }
+  }
+
+  function saveQuickBuildDraft(draft, confirmed = false){
+    try{
+      localStorage.setItem(quickBuildDraftKey(), JSON.stringify({
+        ...draft,
+        status: confirmed ? "confirmed_local" : "draft",
+        confirmed_at: confirmed ? nowISO() : null
+      }));
+      return true;
+    }catch(_){
+      return false;
+    }
+  }
+
+  function addQuickBuildMemory(draft){
+    const item = {
+      ...draft,
+      memory_id: "build_" + Date.now(),
+      confirmed_at: nowISO()
+    };
+    const list = readQuickBuildMemory();
+    list.unshift(item);
+    writeQuickBuildMemory(list);
+    renderQuickBuildMemory();
+  }
+
+  function isQuickBuildFinancial(item){
+    const type = String(item?.type || "").toLowerCase();
+    return ["service_income","advance","material_purchase","labor_cost","client_debt"].includes(type);
+  }
+
+  function paySlugFromBuildPhone(){
+    const p = normPhone(ACCESS.phone);
+    return p ? "pay-" + p : "";
+  }
+
+  function payBuildLabel(item){
+    const type = String(item?.type || "").toLowerCase();
+    const comp = String(item?.complement || "").trim();
+
+    if(type === "service_income") return comp ? "Service " + comp : "Service chantier";
+    if(type === "advance") return "Avance client";
+    if(type === "material_purchase") return comp ? "Achat " + comp : "Achat matériel";
+    if(type === "labor_cost") return "Main d’œuvre";
+    if(type === "client_debt") return comp ? "Client doit " + comp : "Client doit encore";
+    return item?.title || "Note chantier";
+  }
+
+  function buildPayFromBuildUrl(item){
+    const phone = normPhone(ACCESS.phone);
+    const paySlug = paySlugFromBuildPhone();
+    const qsPay = new URLSearchParams();
+
+    if(paySlug) qsPay.set("slug", paySlug);
+    if(phone) qsPay.set("phone", phone);
+
+    qsPay.set("fromDraft", "1");
+    qsPay.set("direction", item?.direction === "in" ? "in" : "out");
+    qsPay.set("scope", "pro");
+    qsPay.set("amount", String(Math.round(Number(item?.amount_xof || 0))));
+    qsPay.set("kind", item?.kind || (item?.direction === "in" ? "sale" : "expense"));
+    qsPay.set("channel", item?.channel || "other");
+    qsPay.set("category", item?.category || "build_note");
+    qsPay.set("source_module", "BUILD");
+    qsPay.set("label", payBuildLabel(item));
+    qsPay.set("note", String(item?.sentence || "").trim());
+    qsPay.set("complement", String(item?.complement || "").trim());
+    qsPay.set("intent", "build_quick_note");
+
+    return "https://pro-pay.digiylyfe.com/admin.html?" + qsPay.toString();
+  }
+
+  function renderQuickBuildDraft(draft){
+    const box = $("quickBuildDraft");
+    const confirmBtn = $("btnQuickBuildConfirm");
+    if(!box) return;
+
+    if(!draft || !draft.sentence){
+      box.style.display = "none";
+      box.innerHTML = "";
+      if(confirmBtn) confirmBtn.style.display = "none";
+      return;
+    }
+
+    const amountText = draft.amount_xof ? money(draft.amount_xof) : "montant à préciser";
+    const channelText = draft.channel === "other" ? "canal à préciser" : draft.channel;
+
+    box.style.display = "block";
+    if(confirmBtn) confirmBtn.style.display = "inline-flex";
+
+    box.innerHTML = `
+      <strong>Voilà ce que DIGIY BUILD a préparé :</strong><br>
+      Type : ${escapeHtml(draft.title)}<br>
+      Montant : ${escapeHtml(amountText)}<br>
+      Canal : ${escapeHtml(channelText)}<br>
+      Impact : ${escapeHtml(draft.impact)}<br>
+      ${draft.complement ? `Complément : ${escapeHtml(draft.complement)}<br>` : ``}
+      <br>
+      <span style="color:rgba(234,255,241,.70)">Brouillon seulement. Rien n’est envoyé en base automatiquement.</span>
+    `;
+  }
+
+  function renderQuickBuildMemory(){
+    const box = $("quickBuildMemoryList");
+    if(!box) return;
+
+    const list = readQuickBuildMemory();
+    if(!list.length){
+      box.innerHTML = `<div class="memoryEmpty">Aucune note chantier confirmée pour le moment.</div>`;
+      return;
+    }
+
+    box.innerHTML = list.slice(0, 10).map(item => {
+      const amount = item.amount_xof ? money(item.amount_xof) : "montant à préciser";
+      const channel = item.channel && item.channel !== "other" ? item.channel : "canal à préciser";
+      const comp = item.complement ? " · " + item.complement : "";
+
+      return `
+        <div class="memoryItem">
+          <div class="memoryItemTop">
+            <div class="memoryItemTitle">✅ ${escapeHtml(item.title || "Note chantier")}</div>
+            <div class="memoryItemAmount">${escapeHtml(amount)}</div>
+          </div>
+          <div class="memoryItemMeta">${escapeHtml(channel)} · ${escapeHtml(item.impact || "à classer")}${escapeHtml(comp)}</div>
+          <div class="memoryItemMeta">${escapeHtml(item.sentence || "")}</div>
+          ${isQuickBuildFinancial(item) ? `
+            <a class="memoryPayAction" href="${escapeHtml(buildPayFromBuildUrl(item))}">
+              💼 Envoyer vers Mon argent
+            </a>
+            <div class="memoryPayHint">Abonnement Mon argent requis pour enregistrer.</div>
+          ` : ``}
+        </div>
+      `;
+    }).join("");
+  }
+
+  function clearQuickBuildMemory(){
+    if(!confirm("Vider l’aide-mémoire chantier sur cet appareil ?")) return;
+    writeQuickBuildMemory([]);
+    renderQuickBuildMemory();
+    alert("Aide-mémoire chantier vidé.");
+  }
+
+  function bindQuickBuildNote(){
+    const input = $("quickBuildInput");
+    const prepare = $("btnQuickBuildPrepare");
+    const confirmBtn = $("btnQuickBuildConfirm");
+    const clear = $("btnQuickBuildClear");
+
+    $("quickBuildExamples")?.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if(!input) return;
+        input.value = btn.textContent.trim();
+        input.focus();
+      });
+    });
+
+    prepare?.addEventListener("click", () => {
+      const sentence = String(input?.value || "").trim();
+      if(!sentence){
+        alert("Écris une note chantier avant de préparer.");
+        return;
+      }
+
+      const draft = quickBuildDraftFromText(sentence);
+      saveQuickBuildDraft(draft, false);
+      renderQuickBuildDraft(draft);
+    });
+
+    confirmBtn?.addEventListener("click", () => {
+      const draft = quickBuildDraftFromText(String(input?.value || "").trim());
+      if(!draft.sentence){
+        alert("Prépare d’abord une note chantier.");
+        return;
+      }
+
+      saveQuickBuildDraft(draft, true);
+      addQuickBuildMemory(draft);
+      renderQuickBuildDraft({...draft, status:"confirmed_local"});
+      if(confirmBtn) confirmBtn.style.display = "none";
+    });
+
+    clear?.addEventListener("click", () => {
+      if(input) input.value = "";
+      renderQuickBuildDraft(null);
+    });
+
+    $("btnQuickBuildMemoryClear")?.addEventListener("click", clearQuickBuildMemory);
+    renderQuickBuildMemory();
+  }
+
+
   function bindUi() {
+    bindQuickBuildNote();
+
     $("btnDashboard").onclick = () => { location.href = dashboardUrl(); };
     $("btnGoDashboard").onclick = () => { location.href = dashboardUrl(); };
     $("btnProfile").onclick = () => { location.href = profileUrl(); };
